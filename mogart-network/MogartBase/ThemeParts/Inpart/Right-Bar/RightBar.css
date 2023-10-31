@@ -1,0 +1,61 @@
+
+.right-bar {
+    position: fixed;
+    top: 0;
+    right: 80px;
+    width: 250px;
+    height: 100%;
+    background-color: #1b1b1b;
+    overflow-y: auto;
+    padding: 10px 10px 10px 10px;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.active-members h2, .groups h2 {
+    color: #f1f1f1;
+    font-weight: 600;
+    font-size: 18px;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    text-align: center; 
+}
+
+.active-members, .groups {
+    margin-bottom: 30px;
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 100%; 
+}
+
+.group-tab {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center; 
+}
+
+.group-tab span {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: #3a3a3a;
+    color: #b5b5b5;
+    transition: all 0.3s ease;
+    text-align: center; 
+}
+
+.group-tab span:hover {
+    background-color: #4a4a4a;
+}
+
+.group-tab .active {
+    background-color: #0077b5;
+    color: #fff;
+}
