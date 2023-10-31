@@ -1,0 +1,27 @@
+.pop-up-menu {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: #f5f5f5;
+    border-right: 1px solid #e0e0e0;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  .menu-item {
+    padding: 15px 20px;
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .menu-item:hover {
+    background-color: #e0e0e0;
+  }
+  

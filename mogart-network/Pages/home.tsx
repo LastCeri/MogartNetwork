@@ -1,10 +1,17 @@
 import React from 'react';
+import Header from '../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
+import PopUp from '../MogartBase/ThemeParts/Inpart/Menus/PopupMenu/PopupMenu';
+import CreatePost from '../MogartBase/ThemeParts/Inpart/PostArea/CreatePostArea/CreatePostArea';
+import PostContent from '../MogartBase/ThemeParts/Inpart/PostArea/PostContent/PostContent';
+import SearchBox from '../MogartBase/ThemeParts/Inpart/SearchBox/SearchBox';
 
 function Home() {
   return (
     <div>
-      <h1>Home</h1>
-      
+      <Header />
+      <PopUp />
+      <CreatePost />
+      <PostContent />
     </div>
   );
 }
