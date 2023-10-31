@@ -2,12 +2,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 60vh;
     padding: 10px 20px;
-    background-color: #f5f5f5;
+    background-color: #BBCCDD;
     border-bottom: 1px solid #e0e0e0;
+    margin: 0 auto; 
+    border-radius: 50px 20px;
+    top:200px;
   }
   
-  .social-score, .title {
+  .social-score{
+    font-size: 14px;
+  }
+  .title {
     font-size: 20px;
   }
   

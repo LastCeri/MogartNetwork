@@ -1,19 +1,25 @@
 .groups {
-    padding: 20px;
-  }
-  
-  .groups h3 {
-    font-size: 20px;
-    margin-bottom: 15px;
-  }
-  
-  .groups ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .groups li {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
+  padding: 20px;
+  width: 200px;
+  position: fixed;
+  right: 0;
+  top: calc(90px + 65px);
+  height: 150px;
+  background-color: #f5f5f5;
+  border-left: 1px solid #e0e0e0;
+}
+
+.groups h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.groups ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.groups li {
+  font-size: 18px;
+  margin-bottom: 10px;
+}

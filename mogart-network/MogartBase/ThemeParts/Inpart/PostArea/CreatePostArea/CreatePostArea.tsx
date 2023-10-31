@@ -4,8 +4,8 @@ import './CreatePostArea.css';
 const CreatePostArea: React.FC = () => {
   return (
     <div className="create-post-area">
-      <textarea placeholder="Write your post..."></textarea>
-      <button className="submit-post">Submit</button>
+      <textarea placeholder="What's on your mind?"></textarea>
+      <button className="submit-post">Post</button>
     </div>
   );
 }
