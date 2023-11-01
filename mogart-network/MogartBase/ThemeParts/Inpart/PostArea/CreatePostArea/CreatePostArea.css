@@ -2,13 +2,18 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #e0e0e0;
+    background-color: #fff;
+    border: 1px solid #e1e4e8;
     width: 70vh; 
+    min-height: 120px;
+    height: fit-content;
     margin: 0 auto; 
     position: fixed; 
-    top: 150px;
-    left: 25%; 
+    top: 80px;
+    left: 250px; 
+    right: 250px; 
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
 }
 
 .create-post-area textarea {
@@ -17,18 +22,17 @@
     padding: 10px;
     font-size: 16px;
     margin-bottom: 10px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px; 
+    resize: vertical; 
+    outline: none; 
 }
 
 .submit-post {
     align-self: flex-end;
     padding: 10px 20px;
     background-color: #007BFF;
-    color: white;
+    color: #fff;
     border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.submit-post:hover {
-    background-color: #0056b3;
+    border-radius: 20px;
 }

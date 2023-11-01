@@ -5,7 +5,7 @@ const CreatePostArea: React.FC = () => {
   return (
     <div className="create-post-area">
       <textarea placeholder="What's on your mind?"></textarea>
-      <button className="submit-post">Post</button>
+      <button className="submit-post">Share</button>
     </div>
   );
 }

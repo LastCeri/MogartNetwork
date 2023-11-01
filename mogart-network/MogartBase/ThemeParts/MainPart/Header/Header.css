@@ -1,15 +1,20 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 60vh;
-    padding: 10px 20px;
-    background-color: #BBCCDD;
-    border-bottom: 1px solid #e0e0e0;
-    margin: 0 auto; 
-    border-radius: 50px 20px;
-    top:200px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60vh;
+  padding: 10px 20px;
+  background-color: rgba(187, 204, 221, 0.9); 
+  border-bottom: 1px solid #e0e0e0;
+  margin: 0 auto;
+  border-radius: 50px 20px;
+  top: 0; 
+  left: 50%; 
+  position: fixed; 
+  transform: translateX(-50%); 
+  backdrop-filter: blur(10px); 
+  z-index: 1000; 
+}
   
   .social-score{
     font-size: 14px;
