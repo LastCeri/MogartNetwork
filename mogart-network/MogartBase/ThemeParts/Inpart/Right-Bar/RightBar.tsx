@@ -4,9 +4,13 @@ import './RightBar.css';
 const RightBar: React.FC = () => {
   return (
     <div className="right-bar">
+      <section className="most-populars">
+        <h2>MP</h2>
+        {}
+      </section>
       <section className="active-members">
         <h2>RECENTLY ACTIVE MEMBERS</h2>
-        {/* Burada üye resimleri olacaktır */}
+        {}
       </section>
       <section className="groups">
         <h2>GROUPS</h2>
@@ -15,7 +19,7 @@ const RightBar: React.FC = () => {
           <span>Newest</span>
           <span>Popular</span>
         </div>
-        {/* Burada grup bilgileri olacaktır */}
+        {}
       </section>
     </div>
   );
