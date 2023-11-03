@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Pages/home';
-import About from './Pages/about';
+import About from './Pages/About/about.tsx';
 import Signin from './Pages/sing-in';
 import Register from './Pages/register';
 import AdminPanel from './AdminBase/Admin/AdminPanel';
