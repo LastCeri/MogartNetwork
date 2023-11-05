@@ -1,0 +1,85 @@
+
+.signin-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+    gap: 2rem; 
+    padding: 2rem;
+    background-color: #080C1D;
+    color: antiquewhite;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+}
+
+.form-section h2 {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    width: 400px;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+
+.sign-button {
+    padding: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 400px;
+    margin: 0 auto;
+    margin-bottom: 1rem; 
+}
+
+.sign-button:hover {
+    background-color: #0056b3;
+}
+
+.signin-or {
+    text-align: center;
+    margin: 2rem auto;
+    font-size: 1rem;
+}
+
+
+.sign-connect-wallet-button {
+    background-color: #0b1e75; 
+    color: #fff; 
+    width: 220px;
+    margin: 0 auto;
+    height: 40px;
+}
+
+.sign-connect-wallet-button:hover {
+    background-color:#0f2792; 
+}
+
+.image-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem; 
+}
+
+@media (max-width: 768px) {
+    .signin-container {
+        grid-template-columns: 1fr;
+    }
+}
