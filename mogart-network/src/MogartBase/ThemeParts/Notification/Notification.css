@@ -1,0 +1,27 @@
+.notification {
+    position: fixed; 
+    bottom:1rem; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 1000; 
+    padding: 1rem;
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: auto;
+    max-width: 100%; 
+  }
+  
+  .notification.error {
+    background-color: #ff3860;
+  }
+  
+  .notification.success {
+    background-color: rgb(7, 128, 13);
+  }
+
+  .notification.info {
+    background-color: rgb(7, 63, 128);
+  }
+  
