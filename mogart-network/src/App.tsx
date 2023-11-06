@@ -4,8 +4,8 @@ import Home from './Pages/Home/home.tsx';
 import About from './Pages/About/about.tsx';
 import AdminPanel from './AdminBase/Admin/AdminPanel';
 import Groups from './Pages/Groups/GroupsPage.tsx';
-import Sign from './Pages/Sign-in/SignInPage.tsx';
-import Register from './Pages/Register/RegisterPage.tsx';
+import Login from './Pages/Login/LoginPage.tsx';
+import Signin from './Pages/Sign-in/SignPage.tsx';
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/groups" element={<Groups />} />
-        <Route path="/Sign" element={<Sign />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Sign" element={<Signin />} />
         <Route path="/Mogartadmin" element={<AdminPanel />} />
       </Routes>
     </Router>

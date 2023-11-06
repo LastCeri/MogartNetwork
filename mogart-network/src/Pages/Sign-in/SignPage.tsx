@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './RegisterPage.css'; 
 import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 import Notification, { MessageType } from '../../MogartBase/ThemeParts/Notification/Notification';
@@ -6,7 +7,7 @@ import { Request } from '../../MogartBase/Api/Api';
 
 
 const RegisterPage = () => {
-
+    const navigate = useNavigate();
     const [notification, setNotification] = useState({ type: null, message: "", show: false });
     
     useEffect(() => {
@@ -28,6 +29,7 @@ const RegisterPage = () => {
                 if(response)
                 {
                     setNotification({ type: MessageType.Success, message: `Successfully Registered`, show: true });
+                    navigate('/sign'); 
                 }
                 else{
                     setNotification({ type: MessageType.Error, message: "An error occurred while registering", show: true });
@@ -53,13 +55,13 @@ const RegisterPage = () => {
             <button className="register-button" type="submit">Register</button>
             <span className="register-or">Or</span>
             <div className="buttons-container">
-                <button className="register-connect-wallet-button" onClick={registerwallet}>Connect Wallet</button>
+                <button className="register-connect-wallet-button" onClick={registerwallet}>Register Wallet</button>
                 <button className="register-info-button">Info</button>
              </div>
         </form>
       </div>
       <div className="image-section">
-        <img src={`${process.env.PUBLIC_URL}/Images/BackgroundImages/MogartNetworkLoginBackground.png`} alt="Sign In" />
+        <img src={`${process.env.PUBLIC_URL}/Images/BackgroundImages/MogartNetworkLoginBackground.png`} alt="Register" />
       </div>
       {notification.show && (
                 <Notification type={notification.type} message={notification.message} />
