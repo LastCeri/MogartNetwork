@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './RegisterPage.css'; 
 import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 import Notification, { MessageType } from '../../MogartBase/ThemeParts/Notification/Notification';
+import { Request } from '../../MogartBase/Api/Api';
 
 
 const RegisterPage = () => {
@@ -19,12 +20,18 @@ const RegisterPage = () => {
         return () => clearTimeout(timeoutId);
     }, [notification.show]);
 
-    const LoginWallet = async () => {
+    const registerwallet = async () => {
         if (window.mina) {
             try {
                 const accounts = await requestAccounts();
-                const account = accounts[0];
-                setNotification({ type: MessageType.Success, message: `Connected via Wallet Connect`, show: true });
+                const response = Request("Register", { RegisterRequest:accounts[0]}); 
+                if(response)
+                {
+                    setNotification({ type: MessageType.Success, message: `Successfully Registered`, show: true });
+                }
+                else{
+                    setNotification({ type: MessageType.Error, message: "An error occurred while registering", show: true });
+                }
             } catch (error) {
                 setNotification({ type: MessageType.Error, message: "There was an error connecting to the wallet", show: true });
             }
@@ -46,7 +53,7 @@ const RegisterPage = () => {
             <button className="register-button" type="submit">Register</button>
             <span className="register-or">Or</span>
             <div className="buttons-container">
-                <button className="register-connect-wallet-button">Connect Wallet</button>
+                <button className="register-connect-wallet-button" onClick={registerwallet}>Connect Wallet</button>
                 <button className="register-info-button">Info</button>
              </div>
         </form>
