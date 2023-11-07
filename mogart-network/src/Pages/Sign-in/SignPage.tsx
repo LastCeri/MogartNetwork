@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './RegisterPage.css'; 
+import './SignPage.css'; 
 import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 import Notification, { MessageType } from '../../MogartBase/ThemeParts/Notification/Notification';
 import { Request } from '../../MogartBase/Api/Api';
@@ -25,14 +25,18 @@ const RegisterPage = () => {
         if (window.mina) {
             try {
                 const accounts = await requestAccounts();
-                const response = Request("Register", { RegisterRequest:accounts[0]}); 
-                if(response)
+                const response = await Request("Register", {
+                    RegisterRequest: {
+                        walletAddress: accounts[0],
+                    }
+                });    
+                if(response && response.status === "ok")
                 {
-                    setNotification({ type: MessageType.Success, message: `Successfully Registered`, show: true });
-                    navigate('/sign'); 
+                    setNotification({ type: MessageType.Success, message: response.message, show: true });
+                    navigate('/login'); 
                 }
                 else{
-                    setNotification({ type: MessageType.Error, message: "An error occurred while registering", show: true });
+                    setNotification({ type: MessageType.Error, message: response.message, show: true });
                 }
             } catch (error) {
                 setNotification({ type: MessageType.Error, message: "There was an error connecting to the wallet", show: true });
@@ -53,12 +57,13 @@ const RegisterPage = () => {
             <input type="password" name="passwd" placeholder="Password" required />
             <input type="password" name="confirmpasswd" placeholder="ConfirmPassword" required />
             <button className="register-button" type="submit">Register</button>
+            <button className="goto-button" type="submit">Go To Login</button>
             <span className="register-or">Or</span>
-            <div className="buttons-container">
+        </form>
+        <div className="buttons-container">
                 <button className="register-connect-wallet-button" onClick={registerwallet}>Register Wallet</button>
                 <button className="register-info-button">Info</button>
              </div>
-        </form>
       </div>
       <div className="image-section">
         <img src={`${process.env.PUBLIC_URL}/Images/BackgroundImages/MogartNetworkLoginBackground.png`} alt="Register" />

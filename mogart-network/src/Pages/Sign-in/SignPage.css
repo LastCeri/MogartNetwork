@@ -88,6 +88,13 @@ input {
     border: none; 
     background-color: transparent;
   }
+
+  .goto-button{
+    margin: 0 auto;   
+    background-color: #111629; 
+    width: 120px;
+    height: 25px;
+  }
   
   .register-info-button:hover {
     background-color:rgb(34, 36, 36);
