@@ -36,7 +36,7 @@ const SignInPage = () => {
   return (
     <div className="signin-container">
       <div className="form-section">
-        <h2>Sign In</h2>
+        <h2>Log In</h2>
         <form>
             <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />

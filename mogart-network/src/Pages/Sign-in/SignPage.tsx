@@ -30,9 +30,9 @@ const RegisterPage = () => {
                         walletAddress: accounts[0],
                     }
                 });    
-                if(response && response.status === "ok")
+                if(response.status === "Ok")
                 {
-                    setNotification({ type: MessageType.Success, message: response.message, show: true });
+                    await setNotification({ type: MessageType.Success, message: response.message, show: true });
                     navigate('/login'); 
                 }
                 else{
@@ -57,10 +57,11 @@ const RegisterPage = () => {
             <input type="password" name="passwd" placeholder="Password" required />
             <input type="password" name="confirmpasswd" placeholder="ConfirmPassword" required />
             <button className="register-button" type="submit">Register</button>
-            <button className="goto-button" type="submit">Go To Login</button>
+                
+            <button className="goto-button"  onClick={() => navigate('/login')}>Go To Login</button>
             <span className="register-or">Or</span>
         </form>
-        <div className="buttons-container">
+            <div className="buttons-container">
                 <button className="register-connect-wallet-button" onClick={registerwallet}>Register Wallet</button>
                 <button className="register-info-button">Info</button>
              </div>
