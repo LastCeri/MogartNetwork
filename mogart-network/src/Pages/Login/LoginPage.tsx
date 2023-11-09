@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './LoginPage.css'; 
 import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 import Notification, { MessageType } from '../../MogartBase/ThemeParts/Notification/Notification';
+import { useNavigate } from 'react-router-dom';
+import { Request, useCsrfToken } from '../../MogartBase/Api/Api';
 
 
 const SignInPage = () => {
-
+    const navigate = useNavigate();
+    const { csrfToken, fetchCsrfToken } = useCsrfToken();
     const [notification, setNotification] = useState({ type: null, message: "", show: false });
-    
+    useEffect(() => {
+        fetchCsrfToken();
+    }, []);
     useEffect(() => {
         let timeoutId;
         if (notification.show) {
@@ -20,16 +25,27 @@ const SignInPage = () => {
     }, [notification.show]);
 
     const LoginWallet = async () => {
-        if (window.mina) {
-            try {
-                const accounts = await requestAccounts();
-                const account = accounts[0];
-                setNotification({ type: MessageType.Success, message: `Connected via Wallet Connect`, show: true });
-            } catch (error) {
-                setNotification({ type: MessageType.Error, message: "There was an error connecting to the wallet", show: true });
-            }
-        } else {
+        if (!window.mina) {
             setNotification({ type: MessageType.Error, message: "Please install the Mina wallet extension.", show: true });
+            return;
+        }
+        
+        try {
+            const accounts = await requestAccounts();
+            const response = await Request('LoginWallet', { walletAddress: accounts[0] }, csrfToken);
+            handleResponse(response);
+        } catch (error) {
+            console.error('Error in LoginWallet:', error);
+            setNotification({ type: MessageType.Error, message: "There was an error during wallet login.", show: true });
+        }
+    };
+    
+    const handleResponse = (response) => {
+        if (response.status === "Ok") {
+            setNotification({ type: MessageType.Success, message: response.message, show: true });
+            navigate('/'); // Navigate to home page or dashboard as appropriate
+        } else {
+            setNotification({ type: MessageType.Error, message: response.message, show: true });
         }
     };
 

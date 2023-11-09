@@ -1,68 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SignPage.css'; 
-import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
+import './SignPage.css';
 import Notification, { MessageType } from '../../MogartBase/ThemeParts/Notification/Notification';
-import { Request } from '../../MogartBase/Api/Api';
-
+import { Request, useCsrfToken } from '../../MogartBase/Api/Api';
+import { requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
+    const { csrfToken, fetchCsrfToken } = useCsrfToken();
     const [notification, setNotification] = useState({ type: null, message: "", show: false });
-    
+
     useEffect(() => {
-        let timeoutId;
-        if (notification.show) {
-            timeoutId = setTimeout(() => {
-                setNotification({ ...notification, show: false });
-            }, 5000); 
-        }
+        fetchCsrfToken();
+    }, []);
 
-        return () => clearTimeout(timeoutId);
-    }, [notification.show]);
+    const FormRegister = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const registerData = {
+            username: formData.get('username'),
+            email: formData.get('email'),
+            birdate: formData.get('birdate'),
+            passwd: formData.get('passwd'),
+            confirmpasswd: formData.get('confirmpasswd'),
+        };
 
-    const registerwallet = async () => {
-        if (window.mina) {
-            try {
-                const accounts = await requestAccounts();
-                const response = await Request("Register", {
-                    RegisterRequest: {
-                        walletAddress: accounts[0],
-                    }
-                });    
-                if(response.status === "Ok")
-                {
-                    await setNotification({ type: MessageType.Success, message: response.message, show: true });
-                    navigate('/login'); 
-                }
-                else{
-                    setNotification({ type: MessageType.Error, message: response.message, show: true });
-                }
-            } catch (error) {
-                setNotification({ type: MessageType.Error, message: "There was an error connecting to the wallet", show: true });
-            }
-        } else {
-            setNotification({ type: MessageType.Error, message: "Please install the Mina wallet extension.", show: true });
+        try {
+            const response = await Request('Register', { RegisterRequest: registerData }, csrfToken);
+            handleResponse(response);
+        } catch (error) {
+            console.error('Error in FormRegister:', error);
+            setNotification({ type: MessageType.Error, message: "There was an error during registration.", show: true });
         }
     };
+
+    const WalletRegister = async () => {
+        try {
+            const accounts = await requestAccounts();
+            const response = await Request('WalletRegister', {RegisterRequest: {
+                walletAddress: accounts[0],
+            } }, csrfToken);
+            handleResponse(response);
+        } catch (error) {
+            console.error('Error in WalletRegister:', error);
+            setNotification({ type: MessageType.Error, message: "There was an error during wallet registration.", show: true });
+        }
+    };
+
+    const handleResponse = (response) => {
+        if (response.status === "Ok") {
+            setNotification({ type: MessageType.Success, message: response.message, show: true });
+            navigate('/login');
+        } else {
+            setNotification({ type: MessageType.Error, message: response.message, show: true });
+        }
+    };
+
 
   return (
     <div className="register-container">
       <div className="form-section">
         <h2>Register</h2>
-        <form>
-            <input type="text" name="username"  placeholder="Username" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="date" name="birdate" placeholder="BirdDate" required />
-            <input type="password" name="passwd" placeholder="Password" required />
-            <input type="password" name="confirmpasswd" placeholder="ConfirmPassword" required />
-            <button className="register-button" type="submit">Register</button>
-                
-            <button className="goto-button"  onClick={() => navigate('/login')}>Go To Login</button>
-            <span className="register-or">Or</span>
-        </form>
+        <form onSubmit={FormRegister}>
+                    <input type="text" name="username" placeholder="Username" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="date" name="birdate" placeholder="BirthDate" required />
+                    <input type="password" name="passwd" placeholder="Password" required />
+                    <input type="password" name="confirmpasswd" placeholder="Confirm Password" required />
+                    <button className="register-button" type="submit">Register</button>
+                </form>
+                <button className="goto-button"  onClick={() => navigate('/login')}>Go To Login</button>
+                <span className="register-or">Or</span>
             <div className="buttons-container">
-                <button className="register-connect-wallet-button" onClick={registerwallet}>Register Wallet</button>
+            <button className="register-connect-wallet-button" onClick={WalletRegister}>Register Wallet</button>
                 <button className="register-info-button">Info</button>
              </div>
       </div>

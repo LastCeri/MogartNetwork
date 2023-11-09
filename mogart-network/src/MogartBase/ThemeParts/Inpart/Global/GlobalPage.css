@@ -1,0 +1,14 @@
+.main-global {
+    position: fixed; 
+    top: 280px;
+    left: 150px; 
+    right: 150px; 
+    background-color: #f7f7f7; 
+    width: 600px;
+    height: calc(100% - 280px); 
+    margin: 0 auto;
+    overflow-y: auto; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 20px;
+  }
