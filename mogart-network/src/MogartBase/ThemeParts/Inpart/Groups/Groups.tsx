@@ -24,9 +24,9 @@ const Groups: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
 
   const groups = [
-    { id: 1, name: 'Group 1' },
-    { id: 2, name: 'Group 2' },
-    { id: 3, name: 'Group 3' },
+    { id: 1, name: 'React Developers - 1 members' },
+    { id: 2, name: 'UI/UX Designers - 1 members' },
+    { id: 3, name: 'Full Stack Engineers - 1 members' },
   ];
 
   const handleGroupClick = group => {

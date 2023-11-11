@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faHome, faGlobe, faComments, faCameraRetro, 
   faFilm, faBook, faCogs, faMapMarker, 
-  faEye, faEyeSlash 
+  faEye, faBlog,faEyeSlash 
 } from '@fortawesome/free-solid-svg-icons';
 
 const PopUpMenu: React.FC = () => {
@@ -17,7 +17,7 @@ const PopUpMenu: React.FC = () => {
 
   const menuItems = [
     { icon: faHome, text: "Home", url: "/" },
-    { icon: faGlobe, text:  "Global", url: "/global" },
+    { icon: faBlog, text:  "Blog", url: "/blog" },
     { icon: faBook, text: "Groups", url: "/groups" },
   ];
 
