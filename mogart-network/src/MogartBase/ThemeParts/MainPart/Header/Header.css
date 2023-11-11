@@ -26,7 +26,8 @@
   }
   
   .menu-btn {
-    background: none;
+    background-color:  transparent;
+    color: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;

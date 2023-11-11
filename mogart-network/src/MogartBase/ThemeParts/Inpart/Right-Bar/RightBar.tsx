@@ -15,9 +15,9 @@ const activeMembers = [
 ];
 
 const groups = [
-  { name: 'React Developers', memberCount: 300 },
-  { name: 'UI/UX Designers', memberCount: 250 },
-  { name: 'Full Stack Engineers', memberCount: 400 },
+  { name: 'React Developers', memberCount: 1 },
+  { name: 'UI/UX Designers', memberCount: 1 },
+  { name: 'Full Stack Engineers', memberCount: 1 },
 ];
 
 const RightBar: React.FC = () => {
