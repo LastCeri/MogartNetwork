@@ -17,7 +17,7 @@ const PopUpMenu: React.FC = () => {
 
   const menuItems = [
     { icon: faHome, text: "Home", url: "/" },
-    { icon: faBlog, text:  "Blog", url: "/blog" },
+    { icon: faBlog, text: "Blog", url: "/blog" },
     { icon: faBook, text: "Groups", url: "/groups" },
   ];
 

@@ -85,10 +85,12 @@
 .blog-read-more {
   display: inline-block;
   margin-top: 1rem;
-  color: #0066cc;
+  color: #1f6ebd;
   text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease; 
 }
 
 .blog-read-more:hover {
-  text-decoration: underline;
+  transform: scale(1.05);
+  background-color: #f2f2f2;
 }

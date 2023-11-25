@@ -23,7 +23,7 @@ const BlogPage: React.FC = () => {
                 <span className="blog-category">{blog.category}</span>
               </p>
               <p className="blog-excerpt">{blog.excerpt}</p>
-              <a href="/blog/{blog.title}" className="blog-read-more">READ MORE →</a>
+              <a href="/blog/{blog.title}" className="blog-read-more">READ MORE</a>
             </div>
           </div>
         ))}
