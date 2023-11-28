@@ -2,15 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './BlogDetail.css';
+import PopUp from '../../../MogartBase/ThemeParts/Inpart/PopupMenu/PopupMenu';
+
+
+interface BlogPost {
+  Blog_Name: string;
+  Blog_Author: string;
+  Blog_Image: string;
+  Blog_Content: string;
+}
 
 const BlogDetail = () => {
   let { blogurl } = useParams();
-  const [blogPost, setBlogPost] = useState(null);
+  const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:3040/Blogs/${blogurl}`);
+        const response = await axios.get<BlogPost>(`http://localhost:3040/Blogs/${blogurl}`);
         setBlogPost(response.data);
       } catch (error) {
         console.error('Blog post fetch error:', error);
@@ -20,10 +29,6 @@ const BlogDetail = () => {
     fetchPost();
   }, [blogurl]); 
 
-  if (!blogPost) {
-    return <div>Loading...</div>; 
-  }
-
   return (
     <>    
     <div className="header">
@@ -31,15 +36,20 @@ const BlogDetail = () => {
       <span className="title">Mogart Network</span>
       <button className="menu-btn">...</button>
     </div>
+    <aside className="Main-Content-Left">
+              <nav>
+              <PopUp />
+              </nav>
+            </aside>
 
     <div className="hero">
-        <h1>{blogPost.Blog_Name}</h1>
-        <span>By {blogPost.Blog_Author}</span>
+        <h1>{blogPost?.Blog_Name}</h1>
+        <span>By {blogPost?.Blog_Author}</span>
     </div>
     
 <div className="main-container"> <main className="content">
-<img src={blogPost.Blog_Image} alt={blogPost.Blog_Name} className="blog-detail-image"/>
-<div className="blog-detail-content" dangerouslySetInnerHTML={{ __html: blogPost.Blog_Content }} />
+<img src={blogPost?.Blog_Image} alt={blogPost?.Blog_Name} className="blog-detail-image"/>
+<div className="blog-detail-content" dangerouslySetInnerHTML={{ __html: blogPost?.Blog_Content || '' }} />
 </main>
 
 <aside className="sidebar">
@@ -55,7 +65,9 @@ const BlogDetail = () => {
         <li><a href="#">Annual Meetup 2024</a></li>
         <li><a href="#">Live Q&A Session with Community Managers</a></li>
     </ul>
-</aside></div>
+</aside>
+
+</div>
     </>
   );
 };
