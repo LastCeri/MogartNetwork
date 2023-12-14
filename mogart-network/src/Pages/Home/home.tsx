@@ -1,36 +1,27 @@
 import React from 'react';
-import PopUp from '../../MogartBase/ThemeParts/Inpart/PopupMenu/PopupMenu';
-import CreatePost from '../../MogartBase/ThemeParts/Inpart/PostArea/CreatePostArea/CreatePostArea';
-import PostContent from '../../MogartBase/ThemeParts/Inpart/PostArea/PostContent/PostContent';
-import RightBar from '../../MogartBase/ThemeParts/Inpart/Right-Bar/RightBar';
-import './home.css';
+import Header from '../../Part/ThemePart/Header/Header.tsx';
+import Navbar from '../../Part/ThemePart/Navbar/Navbar.tsx';
 
-function Home() {
+import MainContent from '../../Part/PagePart/HomePart/Main/Main.tsx';
+import LeftSidebar from '../../Part/PagePart/HomePart/LeftSidebar/LeftSidebar.tsx'; 
+import RightSidebar from '../../Part/PagePart/HomePart/RightSidebar/RightSidebar.tsx';
+
+
+// HomePage.tsx
+function HomePage() {
   return (
-        <div className="Main-Container">
-          <header className="Main-Header">
-          <div className="header">
-            <span className="social-score">Social Score</span>
-            <span className="title">Mogart Network</span>
-            <button className="menu-btn">...</button>
-            </div>
-          </header>
-          <div className="Main-Content">
-            <aside className="Main-Content-Left">
-              <nav>
-              <PopUp />
-              </nav>
-            </aside>
-            <main className="Main-Content-Center">
-                <CreatePost />
-                <PostContent />
-            </main>
-            <aside className="Main-Content-Right">
-                <RightBar />
-            </aside>
-          </div>
+    <div className="flex flex-col">
+      <Header />
+      <div className="flex flex-1 pt-16"> 
+        <Navbar />
+        <div className="flex flex-1 pl-16">
+          <LeftSidebar />
+          <MainContent />
+          <RightSidebar />
         </div>
-      );
+      </div>
+    </div>
+  );
 }
 
-export default Home;
+export default HomePage;
