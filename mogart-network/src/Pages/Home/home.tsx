@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from '../../Part/ThemePart/Header/Header.tsx';
-import Navbar from '../../Part/ThemePart/Navbar/Navbar.tsx';
+import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
+import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
 
-import MainContent from '../../Part/PagePart/HomePart/Main/Main.tsx';
-import LeftSidebar from '../../Part/PagePart/HomePart/LeftSidebar/LeftSidebar.tsx'; 
-import RightSidebar from '../../Part/PagePart/HomePart/RightSidebar/RightSidebar.tsx';
+import MainContent from '../../MogartBase/ThemeParts/PagePart/HomePart/Main/Main.tsx';
+import LeftSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/LeftSidebar/LeftSidebar.tsx'; 
+import RightSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/RightSidebar/RightSidebar.tsx';
 
 
 // HomePage.tsx
