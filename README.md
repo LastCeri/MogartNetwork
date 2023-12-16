@@ -58,3 +58,5 @@ Our platform utilizes a robust stack of technologies:
 - **Firebase:** For reliable and persistent data storage.
 
 Stay tuned for updates as we continue to build and improve our roadmap.
+
+You can check out the Wiki for Installations and More. https://github.com/LastCeri/MogartNetwork/wiki/
