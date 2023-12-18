@@ -1,24 +1,20 @@
-import { SmartContract, method, PublicKey, UInt64, State, state, CircuitValue, prop, Bool } from 'o1js';
+import { SmartContract, method, PublicKey, UInt64, State, state, Struct, prop, Bool } from 'o1js';
 
-class Participant extends CircuitValue {
+class Participant extends Struct {
   @prop publicKey: PublicKey;
   @prop hasJoined: Bool;
 
   constructor(publicKey: PublicKey, hasJoined: Bool) {
-    super();
-    this.publicKey = publicKey;
-    this.hasJoined = hasJoined;
+    super({ publicKey, hasJoined });
   }
 }
 
-class Event extends CircuitValue {
+class Event extends Struct {
   @prop eventId: UInt64;
   @prop participants: Participant[];
 
   constructor(eventId: UInt64, participants: Participant[]) {
-    super();
-    this.eventId = eventId;
-    this.participants = participants;
+    super({ eventId, participants });
   }
 }
 
@@ -27,7 +23,6 @@ export class EventContract extends SmartContract {
 
   constructor(publicKey: PublicKey) {
     super(publicKey);
-    // Başlangıçta boş bir Event dizisi ile başlat
     this.events.set(new State<Event[]>([]));
   }
 
