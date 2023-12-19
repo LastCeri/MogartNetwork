@@ -1,52 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import './Groups.css'; 
-import PopUp from '../../MogartBase/ThemeParts/Inpart/PopupMenu/PopupMenu';
-import Groupas from '../../MogartBase/ThemeParts/Inpart/Groups/Groups';
-import RightBar from '../../MogartBase/ThemeParts/Inpart/Right-Bar/RightBar';
+import React from 'react';
+import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
+import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 
-interface Group {
-  id: number;
-  name: string;
-  description: string;
-  memberCount: number;
-}
-
-
-const mockGroups: Group[] = [
-  { id: 1, name: 'React Developers', description: 'React Group1!', memberCount: 1023 },
-  { id: 2, name: 'TypeScript Developers', description: 'Welcome TypeScript world!', memberCount: 984 },
+const groups = [
+  {
+    id: 1,
+    name: 'Nature Lovers',
+    description: 'A group for people who love nature and outdoor activities.',
+    memberCount: 150,
+  },
+  {
+    id: 2,
+    name: 'Book Club',
+    description: 'Discussing classic literature and latest bestsellers.',
+    memberCount: 73,
+  },
 ];
 
-const Groups: React.FC = () => {
-  const [groups, setGroups] = useState<Group[]>([]);
-  useEffect(() => {
-    setGroups(mockGroups);
-  }, []);
-
-    return (
-        <div className="Main-Container">
-          <header className="Main-Header">
-          <div className="header">
-            <span className="social-score">Social Score</span>
-            <span className="title">Mogart Network</span>
-            <button className="menu-btn">...</button>
+const GroupsPage = () => {
+  return (
+    <>
+    <Header />
+    <Navbar />
+    <main className="flex-1 p-4 bg-gray-100">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-2xl font-bold text-gray-700 mb-4">Groups</h1>
+        <div className="space-y-4">
+          {groups.map((group) => (
+            <div key={group.id} className="p-4 bg-gray-50 rounded-md">
+              <h2 className="text-xl font-semibold text-gray-800">{group.name}</h2>
+              <p className="text-sm text-gray-600">{group.description}</p>
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-sm text-gray-500">{group.memberCount} members</span>
+                <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                  Join Group
+                </button>
+              </div>
             </div>
-          </header>
-          <div className="Main-Content">
-            <aside className="Main-Content-Left">
-              <nav>
-              <PopUp />
-              </nav>
-            </aside>
-            <main className="Main-Content-Center">
-                <Groupas />
-            </main>
-            <aside className="Main-Content-Right">
-                <RightBar />
-            </aside>
-          </div>
+          ))}
         </div>
-      );
+      </div>
+    </main>
+    </>
+  );
 };
 
-export default Groups;
+export default GroupsPage;
