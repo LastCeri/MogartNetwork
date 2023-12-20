@@ -10,6 +10,8 @@ import Blogpage from './Pages/Blog/BlogPage.tsx';
 import BlogDetail from './MogartBase/Details/BlogDetails/BlogDetail.tsx';
 import PostDetail from './MogartBase/Details/PostDetail/PostDetail.tsx';
 import SettingsPage from './Pages/Settings/SettingsPage.tsx';
+import MessagePage from './Pages/Message/MessagePage.tsx';
+import NotificationsPage from './Pages/Notifications/NotificationsPage.tsx';
 
 function App() {
   return (
@@ -19,10 +21,16 @@ function App() {
         <Route path="/About" element={<About />} />
         <Route path="/Groups" element={<Groups />} />
         <Route path="/Blog" element={<Blogpage />} />
-        <Route path="/Login" element={<Login />} />
+
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/Message" element={<MessagePage />} />
+        <Route path="/Notifications" element={<NotificationsPage />} />
+        
         <Route path="/Settings" element={<SettingsPage />} />
+
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Register" element={<Register />} />
+
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
       </Routes>
