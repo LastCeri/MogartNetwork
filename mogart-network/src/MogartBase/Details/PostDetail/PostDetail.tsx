@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import './PostDetail.css';
+import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
+import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 
 interface Post {
   Post_Title: string;
@@ -25,38 +26,81 @@ const PostDetail = () => {
     };
 
     fetchPost();
-  }, [posturl]); 
+  }, [posturl]);
 
   return (
-    <>
-    <div className="hero">
-        <h1>{post?.Post_Title}</h1>
-        <span>By {post?.Post_Author}</span>
-    </div>
-    
-    <div className="main-container">
-      <main className="content">
-        <img src={post?.Post_Image} alt={post?.Post_Title} className="post-detail-image"/>
-        <div className="post-detail-content" dangerouslySetInnerHTML={{ __html: post?.Post_Content || '' }} />
-      </main>
+    <>    
+      <Header />
+      <Navbar />
+      <div className="flex flex-row justify-center items-start mt-20">
+        <main className="w-full max-w-4xl p-4">
+          <div className="bg-gray-200 text-center py-6 rounded-lg">
+            <h1 className="text-3xl font-bold">{post?.Post_Title}</h1>
+            <span className="text-xl">By {post?.Post_Author}</span>
+          </div>
 
-    </div>
+          <div className="mt-4 bg-white shadow-lg rounded-lg overflow-hidden">
+            <img src={post?.Post_Image} alt={post?.Post_Title} className="w-full h-auto"/>
+            <div className="p-4" dangerouslySetInnerHTML={{ __html: post?.Post_Content || '' }} />
+          </div>
+        </main>
 
-    <aside className="sidebar">
-    <h3>Latest Posts</h3>
-    <ul>
-        <li><a href="#">How to Foster Inclusive Conversations Online</a></li>
-        <li><a href="#">5 Tips for Managing a Remote Community</a></li>
-        <li><a href="#">The Rise of Niche Social Platforms</a></li>
-    </ul>
-    <h3>Upcoming Events</h3>
-    <ul>
-        <li><a href="#">Webinar: The Future of Digital Communities</a></li>
-        <li><a href="#">Annual Meetup 2024</a></li>
-        <li><a href="#">Live Q&A Session with Community Managers</a></li>
-    </ul>
-</aside>
-
+        <div className="px-4">
+          <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
+                <h3 className="font-semibold text-xl mb-4 text-gray-800">Latest Posts</h3>
+                <ul className="space-y-2">
+                    <li className="rounded-md flex items-start">
+                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
+                        <div>
+                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">How to Foster Inclusive Conversations Online</a>
+                            <p className="text-xs text-gray-600">Published on Jan 1, 2024 by Author A</p>
+                        </div>
+                    </li>
+                    <li className="rounded-md flex items-start">
+                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
+                        <div>
+                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">5 Tips for Managing a Remote Community</a>
+                            <p className="text-xs text-gray-600">Published on Feb 1, 2024 by Author B</p>
+                        </div>
+                    </li>
+                    <li className="rounded-md flex items-start">
+                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full"/>
+                        <div>
+                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">The Rise of Niche Social Platforms</a>
+                            <p className="text-xs text-gray-600">Published on Mar 1, 2024 by Author C</p>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+            <div className="mb-8"></div>
+            <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
+              <h3 className="font-semibold text-xl mb-4 text-gray-800">Categories</h3>
+              <ul className="space-y-2">
+                  <li className="rounded-md flex items-start">
+                      <img src="category-icon-1.jpg" alt="Category Icon 1" className="w-10 h-10 mr-2 rounded-full" />
+                      <div>
+                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Technology</a>
+                          <p className="text-xs text-gray-600">Latest trends and innovations</p>
+                      </div>
+                  </li>
+                  <li className="rounded-md flex items-start">
+                      <img src="category-icon-2.jpg" alt="Category Icon 2" className="w-10 h-10 mr-2 rounded-full" />
+                      <div>
+                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Health & Wellness</a>
+                          <p className="text-xs text-gray-600">Tips for a healthy lifestyle</p>
+                      </div>
+                  </li>
+                  <li className="rounded-md flex items-start">
+                      <img src="category-icon-3.jpg" alt="Category Icon 3" className="w-10 h-10 mr-2 rounded-full"/>
+                      <div>
+                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Travel</a>
+                          <p className="text-xs text-gray-600">Explore new destinations</p>
+                      </div>
+                  </li>
+              </ul>
+            </aside>
+        </div>
+      </div>
     </>
   );
 };

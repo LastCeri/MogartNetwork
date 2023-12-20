@@ -8,6 +8,7 @@ import Profile from './Pages/Profile/Profile.tsx';
 import Register from './Pages/Register/RegisterPage.tsx';
 import Blogpage from './Pages/Blog/BlogPage.tsx';
 import BlogDetail from './MogartBase/Details/BlogDetails/BlogDetail.tsx';
+import PostDetail from './MogartBase/Details/PostDetail/PostDetail.tsx';
 import SettingsPage from './Pages/Settings/SettingsPage.tsx';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/Register" element={<Register />} />
         <Route path="/Settings" element={<SettingsPage />} />
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
+        <Route path="/Posts/:posturl" element={<PostDetail />} />
       </Routes>
     </Router>
   );
