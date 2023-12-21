@@ -12,6 +12,7 @@ import PostDetail from './MogartBase/Details/PostDetail/PostDetail.tsx';
 import SettingsPage from './Pages/Settings/SettingsPage.tsx';
 import MessagePage from './Pages/Message/MessagePage.tsx';
 import NotificationsPage from './Pages/Notifications/NotificationsPage.tsx';
+import ActivityPage from './Pages/Activity/ActivityPage.tsx';
 
 function App() {
   return (
@@ -23,9 +24,9 @@ function App() {
         <Route path="/Blog" element={<Blogpage />} />
 
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Message" element={<MessagePage />} />
+        <Route path="/Messages" element={<MessagePage />} />
         <Route path="/Notifications" element={<NotificationsPage />} />
-        
+        <Route path="/Activity" element={<ActivityPage />} />
         <Route path="/Settings" element={<SettingsPage />} />
 
         <Route path="/Login" element={<Login />} />
