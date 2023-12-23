@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import Header from '../../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
+import LeftSidebar from '../../ThemeParts/PagePart/HomePart/LeftSidebar/LeftSidebar';
+import RightSidebar from '../../ThemeParts/PagePart/HomePart/RightSidebar/RightSidebar';
 
 
 const allContent = [
   { id: 1, type: 'text', content: 'Exploring the beauty of nature', tags: ['Nature', 'Photography'] },
   { id: 2, type: 'image', content: 'https://via.placeholder.com/150', tags: ['Art', 'Design', 'Photography'] },
+
 ];
 
 const TaggedContentPage: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string>('Photography');
+
+
   const filteredContent = allContent.filter(item => item.tags.includes(selectedTag));
 
   return (
     <>
       <Header />
       <Navbar />
-      <div className="flex flex-col h-screen pt-[heightOfHeaderAndNavbar]"> {/* Adjust top padding */}
+
+      <LeftSidebar />
+      <div className="flex flex-col min-h-screen mt-20"> 
         <main className="flex-1 flex justify-center items-center overflow-y-auto bg-gray-100">
           <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
             <h1 className="text-2xl font-bold text-gray-700 mb-4">Content Tagged: {selectedTag}</h1>
@@ -39,6 +46,8 @@ const TaggedContentPage: React.FC = () => {
           </div>
         </main>
       </div>
+      <RightSidebar />
+
     </>
   );
 };
