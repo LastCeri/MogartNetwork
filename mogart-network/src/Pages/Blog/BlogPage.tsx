@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import PopUp from '../../MogartBase/ThemeParts/Inpart/PopupMenu/PopupMenu';
-import GlobalPage from '../../MogartBase/ThemeParts/Inpart/Blog/BlogPage';
-
 const Blog: React.FC = () => {
     return (
         <div className="Main-Container">
@@ -16,11 +13,9 @@ const Blog: React.FC = () => {
           <div className="Main-Content">
             <aside className="Main-Content-Left">
               <nav>
-              <PopUp />
               </nav>
             </aside>
             <main className="Main-Content-Center">
-                <GlobalPage />
             </main>
             <aside className="Main-Content-Right">
 
