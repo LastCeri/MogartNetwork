@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3040';
+
 export const useCsrfToken = () => {
   const [csrfToken, setCsrfToken] = useState('');
 
   const fetchCsrfToken = async () => {
     try {
-      const response = await fetch('http://localhost:3040/TokenRequest', {
+      const response = await fetch(`${API_URL}/TokenRequest`, {
         method: 'GET', 
         credentials: 'include',
       });
@@ -25,16 +27,14 @@ export const useCsrfToken = () => {
   return { csrfToken, fetchCsrfToken };
 };
 
-
-export async function Request(ApiRequestMethod, Apidata, csrfToken) {
+export async function Request(ApiRequestMethod:string, Apidata:any, csrfToken:string) {
   try {
-    console.log("Sending data to server:", Apidata);
     const headers = {
       'Content-Type': 'application/json',
       'CSRF-Token': csrfToken
     };
 
-    const response = await fetch(`http://localhost:3040/${ApiRequestMethod}`, {
+    const response = await fetch(`${API_URL}/${ApiRequestMethod}`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(Apidata),
@@ -43,14 +43,62 @@ export async function Request(ApiRequestMethod, Apidata, csrfToken) {
 
     if (response.ok) {
       const jsonResponse = await response.json();
-      console.log('Data successfully received from the server:', jsonResponse);
       return jsonResponse;
     } else {
       const errorResponse = await response.text();
-      throw new Error('Failed to receive data: ' + errorResponse);
+      throw new Error(`Failed to receive data: ${errorResponse}`);
     }
   } catch (error) {
     console.error('Error in Request function:', error);
     throw error;
   }
 }
+
+
+export async function login(credentials:any, csrfToken:string) {
+  try {
+    const response = await Request('login', credentials, csrfToken);
+    return response;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+}
+
+export async function register(userData:any, csrfToken:string) {
+  try {
+    const response = await Request('register', userData, csrfToken);
+    return response;
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  }
+}
+
+
+export async function getUserData(sessionToken:string) {
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionToken}`
+    };
+
+    const response = await fetch(`${API_URL}/getUserData`, {
+      method: 'GET',
+      headers: headers,
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error('Failed to fetch user data');
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+}
+
+
