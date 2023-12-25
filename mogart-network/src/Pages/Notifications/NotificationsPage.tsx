@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
+
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 
 const NotificationItem = () => {
+    const navigate = useNavigate();
+    const { isLoggedIn } = useData();
+  
+    useEffect(() => {
+      if (!isLoggedIn) {
+        navigate('/login');
+      }
+    }, [isLoggedIn, navigate]);
+
     const username = "JohnDoe";
     const action = "Viewed your post.";
     const time = "1h";

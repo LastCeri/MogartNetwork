@@ -1,5 +1,7 @@
 // Profile.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
 import ProfileHeader from './components/ProfileHeader/ProfileHeader.tsx';
@@ -8,6 +10,15 @@ import ProfileLeftSidebar from './components/ProfileLeftSidebar/ProfileLeftSideb
 import ProfileRightSidebar from './components/ProfileRightSidebar/ProfileRightSidebar.tsx';
 
 function Profile() {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useData();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

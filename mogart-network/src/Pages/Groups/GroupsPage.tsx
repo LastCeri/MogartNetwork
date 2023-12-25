@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
+
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 
@@ -18,6 +21,15 @@ const groups = [
 ];
 
 const GroupsPage = () => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useData();
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
+
   return (
     <>
       <Header />

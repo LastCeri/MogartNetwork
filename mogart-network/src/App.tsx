@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 import HomePage from './Pages/Home/home.tsx';
 import AboutPage from './Pages/About/About.tsx';
 import GroupsPage from './Pages/Groups/GroupsPage.tsx';
@@ -15,6 +15,7 @@ import MessagePage from './Pages/Message/MessagePage.tsx';
 import NotificationsPage from './Pages/Notifications/NotificationsPage.tsx';
 import ActivityPage from './Pages/Activity/ActivityPage.tsx';
 import GlobalPage from './Pages/Global/GlobalPage.tsx';
+import SearchPage from './Pages/Search/SearchPage.tsx';
 
 import NotFoundPage from './Pages/ErrorPages/404/404.tsx';
 import ServerErrorPage from './Pages/ErrorPages/500/500.tsx';
@@ -35,6 +36,7 @@ function App() {
         <Route path="/Notifications" element={<NotificationsPage />} />
         <Route path="/Activity" element={<ActivityPage />} />
         <Route path="/Settings" element={<SettingsPage />} />
+        <Route path="/Search" element={<SearchPage />} />
 
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
@@ -46,6 +48,8 @@ function App() {
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/403" element={<ForbiddenPage  />} />
         <Route path="/500" element={<ServerErrorPage/>} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

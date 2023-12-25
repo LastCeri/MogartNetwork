@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 
 const ProfileSettingsPage = () => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useData();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
 
   const [profileImage, setProfileImage] = useState('path_to_default_profile_image.jpg');
   const registrationDate = 'January 1, 2020';
