@@ -43,12 +43,6 @@ const GroupsPage = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useData();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login');
-    }
-  }, [isLoggedIn, navigate]);
-
 
   const groups: Group[] = [
     {
@@ -68,39 +62,41 @@ const GroupsPage = () => {
       memberAvatars: ['path-to-avatar4.jpg', 'path-to-avatar5.jpg', 'path-to-avatar6.jpg'],
     },
   ]
-  
-  return (
-    <>
-      <Header />
-      <Navbar />
-      <nav className="bg-white px-4 py-3 rounded border border-gray-200">
-      <div className="flex flex-col h-screen">
-        <div className="flex space-x-4">
-          <div>
-            <button className="bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-medium">All Groups</button>
+  const GroupNavbar = () => {
+    return (
+      <div className="bg-white shadow mt-24">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6 md:space-x-10">
+            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">All Groups</a>
+            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">My Groups</a>
+            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">Create a Group</a>
+            <div className="relative">
+              <input type="search" name="search" className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search Groups..." />
+            </div>
           </div>
-          <div>
-            <button className="text-gray-700 px-3 py-2 rounded-md text-sm font-medium">My Groups</button>
-          </div>
-          <div>
-            <button className="text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Create a Group</button>
-          </div>
-        </div>
-
-        <div className="flex flex-col h-screen">
-          <input className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" type="text" placeholder="Search Groups..." />
         </div>
       </div>
-    </nav>
-      <div className="container mx-auto px-4 mt-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {groups.map((group) => (
-          <GroupItem key={group.id} group={group} />
-        ))}
+    );
+  };
+
+  return (
+    <div className="flex">
+      <Navbar />
+      <div className="flex flex-col w-full">
+        <Header />
+        <div className="flex-grow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <GroupNavbar/>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 my-4">
+            {groups.map(group => (
+                <GroupItem key={group.id} group={group} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    </>
   );
-};
+}
 
 export default GroupsPage;
