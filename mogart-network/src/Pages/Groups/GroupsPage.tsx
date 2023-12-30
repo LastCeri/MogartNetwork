@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useData } from '../../MogartBase/Context/DataContext';
-
-import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
+import React, { useState } from 'react';
+import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
+import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
 
 type Group = {
   id: number;
@@ -40,11 +37,7 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
 };
 
 const GroupsPage = () => {
-  const navigate = useNavigate();
-  const { isLoggedIn } = useData();
-
-
-  const groups: Group[] = [
+  const [groups, setGroups] = useState<Group[]>([
     {
       id: 1,
       name: 'Nature Lovers',
@@ -55,40 +48,101 @@ const GroupsPage = () => {
     },
     {
       id: 2,
-      name: 'Book Club',
-      description: 'Discussing classic literature and latest bestsellers.',
-      memberCount: 73,
-      imageUrl: 'path-to-book-club-image.jpg', 
-      memberAvatars: ['path-to-avatar4.jpg', 'path-to-avatar5.jpg', 'path-to-avatar6.jpg'],
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
     },
-  ]
-  const GroupNavbar = () => {
-    return (
-      <div className="bg-white shadow mt-24">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6 md:space-x-10">
-            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">All Groups</a>
-            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">My Groups</a>
-            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">Create a Group</a>
-            <div className="relative">
-              <input type="search" name="search" className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search Groups..." />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    {
+      id: 3,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    },
+    {
+      id: 4,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    },
+    {
+      id: 5,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    }, 
+    {
+      id: 6,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    },  
+    {
+      id: 7,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    },
+    {
+      id: 8,
+      name: 'Nature Lovers',
+      description: 'A group for people who love nature and outdoor activities.',
+      memberCount: 150,
+      imageUrl: 'path-to-nature-lovers-image.jpg',
+      memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
+    },
+
+  ]);
+
+  const [activeTab, setActiveTab] = useState('all');
+
+  const getFilteredGroups = () => {
+    switch (activeTab) {
+    
+      case 'create':
+      
+        return [];
+      default:
+
+        return groups;
+    }
   };
 
+  const filteredGroups = getFilteredGroups();
+
   return (
+    <> 
+    <Header />
+    <Navbar />
     <div className="flex">
-      <Navbar />
       <div className="flex flex-col w-full">
-        <Header />
         <div className="flex-grow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <GroupNavbar/>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 my-4">
-            {groups.map(group => (
+          <div className="bg-white shadow">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
+              <div className="flex justify-between items-center py-6 md:space-x-10">
+                <button onClick={() => setActiveTab('all')} className={`text-base font-medium ${activeTab === 'all' ? 'text-blue-600' : 'text-gray-500'} hover:text-gray-900`}>All Groups</button>
+                <button onClick={() => setActiveTab('my')} className={`text-base font-medium ${activeTab === 'my' ? 'text-blue-600' : 'text-gray-500'} hover:text-gray-900`}>My Groups</button>
+                <button onClick={() => setActiveTab('create')} className={`text-base font-medium ${activeTab === 'create' ? 'text-blue-600' : 'text-gray-500'} hover:text-gray-900`}>Create a Group</button>
+                <div className="relative">
+                  <input type="search" name="search" className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search Groups..." />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              {filteredGroups.map(group => (
                 <GroupItem key={group.id} group={group} />
               ))}
             </div>
@@ -96,6 +150,7 @@ const GroupsPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
