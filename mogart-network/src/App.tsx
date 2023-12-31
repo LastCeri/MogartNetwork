@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 import HomePage from './Pages/Home/home.tsx';
 import AboutPage from './Pages/About/About.tsx';
+
 import GroupsPage from './Pages/Groups/GroupsPage.tsx';
+import CreateGroupPage from './Pages/Groups/SubPage/CreateGroups/CreateGroupsPage.tsx';
 import LoginPage from './Pages/Login/LoginPage.tsx';
 import ProfilePage from './Pages/Profile/Profile.tsx';
 import RegisterPage from './Pages/Register/RegisterPage.tsx';
@@ -28,6 +30,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/About" element={<AboutPage />} />
         <Route path="/Groups" element={<GroupsPage />} />
+        <Route path="/Groups/CreateGroups" element={<CreateGroupPage />} />
         <Route path="/Blogs" element={<BlogPage />} />
         <Route path="/Global" element={<GlobalPage />} />
 

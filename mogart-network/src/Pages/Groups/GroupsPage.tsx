@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
+import { fetchGroups } from '../../MogartBase/Api/Api.tsx';
 
 type Group = {
   id: number;
@@ -37,6 +38,8 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
 };
 
 const GroupsPage = () => {
+  const [activeTab, setActiveTab] = useState('all');
+
   const [groups, setGroups] = useState<Group[]>([
     {
       id: 1,
@@ -102,25 +105,39 @@ const GroupsPage = () => {
       imageUrl: 'path-to-nature-lovers-image.jpg',
       memberAvatars: ['path-to-avatar1.jpg', 'path-to-avatar2.jpg', 'path-to-avatar3.jpg'],
     },
-
   ]);
 
-  const [activeTab, setActiveTab] = useState('all');
+  useEffect(() => {
+    if (activeTab === 'all') {
+      fetchGroups()
+        .then(fetchedGroups => {
+          if (fetchedGroups) {
+            setGroups(fetchedGroups);
+          }
+        })
+        .catch(error => console.error('Error fetching groups:', error));
+    }
+  }, [activeTab]); 
+
+
 
   const getFilteredGroups = () => {
     switch (activeTab) {
-    
       case 'create':
-      
         return [];
+      case 'my':
+        return [];
+      case 'all':
+        return groups;
       default:
-
         return groups;
     }
   };
 
   const filteredGroups = getFilteredGroups();
 
+
+  
   return (
     <> 
     <Header />

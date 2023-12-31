@@ -65,6 +65,20 @@ export async function login(credentials:any, csrfToken:string) {
   }
 }
 
+
+export async function fetchGroups() {
+  try {
+    const response = await fetch(API_URL+'/Groups'); 
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching groups:', error);
+    return [];
+  }
+}
+
 export async function register(userData:any, csrfToken:string) {
   try {
     const response = await Request('register', userData, csrfToken);
