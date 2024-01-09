@@ -2,26 +2,30 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3040;
 
+// Body parsing middleware to parse JSON bodies
 const bodyParser = require('body-parser');
+
+// CSRF protection middleware
 const csrf = require('csurf');
+
+// Middleware to parse cookies
 const cookieParser = require('cookie-parser');
 
-// Functions for database operations
+// Importing functions for database operations
 const { checkUserExists, getBlogPosts, getBlogPostByURL, RegisterUserWallet, LoginUserWallet } = require('./Database/Database.cjs');
 
-// CSRF protection setup
+// Setup CSRF protection using cookies
 const csrfProtection = csrf({ cookie: { httpOnly: true } });
 app.use(cookieParser());
 app.use(express.json());
 
-// CORS settings
+// CORS middleware setup to allow requests from specified origins
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000'];
+  const allowedOrigins = ['http://localhost:3000']; // => You must add your own address here.
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
-
 
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, CSRF-Token');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -29,11 +33,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Route to request a CSRF token
 app.get('/TokenRequest', csrfProtection, (req, res) => {
   console.log("Token request received");
   res.status(200).json({ csrfToken: req.csrfToken() });
 });
 
+// Route to retrieve a blog post by its URL
 app.get('/Blogs/:url', csrfProtection, async (req, res) => {
   try {
     const blogUrl = req.params.url; 
@@ -49,11 +55,29 @@ app.get('/Blogs/:url', csrfProtection, async (req, res) => {
   }
 });
 
+// Route to retrieve a blogs by its filter
+app.get('/Blogs/:filter', csrfProtection, async (req, res) => {
+  try {
+    const filter = req.params.url; 
+    const blogPostfilted = await getBlogPosts(filter); 
+    res.status(200).json(blogPostfilted);
+  } catch (error) {
+    console.error('Failed to fetch blog post:', error);
+    if (error.message === 'Blog post not found') {
+      res.status(404).json({ error: 'Blog post not found' });
+    } else {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+});
+
+
+// Route to register a user's wallet
 app.post('/WalletRegister', csrfProtection, async (req, res) => {
   try {
-    const { walletAddress, email } = req.body.RegisterRequest;
-    if (!walletAddress && !email) {
-      return res.status(400).send({ message: 'Wallet address and email cannot both be undefined.', status: "Bad Request" });
+    const { walletAddress } = req.body.RegisterRequest;
+    if (!walletAddress) {
+      return res.status(400).send({ message: 'Wallet address cannot both be undefined.', status: "Bad Request" });
     }
 
     const userExists = await checkUserExists(walletAddress, email);
@@ -69,6 +93,7 @@ app.post('/WalletRegister', csrfProtection, async (req, res) => {
   }
 });
 
+// Route for user login using a wallet address
 app.post('/LoginWallet', csrfProtection, async (req, res) => {
   try {
     const { walletAddress } = req.body;
@@ -89,6 +114,7 @@ app.post('/LoginWallet', csrfProtection, async (req, res) => {
   }
 });
 
+// Start the server and listen on the specified port
 app.listen(port, () => {
   console.log(`Server Listening on Port: ${port}`);
 });

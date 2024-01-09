@@ -25,7 +25,7 @@ export default function Header() {
     <header className="fixed top-0 left-16 right-0 bg-white shadow-md z-10">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center">
-          <img src="https://cdn.discordapp.com/attachments/1184569870357110934/1184569916821602374/Mogart-Network-Icon.ico" alt="Mogart Network Logo" className="h-8 w-8 mr-2"/>
+          <img src="https://cdn.discordapp.com/attachments/1190676022480355339/1190676084505722960/Mogart-Network-Icon.ico" alt="Mogart Network Logo" className="h-8 w-8 mr-2"/>
           <span className="font-bold text-xl text-gray-800">Mogart Network</span>
         </div>
 
