@@ -8,10 +8,10 @@ export const useCsrfToken = () => {
   const fetchCsrfToken = async () => {
     try {
       const response = await fetch(`${API_URL}/TokenRequest`, {
-        method: 'GET', 
+        method: 'GET',
         credentials: 'include',
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         setCsrfToken(data.csrfToken);
@@ -22,23 +22,24 @@ export const useCsrfToken = () => {
       console.error('Error fetching CSRF token:', error);
     }
   };
-  
 
   return { csrfToken, fetchCsrfToken };
 };
 
-export async function Request(ApiRequestMethod:string, Apidata:any, csrfToken:string) {
-  try {
-    const headers = {
-      'Content-Type': 'application/json',
-      'CSRF-Token': csrfToken
-    };
+const getRequestHeaders = (csrfToken:any) => ({
+  'Content-Type': 'application/json',
+  'CSRF-Token': csrfToken,
+});
 
-    const response = await fetch(`${API_URL}/${ApiRequestMethod}`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(Apidata),
-      credentials: 'include'
+export const request = async (method:any, endpoint:any, data:any, csrfToken:any) => {
+  try {
+    const headers = getRequestHeaders(csrfToken);
+
+    const response = await fetch(`${API_URL}/${endpoint}`, {
+      method,
+      headers,
+      body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (response.ok) {
@@ -49,26 +50,24 @@ export async function Request(ApiRequestMethod:string, Apidata:any, csrfToken:st
       throw new Error(`Failed to receive data: ${errorResponse}`);
     }
   } catch (error) {
-    console.error('Error in Request function:', error);
+    console.error('Error in request function:', error);
     throw error;
   }
-}
+};
 
-
-export async function login(credentials:any, csrfToken:string) {
+export const login = async (credentials:any, csrfToken:any) => {
   try {
-    const response = await Request('login', credentials, csrfToken);
+    const response = await request('POST', 'login', credentials, csrfToken);
     return response;
   } catch (error) {
     console.error('Login error:', error);
     throw error;
   }
-}
+};
 
-
-export async function fetchGroups() {
+export const fetchGroups = async () => {
   try {
-    const response = await fetch(API_URL+'/Groups'); 
+    const response = await fetch(`${API_URL}/Groups`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -77,30 +76,29 @@ export async function fetchGroups() {
     console.error('Error fetching groups:', error);
     return [];
   }
-}
+};
 
-export async function register(userData:any, csrfToken:string) {
+export const register = async (userData:any, csrfToken:any) => {
   try {
-    const response = await Request('register', userData, csrfToken);
+    const response = await request('POST', 'register', userData, csrfToken);
     return response;
   } catch (error) {
     console.error('Registration error:', error);
     throw error;
   }
-}
+};
 
-
-export async function getUserData(sessionToken:string) {
+export const getUserData = async (sessionToken:any) => {
   try {
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${sessionToken}`
+      'Authorization': `Bearer ${sessionToken}`,
     };
 
     const response = await fetch(`${API_URL}/getUserData`, {
       method: 'GET',
-      headers: headers,
-      credentials: 'include'
+      headers,
+      credentials: 'include',
     });
 
     if (response.ok) {
@@ -113,6 +111,4 @@ export async function getUserData(sessionToken:string) {
     console.error('Error fetching user data:', error);
     throw error;
   }
-}
-
-
+};

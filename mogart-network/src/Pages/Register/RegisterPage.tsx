@@ -14,12 +14,9 @@ function Register() {
     event.preventDefault();
     setErrorMessage('');
 
-    console.log("test");
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const formProps = Object.fromEntries(formData);
-
-      console.log("test2", formProps);
 
 
       if (!formProps.email || !formProps.username || !formProps.password || !formProps.passwordConfirm) {
@@ -36,9 +33,10 @@ function Register() {
         const response = await register(formProps, csrfToken);
         console.log(response);
         setRegistrationSuccess(true);
-        setTimeout(() => navigate('/login'), 3000); 
+        setTimeout(() => navigate('/login'), 3000);
       } catch (error) {
         console.error('Registration error:', error);
+        setErrorMessage('An error occurred during registration.');
       }
     }
   };
@@ -104,13 +102,18 @@ function Register() {
         </div>
       </div>
 
+      {errorMessage && (
+        <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
+      )}
+
       {registrationSuccess && (
         <div className="fixed bottom-0 inset-x-0 mb-6 flex justify-center">
           <div className="bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow-lg">
-            Congratulations! Registration Completed Successfully. You are being directed.
+            <p>Registration successful! You are being directed.</p>
           </div>
         </div>
       )}
+
 
     </div>
   );
