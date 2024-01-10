@@ -78,6 +78,18 @@ export const fetchGroups = async () => {
   }
 };
 
+export const fetchActivity = async () => {
+  try {
+    const response = await request('GET', 'activities', null, "");
+    return response;
+  } catch (error) {
+    console.error('Error fetching activity data:', error);
+    throw error;
+  }
+};
+
+
+
 export const register = async (userData:any, csrfToken:any) => {
   try {
     const response = await request('POST', 'register', userData, csrfToken);
