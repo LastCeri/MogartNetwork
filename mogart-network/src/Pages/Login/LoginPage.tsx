@@ -87,7 +87,7 @@ function Login() {
         </div>
       </div>
 
-      <div className="flex-1 hidden lg:block" style={{ backgroundImage: 'url("https://cdn.discordapp.com/attachments/1184268083385348096/1184271012641116251/Mogart-Login-Background-1.png")', backgroundSize: 'cover' }}>
+      <div className="flex-1 hidden lg:block" style={{ backgroundImage: 'url("https://cdn.discordapp.com/attachments/1188239804756926474/1190675875843280986/Mogart-Login-Background-1.png")', backgroundSize: 'cover' }}>
         <div className="flex h-full bg-black bg-opacity-50 items-center justify-center">
           <div className="text-center text-white p-10">
             <h2 className="text-4xl font-bold mb-2">Make an awesome experience</h2>

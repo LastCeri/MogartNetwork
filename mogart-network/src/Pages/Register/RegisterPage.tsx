@@ -95,12 +95,12 @@ function Register() {
         </div>
       </div>
 
-      <div className="flex-1 hidden lg:block" style={{ backgroundImage: 'url("https://cdn.discordapp.com/attachments/1184268083385348096/1184271013316403271/Mogart-Register-Background-1.png")', backgroundSize: 'cover' }}>
+      <div className="flex-1 hidden lg:block" style={{ backgroundImage: 'url("https://cdn.discordapp.com/attachments/1188239804756926474/1190675902405804153/Mogart-Register-Background-1.png")', backgroundSize: 'cover' }}>
         <div className="flex h-full bg-black bg-opacity-50 items-center justify-center">
           <div className="text-center text-white p-10">
             <h2 className="text-4xl font-bold mb-2">Let's Do Great Things Together</h2>
             <p className="mb-4">Meet amazing designers and create more amazing creations.</p>
-            <a href="#" className="text-lg text-indigo-300 hover:underline">Join to community</a>
+            <a href="https://discord.gg/pvzvemERKK" className="text-lg text-indigo-300 hover:underline">Join to community</a>
           </div>
         </div>
       </div>
