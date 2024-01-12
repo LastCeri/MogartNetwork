@@ -31,13 +31,14 @@ const getRequestHeaders = (csrfToken:any) => ({
   'CSRF-Token': csrfToken,
 });
 
-export const request = async (method:any, endpoint:any, data:any, csrfToken:any) => {
+export const request = async (method:any, endpoint:any, data:any) => {
   try {
-    const headers = getRequestHeaders(csrfToken);
 
     const response = await fetch(`${API_URL}/${endpoint}`, {
       method,
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(data),
       credentials: 'include',
     });
@@ -55,9 +56,10 @@ export const request = async (method:any, endpoint:any, data:any, csrfToken:any)
   }
 };
 
-export const login = async (credentials:any, csrfToken:any) => {
+export const login = async (credentials:any) => {
   try {
-    const response = await request('POST', 'login', credentials, csrfToken);
+   
+    const response = await request('POST', 'LoginUser', credentials);
     return response;
   } catch (error) {
     console.error('Login error:', error);
@@ -80,7 +82,7 @@ export const fetchGroups = async () => {
 
 export const fetchActivity = async () => {
   try {
-    const response = await request('GET', 'activities', null, "");
+    const response = await request('GET', 'activities', null);
     return response;
   } catch (error) {
     console.error('Error fetching activity data:', error);
@@ -90,15 +92,17 @@ export const fetchActivity = async () => {
 
 
 
-export const register = async (userData:any, csrfToken:any) => {
+export const register = async (userData: any) => {
   try {
-    const response = await request('POST', 'register', userData, csrfToken);
+    console.log("userData:", userData); 
+    const response = await request('POST', 'RegisterUser', userData);
     return response;
   } catch (error) {
     console.error('Registration error:', error);
     throw error;
   }
 };
+
 
 export const getUserData = async (sessionToken:any) => {
   try {

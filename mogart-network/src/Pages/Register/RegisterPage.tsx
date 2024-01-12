@@ -16,21 +16,24 @@ function Register() {
 
     if (formRef.current) {
       const formData = new FormData(formRef.current);
-      const formProps = Object.fromEntries(formData);
-
-
-      if (!formProps.email || !formProps.username || !formProps.password || !formProps.passwordConfirm) {
+      console.log("Test3");
+      if (!formData.has('email') || !formData.has('username') || !formData.has('password') || !formData.has('passwordConfirm')) {
         setErrorMessage("Please fill in all fields.");
         return;
       }
+ 
+      const email = formData.get('email') as string;
+      const username = formData.get('username') as string;
+      const password = formData.get('password') as string;
+      const passwordConfirm = formData.get('passwordConfirm') as string;
 
-      if (formProps.password !== formProps.passwordConfirm) {
-        console.error("Passwords do not match");
+      if (password !== passwordConfirm) {
+        setErrorMessage("Passwords do not match");
         return;
       }
 
       try {
-        const response = await register(formProps, csrfToken);
+        const response = await register({ email: email, username: username, pass: password });
         console.log(response);
         setRegistrationSuccess(true);
         setTimeout(() => navigate('/login'), 3000);

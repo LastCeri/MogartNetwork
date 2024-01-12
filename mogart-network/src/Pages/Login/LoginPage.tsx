@@ -1,31 +1,53 @@
 import React, { useState, useRef } from 'react';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { login } from '../../MogartBase/Api/Api';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const { updateData, csrfToken } = useData();
+  const navigate = useNavigate();
+  const { updateData } = useData();
   const formRef = useRef<HTMLFormElement>(null);
+  const [LoginSuccess, setRegistrationSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const formProps = Object.fromEntries(formData);
-
+  
+      if (!formData.has('email') || !formData.has('password')) {
+        setErrorMessage("Please fill in all fields.");
+        return;
+      }
       try {
-        const userData = await login(formProps, csrfToken);
-        updateData(userData);
+        const response = await login(formProps);
+        const { message, status } = response;
+  
+        if (status === "Ok") {
+          updateData(formProps);
+          setRegistrationSuccess(true);
+          setTimeout(() => navigate('/'), 3000);
+        } else if (status === "Bad Request") {
+          setErrorMessage(message);
+        } else if (status === "Not Found") {
+          setErrorMessage(message);
+        } else {
+          setErrorMessage("An error occurred during login.");
+        }
       } catch (error) {
-        console.error('Login error:', error);
+        setErrorMessage('An error occurred during login.');
       }
     }
   };
+  
+  
   
   return (
     <div className="flex h-screen bg-gray-200">
       <div className="flex flex-1 items-center justify-center p-10">
         <div className="w-full max-w-md">
-          <form className="bg-white shadow-lg rounded px-12 pt-6 pb-8 mb-4">
+          <form ref={formRef} className="bg-white shadow-lg rounded px-12 pt-6 pb-8 mb-4">
 
             <div className="text-center mb-4">
               <p className="text-gray-700 text-2xl">Welcome back</p>
@@ -33,11 +55,11 @@ function Login() {
             </div>
 
             <div className="mb-4">
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username"/>
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="email" id="email" type="text" placeholder="Username" />
             </div>
 
             <div className="mb-6">
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password"/>
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" name="password" id="password" type="password" placeholder="Password" />
             </div>
 
             <div className="flex items-center justify-between mb-6">
@@ -74,6 +96,23 @@ function Login() {
           </div>
         </div>
       </div>
+
+      {errorMessage && (
+           <div className="fixed bottom-0 inset-x-0 mb-6 flex justify-center">
+           <div className="bg-red-500 text-white font-bold py-2 px-4 rounded-full shadow-lg">
+             <p>Login Error! {errorMessage} </p>
+           </div>
+         </div>  
+      )}
+
+      {LoginSuccess && (
+        <div className="fixed bottom-0 inset-x-0 mb-6 flex justify-center">
+          <div className="bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow-lg">
+            <p>Login successful! You are being directed.</p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
