@@ -4,15 +4,18 @@ const DataContext = createContext({
   data: null,
   csrfToken: '',
   isLoggedIn: false,
+  userAuthToken: '',
   updateData: (newData: any) => {},
   setCsrfToken: (token: string) => {},
-  setLoginStatus: (status: boolean) => {}
+  setLoginStatus: (status: boolean) => {},
+  setUserAuthToken: (token: string) => {}
 });
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<any>(null);
-  const [csrfToken, setCsrfToken] = useState(''); 
+  const [csrfToken, setCsrfToken] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userAuthToken, setUserAuthToken] = useState('');
 
   const updateData = (newData: any) => {
     setData(newData);
@@ -27,7 +30,18 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DataContext.Provider value={{ data, updateData, csrfToken, setCsrfToken: handleSetCsrfToken, isLoggedIn, setLoginStatus }}>
+    <DataContext.Provider
+      value={{
+        data,
+        updateData,
+        csrfToken,
+        setCsrfToken: handleSetCsrfToken,
+        isLoggedIn,
+        setLoginStatus,
+        userAuthToken,
+        setUserAuthToken 
+      }}
+    >
       {children}
     </DataContext.Provider>
   );
