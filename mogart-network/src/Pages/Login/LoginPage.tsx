@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
+  const { userAuthID, setUserAuthID } = useData();
   const { userAuthToken, setUserAuthToken } = useData();
+  const { isLoggedIn, setLoginStatus } = useData();
   const formRef = useRef<HTMLFormElement>(null);
   const [LoginSuccess, setRegistrationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,11 +24,13 @@ function Login() {
       }
       try {
         const response = await login(formProps);
-        const { message, status,token } = response;
+        const { message, status, token, userid } = response;
   
         if (status === "Ok") {
           setUserAuthToken(token);
           setRegistrationSuccess(true);
+          setLoginStatus(true);
+          setUserAuthID(userid);
           setTimeout(() => navigate('/'), 3000);
         } else if (status === "Bad Request") {
           setErrorMessage(message);
