@@ -22,21 +22,20 @@ function Profile() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="flex flex-1">
-        <Navbar />
+      <Navbar />
+      <div className="flex flex-row flex-1">
+        <ProfileLeftSidebar />
         <div className="flex flex-col flex-1 pt-4">
           <ProfileHeader />
           <div className="flex justify-center flex-1 overflow-hidden">
-            <div className="flex w-full max-w-7xl mx-auto">
-              <ProfileLeftSidebar />
-              <ProfileMainContent />
-              <ProfileRightSidebar />
-            </div>
+            <ProfileMainContent />
           </div>
         </div>
+        <ProfileRightSidebar />
       </div>
     </div>
   );
 }
+
 
 export default Profile;

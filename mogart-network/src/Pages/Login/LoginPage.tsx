@@ -9,7 +9,7 @@ function Login() {
   const { userAuthToken, setUserAuthToken } = useData();
   const { isLoggedIn, setLoginStatus } = useData();
   const formRef = useRef<HTMLFormElement>(null);
-  const [LoginSuccess, setRegistrationSuccess] = useState(false);
+  const [LoginSuccess, setLoginSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -24,14 +24,16 @@ function Login() {
       }
       try {
         const response = await login(formProps);
-        const { message, status, token, userid } = response;
+        const { message, status, token, userId } = response;
   
         if (status === "Ok") {
+          console.log("token: " + token.length + " userId: " + userId);
+
           setUserAuthToken(token);
-          setRegistrationSuccess(true);
+          setLoginSuccess(true);
           setLoginStatus(true);
-          setUserAuthID(userid);
-          setTimeout(() => navigate('/'), 3000);
+          setUserAuthID(userId);
+          setTimeout(() => navigate('/'), 2500);
         } else if (status === "Bad Request") {
           setErrorMessage(message);
         } else if (status === "Not Found") {
@@ -44,6 +46,7 @@ function Login() {
       }
     }
   };
+  
   
   
   

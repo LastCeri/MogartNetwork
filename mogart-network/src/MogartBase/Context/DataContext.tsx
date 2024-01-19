@@ -41,6 +41,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       setUserAuthToken(savedUserAuthToken);
     }
     if (savedUserAuthID) {
+      console.log("savedUserAuthID:  "+savedUserAuthID);
       setUserAuthID(savedUserAuthID);
     }
   }, []);

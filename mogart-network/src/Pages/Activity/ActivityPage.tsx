@@ -27,7 +27,7 @@ const ActivityPage = () => {
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/login');
-    } else {
+    }else {
       fetchActivityCSRFToken()
         .then((csrfToken) => {
           fetchActivityData(csrfToken);

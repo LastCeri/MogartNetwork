@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3040';
 
@@ -99,6 +100,75 @@ export const register = async (userData: any) => {
     return response;
   } catch (error) {
     console.error('Registration error:', error);
+    throw error;
+  }
+};
+
+interface ApiResponseItem {
+  Global_Id: string;
+  Author: string;
+  Content: string;
+  Date: string;
+  DisLike: string;
+  Like: string;
+  Mentions: string;
+  Name: string;
+  Points: string;
+  PostCode: string;
+  Space: string;
+  Title: string;
+  Url: string;
+  Views: string;
+  Avatar: string;
+}
+
+export const useFetchMogartPosts = () => {
+  const [posts, setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      const apiUrl = 'http://localhost:3040/MogartPosts';
+      const response = await axios.get(apiUrl);
+
+      const mappedPosts = response.data.map((post: ApiResponseItem)  => ({
+        id: post.Global_Id,
+        author: {
+          name: post.Author,
+          avatar: post.Avatar,
+        },
+        content: post.Content,
+        timestamp: post.Date,
+        dislikes: post.DisLike,
+        likes: post.Like,
+        mentions: post.Mentions,
+        name: post.Name,
+        points: post.Points,
+        postCode: post.PostCode,
+        space: post.Space,
+        title: post.Title,
+        url: post.Url,
+        views: post.Views,
+      }));
+      setPosts(mappedPosts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  return posts;
+};
+
+export const Logout = async (userData: any) => {
+  try {
+    console.log("userData:", userData); 
+    const response = await request('POST', 'LogoutUser', userData);
+    return response;
+  } catch (error) {
+    console.error('LogoutUser error:', error);
     throw error;
   }
 };
