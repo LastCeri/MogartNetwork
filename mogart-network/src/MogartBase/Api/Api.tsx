@@ -68,6 +68,19 @@ export const login = async (credentials:any) => {
   }
 };
 
+
+export const UserCreatePost = async (postdata:any) => {
+  try {
+   
+    const response = await request('POST', 'AddMogartPost', postdata);
+    return response;
+  } catch (error) {
+    console.error('AddMogartPost error:', error);
+    throw error;
+  }
+};
+
+
 export const fetchGroups = async () => {
   try {
     const response = await fetch(`${API_URL}/Groups`);
