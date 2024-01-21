@@ -94,17 +94,16 @@ export const fetchGroups = async () => {
   }
 };
 
-export const fetchActivity = async () => {
+export const fetchActivity = async (userid: string) => {
   try {
-    const response = await request('GET', 'activities', null);
-    return response;
+    const apiUrl = `http://localhost:3040/GetActivity/${userid}`;
+    const response = await axios.get(apiUrl);
+    return response.data;
   } catch (error) {
     console.error('Error fetching activity data:', error);
     throw error;
   }
 };
-
-
 
 export const register = async (userData: any) => {
   try {

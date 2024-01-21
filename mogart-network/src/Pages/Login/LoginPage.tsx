@@ -47,9 +47,6 @@ function Login() {
     }
   };
   
-  
-  
-  
   return (
     <div className="flex h-screen bg-gray-200">
       <div className="flex flex-1 items-center justify-center p-10">

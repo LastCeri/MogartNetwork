@@ -21,47 +21,23 @@ const ActivityItem: React.FC<{ activity: Activity }> = ({ activity }) => (
 
 const ActivityPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useData();
+  const { isLoggedIn, userAuthID } = useData();
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login');
-    }else {
-      fetchActivityCSRFToken()
-        .then((csrfToken) => {
-          fetchActivityData(csrfToken);
+    console.log("isLoggedIn:", isLoggedIn, "userAuthID:", userAuthID);
+    if (isLoggedIn) {
+      fetchActivity(userAuthID)
+        .then(data => {
+          setActivities(data);
         })
-        .catch((error) => {
-          console.error('Error fetching CSRF token:', error);
+        .catch(error => {
+          console.error('Error fetching activities:', error);
         });
+    } else {
+      navigate('/login');
     }
-  }, [isLoggedIn, navigate]);
-
-  const fetchActivityCSRFToken = async () => {
-    try {
-      const response = await fetchActivity();
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.csrfToken;
-      } else {
-        throw new Error('Failed to fetch CSRF token');
-      }
-    } catch (error) {
-      console.error('Error fetching CSRF token:', error);
-      throw error;
-    }
-  };
-
-  const fetchActivityData = async (csrfToken:any) => {
-    try {
-      const response = await fetchActivity(); 
-      setActivities(response.activities);
-    } catch (error) {
-      console.error('Error fetching activity data:', error);
-    }
-  };
+  }, [isLoggedIn, userAuthID, navigate]);
 
   return (
     <>
