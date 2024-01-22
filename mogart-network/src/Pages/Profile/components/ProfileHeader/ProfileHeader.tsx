@@ -5,7 +5,7 @@ import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
 const ProfileHeader = () => {
   return (
     <div className="flex justify-center items-end pt-16">
-    <div className="w-full max-w-7xl mx-auto p-12 mt-8 rounded-xl"  style={{ 
+    <div className="w-full max-w-7xl mx-auto p-4 mt-8 rounded-xl"  style={{ 
       backgroundImage: 'url(https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg)',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',

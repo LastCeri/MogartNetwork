@@ -32,7 +32,7 @@ const getRequestHeaders = (csrfToken:any) => ({
   'CSRF-Token': csrfToken,
 });
 
-export const request = async (method:any, endpoint:any, data:any) => {
+export const PostRequest = async (method:any, endpoint:any, data:any) => {
   try {
 
     const response = await fetch(`${API_URL}/${endpoint}`, {
@@ -57,10 +57,34 @@ export const request = async (method:any, endpoint:any, data:any) => {
   }
 };
 
+export const GetRequest = async (endpoint:any, data:any) => {
+  try {
+    const response = await fetch(`${API_URL}/${endpoint}/${data}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      return jsonResponse;
+    } else {
+      const errorResponse = await response.text();
+      throw new Error(`Failed to receive data: ${errorResponse}`);
+    }
+  } catch (error) {
+    console.error('Error in GET request function:', error);
+    throw error;
+  }
+};
+
+
 export const login = async (credentials:any) => {
   try {
    
-    const response = await request('POST', 'LoginUser', credentials);
+    const response = await PostRequest('POST', 'LoginUser', credentials);
     return response;
   } catch (error) {
     console.error('Login error:', error);
@@ -72,7 +96,7 @@ export const login = async (credentials:any) => {
 export const UserCreatePost = async (postdata:any) => {
   try {
    
-    const response = await request('POST', 'AddMogartPost', postdata);
+    const response = await PostRequest('POST', 'AddMogartPost', postdata);
     return response;
   } catch (error) {
     console.error('AddMogartPost error:', error);
@@ -96,9 +120,8 @@ export const fetchGroups = async () => {
 
 export const fetchActivity = async (userid: string) => {
   try {
-    const apiUrl = `http://localhost:3040/GetActivity/${userid}`;
-    const response = await axios.get(apiUrl);
-    return response.data;
+    const response = await GetRequest("GetActivity", userid);
+    return response;
   } catch (error) {
     console.error('Error fetching activity data:', error);
     throw error;
@@ -108,7 +131,7 @@ export const fetchActivity = async (userid: string) => {
 export const register = async (userData: any) => {
   try {
     console.log("userData:", userData); 
-    const response = await request('POST', 'RegisterUser', userData);
+    const response = await PostRequest('POST', 'RegisterUser', userData);
     return response;
   } catch (error) {
     console.error('Registration error:', error);
@@ -177,7 +200,7 @@ export const useFetchMogartPosts = () => {
 export const Logout = async (userData: any) => {
   try {
     console.log("userData:", userData); 
-    const response = await request('POST', 'LogoutUser', userData);
+    const response = await PostRequest('POST', 'LogoutUser', userData);
     return response;
   } catch (error) {
     console.error('LogoutUser error:', error);
