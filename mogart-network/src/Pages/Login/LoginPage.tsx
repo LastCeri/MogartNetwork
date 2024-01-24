@@ -8,6 +8,7 @@ function Login() {
   const { userAuthID, setUserAuthID } = useData();
   const { userAuthToken, setUserAuthToken } = useData();
   const { isLoggedIn, setLoginStatus } = useData();
+  const { data, updateData } = useData();
   const formRef = useRef<HTMLFormElement>(null);
   const [LoginSuccess, setLoginSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,15 +25,15 @@ function Login() {
       }
       try {
         const response = await login(formProps);
-        const { message, status, token, userId } = response;
+        console.log("response veri: ", response);
+        const { message, status, token, userId, userdata} = response;
   
         if (status === "Ok") {
-          console.log("token: " + token.length + " userId: " + userId);
-
           setUserAuthToken(token);
           setLoginSuccess(true);
           setLoginStatus(true);
           setUserAuthID(userId);
+          updateData(userdata);
           setTimeout(() => navigate('/'), 2500);
         } else if (status === "Bad Request") {
           setErrorMessage(message);
@@ -59,7 +60,7 @@ function Login() {
             </div>
 
             <div className="mb-4">
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="email" id="email" type="text" placeholder="Username" />
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="email" id="email" type="text" placeholder="Email" />
             </div>
 
             <div className="mb-6">

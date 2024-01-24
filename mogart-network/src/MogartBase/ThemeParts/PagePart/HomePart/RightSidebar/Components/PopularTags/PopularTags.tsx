@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function PopularTags() {
-  const [popularTags, setPopularTags] = useState<{ id: number; PopularTags_Name: string; PopularTags_Desc: string }[]>([]);
+  const [popularTags, setPopularTags] = useState<{ Tgid: number; Tgname: string; Tgdesc: string }[]>([]);
   
   useEffect(() => {
 
-    const apiUrl = 'http://localhost:3040/PopularTags'; 
+    const apiUrl = 'https://mogartnetwork.deswu.co/GetPopularTags'; 
 
     axios.get(apiUrl)
       .then((response) => {
@@ -24,8 +24,8 @@ export default function PopularTags() {
         <div className="overflow-y-auto max-h-48">
           <ul className="space-y-2">
             {popularTags.map((tag) => (
-              <li key={tag.id} className="bg-gray-200 text-sm font-medium px-3 py-1 rounded-full hover:bg-gray-300 transition duration-200">
-                #{tag.PopularTags_Name}
+              <li key={tag.Tgid} className="bg-gray-200 text-sm font-medium px-3 py-1 rounded-full hover:bg-gray-300 transition duration-200">
+                #{tag.Tgname}
               </li>
             ))}
           </ul>

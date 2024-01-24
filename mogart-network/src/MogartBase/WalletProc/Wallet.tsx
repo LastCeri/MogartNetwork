@@ -1,4 +1,4 @@
-import { Request } from '../Api/Api';
+import { PostRequest } from '../Api/Api';
 
 declare global {
   interface Window { mina: any; }
