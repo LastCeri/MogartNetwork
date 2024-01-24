@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { API_URL } from '../../../../../../Api/Api';
 import axios from 'axios';
+
 
 const MostPopularMember = () => {
   const [mostPopularMembers, setMostPopularMembers] = useState<{ Mpid: number; MpAvatar: string; MpUsername: string }[]>([]);
 
   useEffect(() => {
-    axios.get('https://mogartnetwork.deswu.co/GetMPM') 
+    axios.get(`${API_URL}/GetMPM`) 
       .then((response) => {
         const data = response.data;
         setMostPopularMembers(data);

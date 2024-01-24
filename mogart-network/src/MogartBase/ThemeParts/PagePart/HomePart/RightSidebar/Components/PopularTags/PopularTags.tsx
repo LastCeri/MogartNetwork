@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../../../../Api/Api';
 import axios from 'axios';
 
 export default function PopularTags() {
@@ -6,8 +7,7 @@ export default function PopularTags() {
   
   useEffect(() => {
 
-    const apiUrl = 'https://mogartnetwork.deswu.co/GetPopularTags'; 
-
+    const apiUrl = `${API_URL}/GetPopularTags`; 
     axios.get(apiUrl)
       .then((response) => {
         setPopularTags(response.data);

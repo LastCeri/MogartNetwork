@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../../../../Api/Api';
 import axios from 'axios';
+
 
 export default function LeftSidebarComponentsBlogs() {
     const [blogs, setBlogs] = useState<{ Bid: number; Bimage: string; Bname: string ,Burl:string}[]>([]);
     
     useEffect(() => {
-        const apiUrl = 'https://mogartnetwork.deswu.co/GetBlogs';
+        const apiUrl = `${API_URL}/GetBlogs`;
         axios.get(apiUrl)
           .then((response) => {
-            console.log("Response blog: "+response.data);
             setBlogs(response.data);
           })
           .catch((error) => {
