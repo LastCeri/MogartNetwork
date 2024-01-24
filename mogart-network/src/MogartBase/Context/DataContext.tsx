@@ -1,12 +1,40 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+
+interface UserData {
+  ProfileImage: string;
+  Birthdate: string;
+  Displayname: string;
+  Followers: string;
+  Following: string;
+  Score: string;
+  SocialNetworkAdress: string;
+  Details: string;
+  walletAddress: string;
+  Email: string;
+}
+
+const initialUserData: UserData = {
+  ProfileImage:  '',
+  Birthdate:  '',
+  Displayname: '',
+  Followers:  '',
+  Following:  '',
+  Score: '',
+  SocialNetworkAdress:  '',
+  Details: '',
+  walletAddress:  '',
+  Email: ''
+};
+
 const DataContext = createContext({
-  data: null,
+  data: initialUserData,
   csrfToken: '',
   isLoggedIn: false,
   userAuthToken: '',
   userAuthID: '',
-  updateData: (newData: any) => {},
+  isLoading: true,
+  updateData: (newData: UserData) => {},
   setCsrfToken: (token: string) => {},
   setLoginStatus: (status: boolean) => {},
   setUserAuthToken: (token: string) => {},
@@ -19,32 +47,39 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userAuthToken, setUserAuthToken] = useState('');
   const [userAuthID, setUserAuthID] = useState('');
+  const [useEffectCounter, setUseEffectCounter] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
     const savedData = localStorage.getItem('data');
     const savedCsrfToken = localStorage.getItem('csrfToken');
     const savedIsLoggedIn = localStorage.getItem('isLoggedIn');
     const savedUserAuthToken = localStorage.getItem('userAuthToken');
     const savedUserAuthID = localStorage.getItem('userAuthID');
-
+  
     if (savedData) {
+      console.log("savedData: ", savedData);
       setData(JSON.parse(savedData));
     }
     if (savedCsrfToken) {
+      console.log("savedCsrfToken: ", savedCsrfToken);
       setCsrfToken(savedCsrfToken);
     }
-    if (savedIsLoggedIn === 'true') {
-      setIsLoggedIn(true);
+    if (savedIsLoggedIn) {
+      console.log("savedIsLoggedIn: ", savedIsLoggedIn);
+      setIsLoggedIn(savedIsLoggedIn === 'true');
     }
     if (savedUserAuthToken) {
+      console.log("savedUserAuthToken: ", savedUserAuthToken);
       setUserAuthToken(savedUserAuthToken);
     }
     if (savedUserAuthID) {
-      console.log("savedUserAuthID:  "+savedUserAuthID);
+      console.log("savedUserAuthID: ", savedUserAuthID);
       setUserAuthID(savedUserAuthID);
     }
+    setIsLoading(false);
   }, []);
+  
 
   const updateData = (newData: any) => {
     setData(newData);
@@ -60,7 +95,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   const setLoginStatus = (status: boolean) => {
     setIsLoggedIn(status);
-
     localStorage.setItem('isLoggedIn', status ? 'true' : 'false');
   };
 
@@ -89,6 +123,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         setUserAuthToken: handleSetUserAuthToken,
         userAuthID,
         setUserAuthID: handleSetUserAuthID,
+        isLoading,
       }}
     >
       {children}

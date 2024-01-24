@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useData } from '../../../../MogartBase/Context/DataContext';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isLoggedIn, data } = useData();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -21,8 +24,7 @@ export default function Header() {
     };
   }, []);
 
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  const profileImageURL = localStorage.getItem('profileImageURL') || 'https://cdn.discordapp.com/attachments/1188239804756926474/1196953627827388527/9131529.png';
+  const profileImageURL = data?.ProfileImage || 'https://cdn.discordapp.com/attachments/1188239804756926474/1196953627827388527/9131529.png';
 
   return (
     <>
@@ -35,8 +37,8 @@ export default function Header() {
 
           {isLoggedIn ? (
             <nav className="flex">
-              <a href="/Activity" className="p-2 text-gray-800 hover:text-blue-500">Activity</a>
-              <a href="/Groups" className="p-2 text-gray-800 hover:text-blue-500">Groups</a>
+              <Link to="/Activity" className="p-2 text-gray-800 hover:text-blue-500">Activity</Link>
+              <Link to="/Groups" className="p-2 text-gray-800 hover:text-blue-500">Groups</Link>
             </nav>
           ) : null}
           
@@ -50,8 +52,8 @@ export default function Header() {
               />
               {isLoggedIn && isDropdownOpen && (
                 <div className="absolute right-0 mt-36 py-2 w-48 bg-white rounded-md shadow-xl z-20">
-                  <a href="/Settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">Settings</a>
-                  <a href="/Profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">Profile</a>
+                  <Link to="/Settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">Settings</Link>
+                  <Link to="/Profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">Profile</Link>
                 </div>
               )}
             </div>

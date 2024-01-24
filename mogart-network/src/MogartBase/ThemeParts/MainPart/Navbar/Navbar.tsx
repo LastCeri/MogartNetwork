@@ -7,10 +7,10 @@ import { Logout } from '../../../Api/Api';
 export default function Navbar() {
   const icons = [
     { icon: faHome, alt: 'Home', to: '/', style: { color: "#6684b3" }},
-    { icon: faSearch, alt: 'Search', to: '/search', style: { color: "#545e75" }},
-    { icon: faBell, alt: 'Notifications', to: '/notifications', style: { color: "#545e75" }},
-    { icon: faEnvelope, alt: 'Messages', to: '/messages', style: { color: "#545e75" }},
-    { icon: faCog, alt: 'Settings', to: '/settings', style: { color: "#545e75" }},
+    { icon: faSearch, alt: 'Search', to: '/Search', style: { color: "#545e75" }},
+    { icon: faBell, alt: 'Notifications', to: '/Notifications', style: { color: "#545e75" }},
+    { icon: faEnvelope, alt: 'Messages', to: '/Messages', style: { color: "#545e75" }},
+    { icon: faCog, alt: 'Settings', to: '/Settings', style: { color: "#545e75" }},
   ];
 
   const handleLogout = async () => {

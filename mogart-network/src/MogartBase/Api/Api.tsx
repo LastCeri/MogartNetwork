@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3040';
+export const API_URL = "https://mogartnetwork.deswu.co" ||  "http://localhost:3040" ;
 
 export const useCsrfToken = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -26,11 +26,6 @@ export const useCsrfToken = () => {
 
   return { csrfToken, fetchCsrfToken };
 };
-
-const getRequestHeaders = (csrfToken:any) => ({
-  'Content-Type': 'application/json',
-  'CSRF-Token': csrfToken,
-});
 
 export const PostRequest = async (method:any, endpoint:any, data:any) => {
   try {
@@ -59,7 +54,7 @@ export const PostRequest = async (method:any, endpoint:any, data:any) => {
 
 export const GetRequest = async (endpoint:any, data:any) => {
   try {
-    const response = await fetch(`${API_URL}/${endpoint}/${data}`, {
+    const response = await fetch(`${API_URL}/${endpoint}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -67,19 +62,17 @@ export const GetRequest = async (endpoint:any, data:any) => {
       credentials: 'include',
     });
 
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } else {
-      const errorResponse = await response.text();
-      throw new Error(`Failed to receive data: ${errorResponse}`);
+    if (!response.ok) {
+      throw new Error(`Failed to receive data: ${response.statusText}`);
     }
+
+    const responseData = await response.json();
+    return responseData;
   } catch (error) {
     console.error('Error in GET request function:', error);
     throw error;
   }
 };
-
 
 export const login = async (credentials:any) => {
   try {
@@ -140,50 +133,50 @@ export const register = async (userData: any) => {
 };
 
 interface ApiResponseItem {
-  Global_Id: string;
-  Author: string;
-  Content: string;
-  Date: string;
-  DisLike: string;
-  Like: string;
-  Mentions: string;
-  Name: string;
-  Points: string;
-  PostCode: string;
-  Space: string;
-  Title: string;
-  Url: string;
-  Views: string;
-  Avatar: string;
+  Pstid: string;
+  PstAuthor: string;
+  PstAuthorAvatar: string;
+  PstContent: string;
+  PstDate: string;
+  PstDisLike: number;
+  PstLike: number;
+  PstMentions: number;
+  PstName: string;
+  PstPoints: number;
+  PstPostCode: string;
+  PstSpace: string;
+  PstTitle: string;
+  PstUrl: string;
+  PstViews: number;
 }
+
 
 export const useFetchMogartPosts = () => {
   const [posts, setPosts] = useState([]);
 
   const fetchPosts = async () => {
     try {
-      const apiUrl = 'http://localhost:3040/MogartPosts';
+      const apiUrl = `${API_URL}/GetMogartPosts`;
       const response = await axios.get(apiUrl);
 
-      const mappedPosts = response.data.map((post: ApiResponseItem)  => ({
-        id: post.Global_Id,
-        author: {
-          name: post.Author,
-          avatar: post.Avatar,
-        },
-        content: post.Content,
-        timestamp: post.Date,
-        dislikes: post.DisLike,
-        likes: post.Like,
-        mentions: post.Mentions,
-        name: post.Name,
-        points: post.Points,
-        postCode: post.PostCode,
-        space: post.Space,
-        title: post.Title,
-        url: post.Url,
-        views: post.Views,
+      const mappedPosts = response.data.map((post: ApiResponseItem) => ({
+        GlobalId: post.Pstid,
+        Author: post.PstAuthor,
+        Avatar: post.PstAuthorAvatar,
+        Content: post.PstContent,
+        Date: post.PstDate,
+        DisLike: post.PstDisLike,
+        Like: post.PstLike,
+        Mentions: post.PstMentions,
+        Name: post.PstName,
+        Points: post.PstPoints,
+        PostCode: post.PstPostCode,
+        Space: post.PstSpace,
+        Title: post.PstTitle,
+        Url: post.PstUrl,
+        Views: post.PstViews,
       }));
+
       setPosts(mappedPosts);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -199,7 +192,6 @@ export const useFetchMogartPosts = () => {
 
 export const Logout = async (userData: any) => {
   try {
-    console.log("userData:", userData); 
     const response = await PostRequest('POST', 'LogoutUser', userData);
     return response;
   } catch (error) {
