@@ -33,7 +33,7 @@ function Register() {
       }
 
       try {
-        const response = await register({ email: email, username: username, pass: password });
+        const response = await register({ email: email, username: username, password: password,walletadress:""});
         console.log(response);
         setRegistrationSuccess(true);
         setTimeout(() => navigate('/login'), 3000);

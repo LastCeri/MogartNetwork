@@ -3,29 +3,39 @@ import { useNavigate } from 'react-router-dom';
 import { useData } from '../../MogartBase/Context/DataContext';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-
 const ProfileSettingsPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useData();
+  const { isLoggedIn, data, isLoading } = useData();
+  const [profileImage, setProfileImage] = useState('');
+  const [visibleUsername, setVisibleUsername] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
+    if (isLoading) return;
+
     if (!isLoggedIn) {
       navigate('/login');
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, isLoading]);
 
-  const [profileImage, setProfileImage] = useState('path_to_default_profile_image.jpg');
-  const registrationDate = 'January 1, 2020';
+  useEffect(() => {
+    if (data) {
+      setProfileImage(data.ProfileImage || 'https://cdn.discordapp.com/attachments/1188239804756926474/1196953627827388527/9131529.png');
+      setVisibleUsername(data.Displayname || '');
+      setWalletAddress(data.walletAddress || '');
+      setEmail(data.Email || '');
+    }
+  }, [data]);
 
-
-  const handleFormSubmit = (e:any) => {
+  const handleFormSubmit = (e: any) => {
     e.preventDefault();
   };
 
-  const handleProfileImageChange = (e:any) => {
+  const handleProfileImageChange = (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === 'string') {
@@ -34,7 +44,6 @@ const ProfileSettingsPage = () => {
     };
     reader.readAsDataURL(file);
   };
-  
 
   return (
     <>
@@ -46,10 +55,9 @@ const ProfileSettingsPage = () => {
             <h1 className="text-2xl font-bold text-gray-700 mb-6">Profile Settings</h1>
             <form onSubmit={handleFormSubmit}>
               <div className="space-y-4">
-
                 <div className="flex justify-center mb-6">
                   <label htmlFor="profileImageUpload" className="cursor-pointer">
-                    <img src={profileImage} alt="Profile" className="w-32 h-32 rounded-full border-2 border-gray-300"/>
+                    <img src={profileImage} alt="Profile" className="w-32 h-32 rounded-full border-2 border-gray-300" />
                     <input type="file" id="profileImageUpload" className="hidden" onChange={handleProfileImageChange} />
                   </label>
                 </div>
@@ -62,6 +70,8 @@ const ProfileSettingsPage = () => {
                     name="username"
                     className="w-full border-gray-300 rounded-md shadow-sm mt-2 p-2"
                     placeholder="Your visible username"
+                    value={visibleUsername}
+                    onChange={(e) => setVisibleUsername(e.target.value)}
                   />
                 </div>
 
@@ -73,6 +83,8 @@ const ProfileSettingsPage = () => {
                     name="walletAddress"
                     className="w-full border-gray-300 rounded-md shadow-sm mt-2 p-2"
                     placeholder="Your wallet address"
+                    value={walletAddress}
+                    onChange={(e) => setWalletAddress(e.target.value)}
                   />
                 </div>
 
@@ -84,6 +96,8 @@ const ProfileSettingsPage = () => {
                     name="email"
                     className="w-full border-gray-300 rounded-md shadow-sm mt-2 p-2"
                     placeholder="Your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
