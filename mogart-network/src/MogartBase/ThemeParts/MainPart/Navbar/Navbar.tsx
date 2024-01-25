@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot } from '@fortawesome/free-solid-svg-icons';
 import { Logout } from '../../../Api/Api';
 
 export default function Navbar() {
@@ -9,6 +9,8 @@ export default function Navbar() {
     { icon: faHome, alt: 'Home', to: '/', style: { color: "#6684b3" }},
     { icon: faSearch, alt: 'Search', to: '/Search', style: { color: "#545e75" }},
     { icon: faBell, alt: 'Notifications', to: '/Notifications', style: { color: "#545e75" }},
+    { icon: faPeopleGroup, alt: 'Groups', to: '/Groups', style: { color: "#545e75" }},
+    { icon: faMugHot, alt: 'Activity', to: '/Activity', style: { color: "#545e75" }},
     { icon: faEnvelope, alt: 'Messages', to: '/Messages', style: { color: "#545e75" }},
     { icon: faCog, alt: 'Settings', to: '/Settings', style: { color: "#545e75" }},
   ];

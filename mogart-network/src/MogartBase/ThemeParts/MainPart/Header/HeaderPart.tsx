@@ -34,13 +34,6 @@ export default function Header() {
             <img src="https://cdn.discordapp.com/attachments/1190676022480355339/1190676084505722960/Mogart-Network-Icon.ico" alt="Mogart Network Logo" className="h-8 w-8 mr-2"/>
             <span className="font-bold text-xl text-gray-800">Mogart Network</span>
           </div>
-
-          {isLoggedIn ? (
-            <nav className="flex">
-              <Link to="/Activity" className="p-2 text-gray-800 hover:text-blue-500">Activity</Link>
-              <Link to="/Groups" className="p-2 text-gray-800 hover:text-blue-500">Groups</Link>
-            </nav>
-          ) : null}
           
           {isLoggedIn ? (
             <div className="flex items-center relative" ref={dropdownRef}>

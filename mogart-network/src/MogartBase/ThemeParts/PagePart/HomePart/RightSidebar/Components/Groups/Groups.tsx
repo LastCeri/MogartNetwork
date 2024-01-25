@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../../../../Api/Api';
 
-const groups = [
-    { id: 1, name: 'Business Idea', image: 'https://cdn.discordapp.com/attachments/1178356521470537778/1184662567176646657/gradient-culture-logo-design-template_23-2149878688.png',lastActive:"Dün" },
-    { id: 2, name: 'Tech Enthusiasts', image: 'https://cdn.discordapp.com/attachments/1178356521470537778/1184662595756630187/attachment_72912746.png',lastActive:"Bugün" },
-    { id: 3, name: 'Fitness Fanatics', image: 'https://cdn.discordapp.com/attachments/1178356521470537778/1184662632712650883/teamwork-group-business-logo-vector-4153487.png',lastActive:"Yarın" },
-  ];
-
+interface GroupType {
+  GrpID: number;
+  GrpName: string;
+  GrpImage: string;
+  GrpMembersCount: string;
+}
 
   export default function Groups() {
+    const [groups, setGroups] = useState<GroupType[]>([]);
+
+    useEffect(() => {
+      fetch(`${API_URL}/GetGroups`)
+        .then(response => response.json())
+        .then(data => setGroups(data))
+        .catch(error => console.error('Error fetching groups:', error));
+    }, []);
+  
     return (
       <div className="mb-6 bg-white p-4 rounded-lg shadow-lg">
             <h5 className="text-lg font-semibold mb-4 text-center hover:text-blue-600 transition-colors">GROUPS</h5>
@@ -18,12 +28,12 @@ const groups = [
             </div>
             <div className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
                 {groups.map((group) => (
-                    <div key={group.id} className="flex flex-col sm:flex-row items-center justify-between py-2 border-b last:border-b-0 hover:bg-gray-100 transition-colors">
+                    <div key={group.GrpID} className="flex flex-col sm:flex-row items-center justify-between py-2 border-b last:border-b-0 hover:bg-gray-100 transition-colors">
                         <a href="#" className="flex items-center space-x-3 mb-2 sm:mb-0">
-                            <img className="h-8 w-8 rounded-full" src={group.image} alt={group.name} />
+                            <img className="h-8 w-8 rounded-full" src={group.GrpImage} alt={group.GrpName} />
                             <div>
-                                <span className="text-sm font-medium block">{group.name}</span>
-                                <span className="text-xs text-gray-500 block">{group.lastActive}</span>
+                                <span className="text-sm font-medium block">{group.GrpName}</span>
+                                <span className="text-xs text-gray-500 block">{group.GrpMembersCount} Members</span>
                             </div>
                         </a>
                     </div>
