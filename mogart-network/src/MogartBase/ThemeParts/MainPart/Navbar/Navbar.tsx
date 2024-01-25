@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useData } from '../../../../MogartBase/Context/DataContext';
 import { Logout } from '../../../Api/Api';
+import Notification, { MessageType } from '../../Notification/Notification';
+
+
 
 export default function Navbar() {
+  const { isLoggedIn, data } = useData();
+  const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
+
   const icons = [
     { icon: faHome, alt: 'Home', to: '/', style: { color: "#6684b3" }},
     { icon: faSearch, alt: 'Search', to: '/Search', style: { color: "#545e75" }},
@@ -15,17 +22,25 @@ export default function Navbar() {
     { icon: faCog, alt: 'Settings', to: '/Settings', style: { color: "#545e75" }},
   ];
 
+  const showNotification = (type:any, message:any) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => setNotification({ show: false, type: notification.type, message: '' }), 3500);
+  };
+
   const handleLogout = async () => {
+
+    if (!isLoggedIn) {
+      console.log("User is not logged in");
+      return; 
+    }
+
     try {
       const savedUserAuthID = localStorage.getItem('userAuthID');
-      console.log("Logout savedUserAuthID "+savedUserAuthID);
-      const response = await Logout({userid:savedUserAuthID}); 
-
-      console.log("Logout response:", response);
-
+      const response = await Logout({ userid: savedUserAuthID });
+      showNotification(MessageType.Success, "Logout successful.");
+      console.log("Logout successful");
     } catch (error) {
-      console.error('Logout error:', error);
-
+      showNotification(MessageType.Error, "Logout error.");
     }
   };
 
@@ -36,10 +51,12 @@ export default function Navbar() {
           <FontAwesomeIcon icon={item.icon} className="h-6 w-6" style={item.style} />
         </Link>
       ))}
-     
+    {notification.show && <Notification type={notification.type} message={notification.message} />}
+      
       <button onClick={handleLogout} className="mt-auto hover:bg-gray-200 p-2 rounded-full transition duration-300">
-        <FontAwesomeIcon icon={faPowerOff} className="h-6 w-6" style={{ color: "#0747b0" }} />
+      <FontAwesomeIcon icon={faPowerOff} className="h-6 w-6" style={{ color: "#0747b0" }} />
       </button>
+          
     </div>
   );
 }

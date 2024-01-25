@@ -6,6 +6,8 @@ import MainContent from '../../MogartBase/ThemeParts/PagePart/HomePart/Main/Main
 import LeftSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/LeftSidebar/LeftSidebar.tsx'; 
 import RightSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/RightSidebar/RightSidebar.tsx';
 
+import Notification from '../../MogartBase/ThemeParts/Notification/Notification.tsx';
+
 // HomePage.tsx
 function HomePage() {
   return (
