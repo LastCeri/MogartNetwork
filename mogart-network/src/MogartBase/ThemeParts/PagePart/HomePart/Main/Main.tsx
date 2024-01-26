@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane,faThumbsUp,faShareNodes,faComment,faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useFetchMogartPosts, UserCreatePost } from '../../../../Api/Api';
 import { useData } from '../../../../Context/DataContext';
 
@@ -12,15 +12,62 @@ interface PostType {
   Date: string;
 }
 
-function Post({ Author, Avatar,Content: PstContent, Date: PstDate }: PostType): React.JSX.Element {
+function Post({ Author, Avatar, Content: PostContent, Date: PostDate }: PostType): React.JSX.Element {
+  const [showCommentInput, setShowCommentInput] = useState(false);
+
+  const handleLike = () => {
+    console.log("Like button pressed.");
+  };
+
+  const handleComment = () => {
+    setShowCommentInput(!showCommentInput);
+  };
+
+  const handleShare = () => {
+    console.log("Share button pressed.");
+  };
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <div className="flex items-center mb-2">
-        <img className="h-10 w-10 rounded-full" src={Avatar || 'default-avatar-url'} alt={`${Author}'s Avatar`} />
-        <span className="text-sm font-medium ml-2">{Author}</span>
+    <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center">
+          <img className="h-8 w-8 rounded-full mr-2" src={Avatar || 'default-avatar-url'} alt={`${Author}'s avatar`} />
+          <div>
+            <div className="font-medium">{Author}</div>
+            <div className="text-xs text-gray-500">{PostDate}</div>
+          </div>
+        </div>
+
+        <div className="text-gray-500 hover:text-gray-700 cursor-pointer">
+          <FontAwesomeIcon icon={faSliders} />
+        </div>
       </div>
-      <p className="text-sm mb-2">{PstContent}</p>
-      <div className="text-gray-500 text-sm">{PstDate}</div>
+      
+      <p className="mb-3">{PostContent}</p>
+      
+      <div className="border-t pt-3 mt-3 text-sm flex p-2 justify-start items-center">
+        <button type="button" onClick={handleLike} className="text-gray-500 hover:text-blue-600 focus:outline-none mr-2">
+          <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
+        </button>
+        <button type="button" onClick={handleComment} className="text-gray-500 hover:text-green-600 focus:outline-none mx-2">
+          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
+        </button>
+        <div className="flex-grow"></div>
+        <button type="button" onClick={handleShare} className="text-gray-500 hover:text-red-600 focus:outline-none">
+          <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
+        </button>
+      </div>
+
+      {showCommentInput && (
+        <div className="pt-2">
+          <input
+            type="text"
+            placeholder="Type a comment..."
+            className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500"
+            autoFocus
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { faThumbsUp, faEye, faThumbsDown, faMessage,faTags,faFolderOpen,faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faEye, faThumbsDown, faMessage,faTags,faFolderOpen,faUserPlus,faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import BlogDetailsCategories from './components/Categories/categories';
@@ -28,6 +28,7 @@ const icons = [
   { icon: faThumbsUp, alt: 'Like', to: '/Search', style: { color: "#545e75" }},
   { icon: faThumbsDown, alt: 'DisLike', to: '/Notifications', style: { color: "#545e75" }},
   { icon: faMessage, alt: 'Message', to: '/Groups', style: { color: "#545e75" }},
+  { icon: faShareNodes, alt: 'Share', to: '/Share', style: { color: "#545e75" }},
 ];
 
 
