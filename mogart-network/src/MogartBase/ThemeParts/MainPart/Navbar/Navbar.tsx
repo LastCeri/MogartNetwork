@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useData } from '../../../../MogartBase/Context/DataContext';
@@ -11,11 +11,12 @@ import Notification, { MessageType } from '../../Notification/Notification';
 export default function Navbar() {
   const { isLoggedIn, data } = useData();
   const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
-
+  const navigate = useNavigate();
+  
   const icons = [
     { icon: faHome, alt: 'Home', to: '/', style: { color: "#6684b3" }},
     { icon: faSearch, alt: 'Search', to: '/Search', style: { color: "#545e75" }},
-    { icon: faBell, alt: 'Notifications', to: '/Notifications', style: { color: "#545e75" }},
+    { icon: faBell, alt: 'Notifications', to: `${data?.UserName}/Notifications`, style: { color: "#545e75" }},
     { icon: faPeopleGroup, alt: 'Groups', to: '/Groups', style: { color: "#545e75" }},
     { icon: faMugHot, alt: 'Activity', to: '/Activity', style: { color: "#545e75" }},
     { icon: faEnvelope, alt: 'Messages', to: '/Messages', style: { color: "#545e75" }},
@@ -28,21 +29,27 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-
     if (!isLoggedIn) {
       console.log("User is not logged in");
-      return; 
+      return;
     }
-
+  
     try {
       const savedUserAuthID = localStorage.getItem('userAuthID');
-      const response = await Logout({ userid: savedUserAuthID });
-      showNotification(MessageType.Success, "Logout successful.");
-      console.log("Logout successful");
+      const response = await Logout({ userid: savedUserAuthID, email: data.Email, walletadress: data.walletAddress });
+  
+      if (response.success === false) {
+        showNotification(MessageType.Error, response.message);
+      } else {
+        showNotification(MessageType.Success, "Logout successful");
+        localStorage.clear();
+        navigate("/login");
+      }
     } catch (error) {
       showNotification(MessageType.Error, "Logout error.");
     }
   };
+  
 
   return (
     <div className="fixed inset-y-0 w-16 bg-white flex flex-col items-center py-4 shadow-lg z-10">

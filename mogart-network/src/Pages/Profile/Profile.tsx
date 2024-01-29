@@ -1,6 +1,6 @@
 // Profile.tsx
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
@@ -11,18 +11,22 @@ import ProfileRightSidebar from './components/ProfileRightSidebar/ProfileRightSi
 
 function Profile() {
   const navigate = useNavigate();
-  const { isLoggedIn,isLoading} = useData();
+  const { profileid } = useParams<{ profileid: string }>();
+  const { isLoggedIn, isLoading } = useData();
 
   useEffect(() => {
-
     if (isLoading) {
       return;
     }
-  
+
     if (!isLoggedIn) {
       navigate('/login');
     }
-  }, [isLoggedIn, navigate]);
+  }, [profileid, navigate, isLoggedIn, isLoading]);
+
+  if (!profileid) {
+    return <div>Profile ID Required.</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -37,7 +41,7 @@ function Profile() {
         </div>
                 
         <div className="flex flex-col flex-1 pt-4">
-          <ProfileHeader />
+          <ProfileHeader userId={profileid} />
           <div className="flex justify-center flex-1 overflow-hidden">
             <ProfileMainContent />
           </div>
