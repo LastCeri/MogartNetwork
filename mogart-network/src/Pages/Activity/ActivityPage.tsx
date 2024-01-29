@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../../MogartBase/Context/DataContext';
-
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-
-import { fetchActivity } from '../../MogartBase/Api/Api';
+import { API_URL } from '../../MogartBase/Api/Api';
+import axios from 'axios';
 
 interface Activity {
-  id: string;
-  Activity_Name: string;
-  Activity_UserId: string;
-  Activity_Content: string;
-  Activity_Status: string;
-  Activity_Date: string;
+  Actid: string;
+  ActName: string;
+  ActContent: string;
+  ActStatus: string;
+  ActDate: string;
 }
-
 
 const ActivityItem: React.FC<{ activity: Activity }> = ({ activity }) => (
   <div className="border-b border-gray-200 px-4 py-3">
-    <h3 className="text-lg text-gray-800">{activity.Activity_Name}</h3>
-    <p className="text-sm text-gray-600">{activity.Activity_Content}</p>
-    <p className="text-xs text-gray-500">{activity.Activity_Date}</p>
+    <h3 className="text-lg text-gray-800">{activity.ActName}</h3>
+    <p className="text-sm text-gray-600">{activity.ActContent}</p>
+    <p className="text-xs text-gray-500">{activity.ActDate}</p>
   </div>
 );
+
 
 
 const ActivityPage = () => {
   const navigate = useNavigate();
   const { isLoggedIn, userAuthID, isLoading } = useData();
   const [activities, setActivities] = useState<Activity[]>([]);
+  const { username } = useParams();
 
   useEffect(() => {
     if (isLoading) {
@@ -39,19 +38,20 @@ const ActivityPage = () => {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
-      fetchActivity(userAuthID)
-        .then(data => {
-          if (Array.isArray(data)) {
-            setActivities(data);
-          } else {
-            console.error('Unexpected structure of data', data);
-            setActivities([]);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching activities:', error);
+      axios.get(`${API_URL}/${username}/GetActivity`)
+      .then(response => {
+        const data = response.data;
+        if (Array.isArray(data)) {
+          setActivities(data);
+        } else {
+          console.error('Unexpected structure of data', data);
           setActivities([]);
-        });
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching activities:', error);
+        setActivities([]);
+      });
     }
   }, [isLoggedIn, navigate, userAuthID, isLoading]);
 
@@ -65,7 +65,7 @@ const ActivityPage = () => {
             <h1 className="text-2xl font-bold text-gray-700 mb-4">Activity</h1>
             <div className="bg-white shadow rounded-lg">
             {activities && activities.map((activity) => (
-              <ActivityItem key={activity.id} activity={activity} />
+              <ActivityItem key={activity.Actid} activity={activity} />
             ))}
             </div>
           </div>
