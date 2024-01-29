@@ -100,7 +100,7 @@ export const UserCreatePost = async (postdata:any) => {
 
 export const fetchGroups = async () => {
   try {
-    const response = await fetch(`${API_URL}/Groups`);
+    const response = await fetch(`${API_URL}/GetGroups`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }

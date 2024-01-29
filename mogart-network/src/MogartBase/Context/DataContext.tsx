@@ -5,6 +5,7 @@ interface UserData {
   ProfileImage: string;
   Birthdate: string;
   Displayname: string;
+  UserName: string;
   Followers: string;
   Following: string;
   Score: string;
@@ -17,6 +18,7 @@ interface UserData {
 const initialUserData: UserData = {
   ProfileImage:  '',
   Birthdate:  '',
+  UserName:"",
   Displayname: '',
   Followers:  '',
   Following:  '',
