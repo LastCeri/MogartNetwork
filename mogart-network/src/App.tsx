@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
-import HomePage from './Pages/Home/home.tsx';
+import HomePage from './Pages/Home/Home.tsx';
 import AboutPage from './Pages/About/About.tsx';
 
 import GroupsPage from './Pages/Groups/GroupsPage.tsx';
@@ -33,17 +33,18 @@ function App() {
         <Route path="/Groups/CreateGroups" element={<CreateGroupPage />} />
         <Route path="/Blogs" element={<BlogPage />} />
         <Route path="/Global" element={<GlobalPage />} />
-
         <Route path="/Profile" element={<ProfilePage />} />
+
         <Route path="/Messages" element={<MessagePage />} />
-        <Route path="/Notifications" element={<NotificationsPage />} />
-        <Route path="/Activity" element={<ActivityPage />} />
+        <Route path=":username/Notifications" element={<NotificationsPage />} />
+        <Route path=":username/Activity" element={<ActivityPage />} />
         <Route path="/Settings" element={<SettingsPage />} />
         <Route path="/Search" element={<SearchPage />} />
 
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
 
+        <Route path="/Profile/:profileid" element={<ProfilePage />} />
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
         <Route path="/Tags/:tagurl" element={<TagsDetail />} />
@@ -51,6 +52,7 @@ function App() {
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/403" element={<ForbiddenPage  />} />
         <Route path="/500" element={<ServerErrorPage/>} />
+        
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

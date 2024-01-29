@@ -25,7 +25,6 @@ function Login() {
       }
       try {
         const response = await login(formProps);
-        console.log("response veri: ", response);
         const { message, status, token, userId, userdata} = response;
   
         if (status === "Ok") {
