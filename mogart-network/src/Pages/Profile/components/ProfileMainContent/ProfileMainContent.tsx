@@ -1,5 +1,11 @@
 // ProfileMainContent.tsx
 import React from 'react';
+import { UserData } from '../../Profile';
+
+interface ProfileMainContentProps {
+  userData: UserData | null;
+}
+
 
 const userPosts = [
   {
@@ -7,18 +13,18 @@ const userPosts = [
     title: 'Post Title 1',
     timestamp: '2 weeks ago',
     content: 'Your daily dose of culture — with photography showcasing the best in art, music, and literature from around the world.',
-    imageUrl: 'https://example.com/path-to-image1.jpg',
+    imageUrl: '',
   },
   {
     id: 2,
     title: 'Post Title 2',
     timestamp: '1 month ago',
     content: 'Exploring the unexplored — a journey into the wild.',
-    imageUrl: 'https://example.com/path-to-image2.jpg',
+    imageUrl: '',
   },
 ];
 
-const ProfileMainContent = () => {
+const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => {
   return (
     <main className="flex-1 p-6 overflow-auto">
       <div className="bg-white rounded-lg shadow-lg space-y-6 p-6">

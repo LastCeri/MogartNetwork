@@ -1,7 +1,12 @@
 // RightSidebar.tsx
 import React from 'react';
+import { UserData } from '../../Profile';
 
-const ProfileRightSidebar = () => {
+interface ProfileRightSidebarProps {
+  userData: UserData | null;
+}
+
+const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) => {
   const photos = [
     'https://images.ctfassets.net/hrltx12pl8hq/3Z1N8LpxtXNQhBD5EnIg8X/975e2497dc598bb64fde390592ae1133/spring-images-min.jpg',
     'https://cdn.pixabay.com/photo/2015/06/19/21/24/avenue-815297_640.jpg',
