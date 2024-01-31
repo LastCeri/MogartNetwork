@@ -123,7 +123,6 @@ export const fetchActivity = async (userid: string) => {
 
 export const register = async (userData: any) => {
   try {
-    console.log("userData:", userData); 
     const response = await PostRequest('POST', 'RegisterUser', userData);
     return response;
   } catch (error) {

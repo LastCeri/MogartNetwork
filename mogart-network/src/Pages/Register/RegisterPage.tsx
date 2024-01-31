@@ -13,36 +13,40 @@ function Register() {
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrorMessage('');
-
+  
     if (formRef.current) {
       const formData = new FormData(formRef.current);
-      console.log("Test3");
       if (!formData.has('email') || !formData.has('username') || !formData.has('password') || !formData.has('passwordConfirm')) {
         setErrorMessage("Please fill in all fields.");
         return;
       }
- 
+  
       const email = formData.get('email') as string;
       const username = formData.get('username') as string;
       const password = formData.get('password') as string;
       const passwordConfirm = formData.get('passwordConfirm') as string;
-
+  
       if (password !== passwordConfirm) {
         setErrorMessage("Passwords do not match");
         return;
       }
-
+  
       try {
-        const response = await register({ email: email, username: username, password: password,walletadress:""});
-        console.log(response);
-        setRegistrationSuccess(true);
-        setTimeout(() => navigate('/login'), 3000);
+        const response = await register({ email, username, password, walletadress: "" });
+        if (response.status === true) {
+          setRegistrationSuccess(true);
+          setTimeout(() => navigate('/login'), 3000);
+        } else {
+          setErrorMessage(response.message || 'Registration failed with an unspecified error.');
+        }
       } catch (error) {
         console.error('Registration error:', error);
         setErrorMessage('An error occurred during registration.');
+        setTimeout(() => setErrorMessage(''), 3000);
       }
     }
   };
+  
 
   return (
     <div className="flex h-screen bg-gray-200">
@@ -106,7 +110,11 @@ function Register() {
       </div>
 
       {errorMessage && (
-        <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
+         <div className="fixed bottom-0 inset-x-0 mb-6 flex justify-center">
+         <div className="bg-red-500 text-white font-bold py-2 px-4 rounded-full shadow-lg">
+           <p>{errorMessage}</p>
+         </div>
+       </div>
       )}
 
       {registrationSuccess && (
