@@ -35,11 +35,11 @@ const Profile = () => {
   const { isLoggedIn, isLoading, data } = useData();
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  const username = isLoggedIn ? (data?.UserName || '') : urlUsername || '';
 
+  // Determine the username to use based on conditions
+  const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
 
   useEffect(() => {
-
     if (isLoading) {
       return;
     }
@@ -56,7 +56,7 @@ const Profile = () => {
     if (username) {
       fetchUserData();
     }
-  }, [username]);
+  }, [username, isLoading]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
