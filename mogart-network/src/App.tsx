@@ -44,7 +44,7 @@ function App() {
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
 
-        <Route path="/Profile/:profileid" element={<ProfilePage />} />
+        <Route path="/Profile/:username" element={<ProfilePage />} />
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
         <Route path="/Tags/:tagurl" element={<TagsDetail />} />
