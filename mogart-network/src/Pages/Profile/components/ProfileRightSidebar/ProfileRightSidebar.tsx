@@ -18,7 +18,7 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
       <div>
         <h2 className="font-semibold text-lg border-b pb-2">ABOUT</h2>
         <p className="text-sm mt-2">
-          Hello everyone. I am DarkRice. I am from Earth. Acting MetaFans Community Instructor
+          {userData?.UsrDetail}
         </p>
       </div>
       <div>

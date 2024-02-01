@@ -23,11 +23,25 @@ export interface UserData {
   UsrProfileImage: string;
   UsrSocialNetworkAdress: string;
   UsrSocialNetwork: string;
+  UsrFriends: Friend[];
   UsrFollowers: number; 
   UsrFollowing: number;
   UsrScore: number; 
+  Posts:PostType[];
 }
-
+export interface PostType {
+  GlobalId: string;
+  Title: string;
+  Author: string;
+  Avatar: string;
+  Content: string;
+  Date: string;
+}
+export interface Friend {
+  name: string;
+  status: string;
+  image: string;
+}
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -36,7 +50,6 @@ const Profile = () => {
 
   const [userData, setUserData] = useState<UserData | null>(null);
 
-  // Determine the username to use based on conditions
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
 
   useEffect(() => {
