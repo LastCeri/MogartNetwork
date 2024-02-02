@@ -92,4 +92,6 @@ Stay tuned for updates as we continue to build and improve our roadmap.
 
 You can check out the Wiki for Installations and More. https://github.com/LastCeri/MogartNetwork/wiki/
 
+Gitbook: https://lastceri.gitbook.io/mogart-network/
+
 Milestones: https://github.com/LastCeri/MogartNetwork/wiki/Mogart-Network-%7C-Milestones
