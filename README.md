@@ -94,4 +94,4 @@ You can check out the Wiki for Installations and More. https://github.com/LastCe
 
 Gitbook: https://lastceri.gitbook.io/mogart-network/
 
-Milestones: https://github.com/LastCeri/MogartNetwork/wiki/Mogart-Network-%7C-Milestones
+Milestones: https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
