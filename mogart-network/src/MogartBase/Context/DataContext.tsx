@@ -60,23 +60,18 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const savedUserAuthID = localStorage.getItem('userAuthID');
   
     if (savedData) {
-      console.log("savedData: ", savedData);
       setData(JSON.parse(savedData));
     }
     if (savedCsrfToken) {
-      console.log("savedCsrfToken: ", savedCsrfToken);
       setCsrfToken(savedCsrfToken);
     }
     if (savedIsLoggedIn) {
-      console.log("savedIsLoggedIn: ", savedIsLoggedIn);
       setIsLoggedIn(savedIsLoggedIn === 'true');
     }
     if (savedUserAuthToken) {
-      console.log("savedUserAuthToken: ", savedUserAuthToken);
       setUserAuthToken(savedUserAuthToken);
     }
     if (savedUserAuthID) {
-      console.log("savedUserAuthID: ", savedUserAuthID);
       setUserAuthID(savedUserAuthID);
     }
     setIsLoading(false);

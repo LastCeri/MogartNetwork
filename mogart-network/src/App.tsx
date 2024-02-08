@@ -47,7 +47,7 @@ function App() {
         <Route path="/Profile/:username" element={<ProfilePage />} />
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
-        <Route path="/Tags/:tagurl" element={<TagsDetail />} />
+        <Route path="/Tags/:tagname" element={<TagsDetail />} />
 
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/403" element={<ForbiddenPage  />} />
