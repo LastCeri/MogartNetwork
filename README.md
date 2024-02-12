@@ -56,10 +56,15 @@ Mogart Network is more than a digital platform; it's a thriving ecosystem tailor
 
 # 1st Quarter 2024
 
-* ⌛ UI/UX Design Overhaul (Phase 2): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
-* ⌛ System Configuration and Management: Establishing robust client and server-side systems for enhanced performance and security.
+* ✅UI/UX Design Overhaul (Phase 2): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ✅ System Configuration and Management: Establishing robust client and server-side systems for enhanced performance
+* ✅ UI/UX Design Overhaul (Phase 3): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ✅ UI/UX Design Overhaul (Phase 4): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ⌛ Blockchain Integration: Initiating messaging correspondence with smart contracts, integrating MerkleTree data, and testing on Testnet and Devnet environments.
 * ⌛ Voice Chat Technology Implementation: Developing voice chat features as part of our technology upgrade.
+* ⌛ UI/UX Design Overhaul (Phase 5): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ⌛ UI/UX Design Overhaul (Phase 6): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ⌛ UI/UX Design Overhaul (Phase 7): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 
 # 2nd Quarter 2024
 
