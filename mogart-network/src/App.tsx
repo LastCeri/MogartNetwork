@@ -12,6 +12,7 @@ import BlogPage from './Pages/Blog/BlogPage.tsx';
 import BlogDetail from './MogartBase/Details/BlogDetails/BlogDetail.tsx';
 import PostDetail from './MogartBase/Details/PostDetail/PostDetail.tsx';
 import TagsDetail from './MogartBase/Details/TagsDetails/TagsDetails.tsx';
+import GroupDetail from './MogartBase/Details/GroupsDetails/GroupDetail.tsx';
 import SettingsPage from './Pages/Settings/SettingsPage.tsx';
 import MessagePage from './Pages/Message/MessagePage.tsx';
 import NotificationsPage from './Pages/Notifications/NotificationsPage.tsx';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/About" element={<AboutPage />} />
         <Route path="/Groups" element={<GroupsPage />} />
+        <Route path="/Groups/:groupname" element={<GroupDetail />} />
         <Route path="/Groups/CreateGroups" element={<CreateGroupPage />} />
         <Route path="/Blogs" element={<BlogPage />} />
         <Route path="/Global" element={<GlobalPage />} />
