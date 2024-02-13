@@ -28,6 +28,7 @@ export interface UserData {
   UsrFollowing: number;
   UsrScore: number; 
   Posts:PostType[];
+  Photos: PhotoType[];
 }
 export interface PostType {
   GlobalId: string;
@@ -37,6 +38,14 @@ export interface PostType {
   Content: string;
   Date: string;
 }
+
+export interface PhotoType {
+  PhotoID: number;
+  PhotoURL: string;
+  PhotoDescription: string | null;
+  UploadDate: string; 
+}
+
 export interface Friend {
   name: string;
   status: string;
@@ -60,7 +69,13 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get<UserData[]>(`${API_URL}/GetUserData/${username}`);
-        setUserData(response.data[0]);
+        if (response.data && response.data.length > 0) {
+          const userData = response.data[0];
+          if (userData.Photos && typeof userData.Photos === 'string') {
+            userData.Photos = JSON.parse(userData.Photos);
+          }
+          setUserData(userData);
+        }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }

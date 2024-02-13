@@ -13,28 +13,29 @@ function Register() {
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrorMessage('');
-  
+    setRegistrationSuccess(false);
+
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       if (!formData.has('email') || !formData.has('username') || !formData.has('password') || !formData.has('passwordConfirm')) {
         setErrorMessage("Please fill in all fields.");
         return;
       }
-  
       const email = formData.get('email') as string;
       const username = formData.get('username') as string;
       const password = formData.get('password') as string;
       const passwordConfirm = formData.get('passwordConfirm') as string;
-  
+
       if (password !== passwordConfirm) {
         setErrorMessage("Passwords do not match");
         return;
       }
-  
+      
       try {
-        const response = await register({ email, username, password, walletadress: "" });
+        const response = await register({ email, username, password, walletAddress: "" });
         if (response.status === true) {
           setRegistrationSuccess(true);
+
           setTimeout(() => navigate('/login'), 3000);
         } else {
           setErrorMessage(response.message || 'Registration failed with an unspecified error.');
@@ -42,7 +43,6 @@ function Register() {
       } catch (error) {
         console.error('Registration error:', error);
         setErrorMessage('An error occurred during registration.');
-        setTimeout(() => setErrorMessage(''), 3000);
       }
     }
   };
