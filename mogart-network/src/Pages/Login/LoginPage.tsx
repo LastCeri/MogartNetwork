@@ -26,7 +26,6 @@ function Login() {
       try {
         const response = await login(formProps);
         const { message, status, token, userId, userdata} = response;
-  
         if (status === "Ok") {
           setUserAuthToken(token);
           setLoginSuccess(true);

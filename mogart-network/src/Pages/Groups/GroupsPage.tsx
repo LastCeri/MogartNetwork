@@ -16,16 +16,18 @@ type Group = {
 const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:scale-105 duration-300">
-      <img src={group.GrpImage} alt={`${group.GrpName}`} className="w-full h-32 sm:h-48 object-cover" />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{group.GrpName}</div>
-        <p className="text-gray-700 text-base">{group.GrpDesc}</p>
-      </div>
-      <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpMembersCount} members</span>
-        <div className="flex space-x-2">
+      <a href={"/Groups/" + group.GrpName.replace(/\s/g, "")}>
+        <img src={group.GrpImage} alt={`${group.GrpName}`} className="w-full h-32 sm:h-48 object-cover" />
+        <div className="px-6 py-4">
+          <div className="font-bold text-xl mb-2">{group.GrpName}</div>
+          <p className="text-gray-700 text-base">{group.GrpDesc}</p>
         </div>
-      </div>
+        <div className="px-6 pt-4 pb-2">
+          <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpMembersCount} members</span>
+          <div className="flex space-x-2">
+          </div>
+        </div>
+      </a>
       <div className="px-6 py-4">
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Join Group
@@ -34,6 +36,8 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
     </div>
   );
 };
+
+
 
 const GroupsPage = () => {
   const [activeTab, setActiveTab] = useState('all');
