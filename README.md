@@ -46,7 +46,8 @@ In Conclusion
 
 Mogart Network is more than a digital platform; it's a thriving ecosystem tailored to the needs of a dynamic and diverse community. With a focus on secure messaging, collaborative groups, engaging polls, and inclusive events, we're setting new standards for online interaction and community building. Join us in this journey to shape the future of digital engagement.
 
-## Upcoming Milestones ((!)Stones may move)
+## Upcoming Milestones ((!) Stones may move) Milestones are named with general names, you should visit the gitbook page for details.
+https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
 
 # 4st Quarter 2023
 
