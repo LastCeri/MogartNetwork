@@ -46,7 +46,8 @@ In Conclusion
 
 Mogart Network is more than a digital platform; it's a thriving ecosystem tailored to the needs of a dynamic and diverse community. With a focus on secure messaging, collaborative groups, engaging polls, and inclusive events, we're setting new standards for online interaction and community building. Join us in this journey to shape the future of digital engagement.
 
-## Upcoming Milestones ((!)Stones may move)
+## Upcoming Milestones ((!) Stones may move) Milestones are named with general names, you should visit the gitbook page for details.
+https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
 
 # 4st Quarter 2023
 
@@ -56,28 +57,55 @@ Mogart Network is more than a digital platform; it's a thriving ecosystem tailor
 
 # 1st Quarter 2024
 
-* ✅UI/UX Design Overhaul (Phase 2): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+## January 2024 milestones completed ✅
+* ✅UI/UX Design Overhaul (Phase 2): Login, Register, Profile, Setting, Post, BlogPost, Event, Group, Activity, Tags, Most Popular Interfaces In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ System Configuration and Management: Establishing robust client and server-side systems for enhanced performance
 * ✅ UI/UX Design Overhaul (Phase 3): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ UI/UX Design Overhaul (Phase 4): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+
+## February 2024 milestones continue ⌛
+* ✅ UI/UX Design Overhaul (Phase 5): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ✅ UI/UX Design Overhaul (Phase 6): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ⌛ Blockchain Integration: Initiating messaging correspondence with smart contracts, integrating MerkleTree data, and testing on Testnet and Devnet environments.
 * ⌛ Voice Chat Technology Implementation: Developing voice chat features as part of our technology upgrade.
-* ⌛ UI/UX Design Overhaul (Phase 5): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
-* ⌛ UI/UX Design Overhaul (Phase 6): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ⌛ UI/UX Design Overhaul (Phase 7): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+
+## March 2024 milestones continue ⌛
+* ⌛ Invitations and invitation keys integration (Groups)
+* ⌛ UI/UX Design Overhaul (Phase 8): Further refinement of the user interface using Tailwind CSS.
+* ⌛ Voice Chat Technology Enhancement: Advancing voice chat operations as part of the ongoing technology upgrade.
+* ⌛ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
 
 # 2nd Quarter 2024
 
-* ⌛ UI/UX Design Overhaul (Continuation): Further refinement of the user interface using Tailwind CSS.
-* ⌛ Voice Chat Technology Enhancement: Advancing voice chat operations as part of the ongoing technology upgrade.
+## April 2024 milestones continue ⌛
+
+* ⌛ UI/UX Design Overhaul (Phase 9): Further refinement of the user interface using Tailwind CSS.
 * ⌛ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
 * ⌛ Customized Community Entry Cards: Introducing personalized entry cards for community engagement.
-* ⌛ Social Networking Tools Integration: Adding new tools to enhance the social networking experience on the platform.                                          
 
+## May 2024 milestones continue ⌛
+
+* ⌛ UI/UX Design Overhaul (Phase 10): Further refinement of the user interface using Tailwind CSS.
+* ⌛ Social Networking Tools Integration: Adding new tools to enhance the social networking experience on the platform. 
+
+## June 2024 milestones continue ⌛
+* ⌛ UI/UX Design Overhaul (Phase 11): Further refinement of the user interface using Tailwind CSS.
+* ⌛ NFT Ticket system integreted.
+* ⌛ Image to NFT convert system integreted.
+  
 # 3rd Quarter 2024
+
+## July 2024 milestones continue ⌛
+
+* ⌛ UI/UX Design Overhaul (Phase 12): Further refinement of the user interface using Tailwind CSS.
+* ⌛ Invitations and invitation keys integration
+
+## August 2024 milestones continue ⌛
+
 * ⌛ Continued UI/UX Enhancements: Ongoing improvements in design and user experience with Tailwind CSS.
 * ⌛ Technology Upgrade Phase 3: Focusing on further technological advancements to enhance user interaction and platform capabilities.                                    
-* ⌛ o1js smart contracts Donate, Group creation, Voting, Event organization processes and tests.           
+* ⌛ o1js smart contracts Donate, Group creation, Voting, Event organization processes and tests.    
 
 # 4rd Quarter 2024
 * ⌛ Final Phase of UI/UX Redesign: Completing the last phase of UI/UX enhancements using Tailwind CSS.
