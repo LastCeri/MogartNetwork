@@ -29,7 +29,7 @@ interface GroupType {
             <div className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
             {groups.map((group) => (
                 <div key={group.GrpID} className="flex flex-col sm:flex-row items-center justify-between py-2 border-b last:border-b-0 hover:bg-gray-100 transition-colors">
-                    <a href={"/Groups/" + group.GrpName.replace(/\s/g, "")}className="flex items-center space-x-3 mb-2 sm:mb-0">
+                    <a href={"/Groups/" + group.GrpName.replace(/\s/g, "")} className="flex items-center space-x-3 mb-2 sm:mb-0">
                     <img className="h-8 w-8 rounded-full" src={group.GrpImage} alt={group.GrpName} />
                     <div>
                         <span className="text-sm font-medium block">{group.GrpName}</span>

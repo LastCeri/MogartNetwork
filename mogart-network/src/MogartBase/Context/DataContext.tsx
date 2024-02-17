@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+interface ChatMessage {
+  id: string;
+  sender: string;
+  message: string;
+  timestamp: Date;
+}
 
 interface UserData {
   ProfileImage: string;
@@ -13,43 +19,69 @@ interface UserData {
   Details: string;
   walletAddress: string;
   Email: string;
+  EmailVerified: boolean;
+  Theme: string;
+  Language: string;
+  ChatData: ChatMessage[];
 }
 
 const initialUserData: UserData = {
-  ProfileImage:  '',
-  Birthdate:  '',
-  UserName:"",
+  ProfileImage: '',
+  Birthdate: '',
+  UserName: "",
   Displayname: '',
-  Followers:  '',
-  Following:  '',
+  Followers: '',
+  Following: '',
   Score: '',
-  SocialNetworkAdress:  '',
+  SocialNetworkAdress: '',
   Details: '',
-  walletAddress:  '',
-  Email: ''
+  walletAddress: '',
+  Email: '',
+  Theme: '',
+  Language: '',
+  EmailVerified: false,
+  ChatData: [],
 };
 
-const DataContext = createContext({
+
+
+const DataContext = createContext<{
+  data: UserData,
+  chatData: ChatMessage[],
+  csrfToken: string,
+  isLoggedIn: boolean,
+  userAuthToken: string,
+  userAuthID: string,
+  isLoading: boolean,
+  updateData: (newData: UserData) => void,
+  setChatData: (newChatData: ChatMessage[]) => void,
+  setCsrfToken: (token: string) => void,
+  setLoginStatus: (status: boolean) => void,
+  setUserAuthToken: (token: string) => void,
+  setUserAuthID: (id: string) => void,
+}>({
   data: initialUserData,
+  chatData: [],
   csrfToken: '',
   isLoggedIn: false,
   userAuthToken: '',
   userAuthID: '',
   isLoading: true,
-  updateData: (newData: UserData) => {},
-  setCsrfToken: (token: string) => {},
-  setLoginStatus: (status: boolean) => {},
-  setUserAuthToken: (token: string) => {},
-  setUserAuthID: (id: string) => {},
+  updateData: () => {},
+  setChatData: () => {},
+  setCsrfToken: () => {},
+  setLoginStatus: () => {},
+  setUserAuthToken: () => {},
+  setUserAuthID: () => {},
 });
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<UserData>(initialUserData);
+  const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [csrfToken, setCsrfToken] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userAuthToken, setUserAuthToken] = useState('');
   const [userAuthID, setUserAuthID] = useState('');
-  const [useEffectCounter, setUseEffectCounter] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -108,21 +140,21 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DataContext.Provider
-      value={{
-        data,
-        updateData,
-        csrfToken,
-        setCsrfToken: handleSetCsrfToken,
-        isLoggedIn,
-        setLoginStatus,
-        userAuthToken,
-        setUserAuthToken: handleSetUserAuthToken,
-        userAuthID,
-        setUserAuthID: handleSetUserAuthID,
-        isLoading,
-      }}
-    >
+    <DataContext.Provider value={{
+      data,
+      chatData,
+      csrfToken,
+      isLoggedIn,
+      userAuthToken,
+      userAuthID,
+      isLoading,
+      updateData,
+      setChatData,
+      setCsrfToken,
+      setLoginStatus,
+      setUserAuthToken,
+      setUserAuthID,
+    }}>
       {children}
     </DataContext.Provider>
   );

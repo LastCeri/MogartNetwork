@@ -1,101 +1,59 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Central API URL configuration
 export const API_URL = "https://mogartnetwork.deswu.co" ||  "http://localhost:3040" ;
 
+// Custom hook for fetching CSRF token
 export const useCsrfToken = () => {
   const [csrfToken, setCsrfToken] = useState('');
 
-  const fetchCsrfToken = async () => {
-    try {
-      const response = await fetch(`${API_URL}/TokenRequest`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCsrfToken(data.csrfToken);
-      } else {
-        throw new Error('Failed to fetch CSRF token');
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/TokenRequest`, { withCredentials: true });
+        setCsrfToken(response.data.csrfToken);
+      } catch (error) {
+        console.error('Error fetching CSRF token:', error);
       }
-    } catch (error) {
-      console.error('Error fetching CSRF token:', error);
-    }
-  };
+    };
 
-  return { csrfToken, fetchCsrfToken };
+    fetchCsrfToken();
+  }, []);
+
+  return csrfToken;
 };
 
-export const PostRequest = async (method:any, endpoint:any, data:any) => {
+// Generic request handler
+const handleRequest = async (method:any, endpoint:any, data = {}) => {
   try {
-
-    const response = await fetch(`${API_URL}/${endpoint}`, {
+    const response = await axios({
       method,
+      url: `${API_URL}/${endpoint}`,
+      data,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
-      credentials: 'include',
     });
 
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } else {
-      const errorResponse = await response.text();
-      throw new Error(`Failed to receive data: ${errorResponse}`);
-    }
+    return response.data;
   } catch (error) {
-    console.error('Error in request function:', error);
+    console.error(`Error in ${method} request to ${endpoint}:`, error);
     throw error;
   }
 };
 
-export const GetRequest = async (endpoint:any, data:any) => {
-  try {
-    const response = await fetch(`${API_URL}/${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
+// Authentication related functions
+export const login = (credentials:any) => handleRequest('POST', 'LoginUser', credentials);
+export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData);
+export const logout = (userData:any) => handleRequest('POST', 'LogoutUser', userData);
 
-    if (!response.ok) {
-      throw new Error(`Failed to receive data: ${response.statusText}`);
-    }
+// Post and user data related functions
+export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartPost', postData);
+export const fetchActivity = (userId:any) => handleRequest('GET', `GetActivity/${userId}`);
+export const getUserData = (sessionToken:any) => handleRequest('GET', 'getUserData', { headers: { 'Authorization': `Bearer ${sessionToken}` } });
 
-    const responseData = await response.json();
-    return responseData;
-  } catch (error) {
-    console.error('Error in GET request function:', error);
-    throw error;
-  }
-};
-
-export const login = async (credentials:any) => {
-  try {
-   
-    const response = await PostRequest('POST', 'LoginUser', credentials);
-    return response;
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
-};
-
-
-export const UserCreatePost = async (postdata:any) => {
-  try {
-   
-    const response = await PostRequest('POST', 'AddMogartPost', postdata);
-    return response;
-  } catch (error) {
-    console.error('AddMogartPost error:', error);
-    throw error;
-  }
-};
 
 
 export const fetchGroups = async () => {
@@ -111,116 +69,40 @@ export const fetchGroups = async () => {
   }
 };
 
-export const fetchActivity = async (userid: string) => {
-  try {
-    const response = await GetRequest("GetActivity", userid);
-    return response;
-  } catch (error) {
-    console.error('Error fetching activity data:', error);
-    throw error;
-  }
-};
 
-export const register = async (userData: any) => {
-  try {
-    const response = await PostRequest('POST', 'RegisterUser', userData);
-    return response;
-  } catch (error) {
-    console.error('Registration error:', error);
-    throw error;
-  }
-};
-
-interface ApiResponseItem {
-  Pstid: string;
-  PstAuthor: string;
-  PstAuthorAvatar: string;
-  PstContent: string;
-  PstDate: string;
-  PstDisLike: number;
-  PstLike: number;
-  PstMentions: number;
-  PstName: string;
-  PstPoints: number;
-  PstPostCode: string;
-  PstSpace: string;
-  PstTitle: string;
-  PstUrl: string;
-  PstViews: number;
-}
-
-
+// Custom hook for fetching posts with automatic mapping
 export const useFetchMogartPosts = () => {
   const [posts, setPosts] = useState([]);
 
-  const fetchPosts = async () => {
-    try {
-      const apiUrl = `${API_URL}/GetMogartPosts`;
-      const response = await axios.get(apiUrl);
-
-      const mappedPosts = response.data.map((post: ApiResponseItem) => ({
-        GlobalId: post.Pstid,
-        Author: post.PstAuthor,
-        Avatar: post.PstAuthorAvatar,
-        Content: post.PstContent,
-        Date: post.PstDate,
-        DisLike: post.PstDisLike,
-        Like: post.PstLike,
-        Mentions: post.PstMentions,
-        Name: post.PstName,
-        Points: post.PstPoints,
-        PostCode: post.PstPostCode,
-        Space: post.PstSpace,
-        Title: post.PstTitle,
-        Url: post.PstUrl,
-        Views: post.PstViews,
-      }));
-
-      setPosts(mappedPosts);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/GetMogartPosts`);
+        const mappedPosts = data.map((post:any) => ({
+          GlobalId: post.Pstid,
+          Author: post.PstAuthor,
+          Avatar: post.PstAuthorAvatar,
+          Content: post.PstContent,
+          Date: post.PstDate,
+          DisLike: post.PstDisLike,
+          Like: post.PstLike,
+          Mentions: post.PstMentions,
+          Name: post.PstName,
+          Points: post.PstPoints,
+          PostCode: post.PstPostCode,
+          Space: post.PstSpace,
+          Title: post.PstTitle,
+          Url: post.PstUrl,
+          Views: post.PstViews,
+        }));
+        setPosts(mappedPosts);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
     fetchPosts();
   }, []);
 
   return posts;
-};
-
-export const Logout = async (userData: any) => {
-  try {
-    const response = await PostRequest('POST', 'LogoutUser', userData);
-    return response;
-  } catch (error) {
-    console.error('LogoutUser error:', error);
-    throw error;
-  }
-};
-
-
-export const getUserData = async (sessionToken:any) => {
-  try {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${sessionToken}`,
-    };
-
-    const response = await fetch(`${API_URL}/getUserData`, {
-      method: 'GET',
-      headers,
-      credentials: 'include',
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      throw new Error('Failed to fetch user data');
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    throw error;
-  }
 };

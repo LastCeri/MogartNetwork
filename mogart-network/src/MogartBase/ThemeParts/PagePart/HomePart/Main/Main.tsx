@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane,faThumbsUp,faShareNodes,faComment,faSliders } from '@fortawesome/free-solid-svg-icons';
-import { useFetchMogartPosts, UserCreatePost } from '../../../../Api/Api';
+import { useFetchMogartPosts, createPost } from '../../../../Api/Api';
 import { useData } from '../../../../Context/DataContext';
 
 interface PostType {
@@ -80,30 +80,35 @@ function MainContent() {
 
   const handlePostButtonClick = async () => {
     if (postContent.trim() !== '') {
-      const newPost: PostType = {
-        Content: postContent,
-        Author: 'User Name',
-        Avatar: 'your-avatar-url',
-        Date: new Date().toISOString(),
-        GlobalId: `post-${Date.now()}`, 
-      };      
-  
-      try {
-        const response = await UserCreatePost(newPost);
-        if (response && response.status === "Ok") {
-          setPosts([...posts, newPost]); 
-        } else {     
+        const newPost = {
+            Content: postContent,
+        };
 
+        try {
+            const response = await createPost(newPost);
+            if (response && response.status === "Ok") {
+                console.log('Post successfully created!');
+                // Additional actions after successful post creation can be added here
+                // For example, you can update the user interface
+            } else {
+                // We couldn't get the expected response from the API, show an error message to the user
+                console.error('Post creation failed, please try again later.');
+            }
+        } catch (error) {
+            // An error occurred during the API call, log the error message
+            console.error('Error while posting:', error);
+            // Additional actions in case of an error can be added here
+            // For example, you can display an error message
         }
-      } catch (error) {
-        console.error('Error while posting:', error);
-      }
-      
-      setPostContent('');
+
+        // Whether the post operation is successful or not, clear the post content
+        setPostContent('');
+    } else {
+        // If postContent is empty, you can show a warning to the user
+        console.warn('Post content cannot be empty.');
     }
-  };
-  
-  
+};
+
   useEffect(() => {
     setPosts(postsFromApi);
   }, [postsFromApi]);

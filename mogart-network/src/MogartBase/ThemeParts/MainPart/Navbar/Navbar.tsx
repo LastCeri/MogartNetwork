@@ -3,7 +3,7 @@ import { Link,useNavigate } from 'react-router-dom';
 import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useData } from '../../../../MogartBase/Context/DataContext';
-import { Logout } from '../../../Api/Api';
+import { logout } from '../../../Api/Api';
 import Notification, { MessageType } from '../../Notification/Notification';
 
 
@@ -36,7 +36,7 @@ export default function Navbar() {
   
     try {
       const savedUserAuthID = localStorage.getItem('userAuthID');
-      const response = await Logout({ userid: savedUserAuthID, email: data.Email, walletadress: data.walletAddress });
+      const response = await logout({ userid: savedUserAuthID, email: data.Email, walletadress: data.walletAddress });
   
       if (response.success === false) {
         showNotification(MessageType.Error, response.message);
