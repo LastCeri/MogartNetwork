@@ -13,12 +13,16 @@ export default function Navbar() {
   const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
   const navigate = useNavigate();
   
+  const createUserDependentUrl = (basePath:string, userDependentPath:string) => {
+    return data?.UserName ? `/${data.UserName}${userDependentPath}` : basePath;
+  };
+
   const icons = [
     { icon: faHome, alt: 'Home', to: '/', style: { color: "#6684b3" }},
     { icon: faSearch, alt: 'Search', to: '/Search', style: { color: "#545e75" }},
-    { icon: faBell, alt: 'Notifications', to: `/${data?.UserName}/Notifications`, style: { color: "#545e75" }},
+    { icon: faBell, alt: 'Notifications', to: createUserDependentUrl('/Notifications', '/Notifications'), style: { color: "#545e75" }},
     { icon: faPeopleGroup, alt: 'Groups', to: '/Groups', style: { color: "#545e75" }},
-    { icon: faMugHot, alt: 'Activity', to: `/${data?.UserName}/Activity`, style: { color: "#545e75" }},
+    { icon: faMugHot, alt: 'Activity', to: createUserDependentUrl('/Activity', '/Activity'), style: { color: "#545e75" }},
     { icon: faEnvelope, alt: 'Messages', to: '/Messages', style: { color: "#545e75" }},
     { icon: faCog, alt: 'Settings', to: '/Settings', style: { color: "#545e75" }},
   ];
