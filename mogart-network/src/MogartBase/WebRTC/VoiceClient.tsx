@@ -1,11 +1,17 @@
 // VoiceClient.tsx
 import React, { useEffect, useRef } from 'react';
 import config from './config';
+import { useData } from '../../MogartBase/Context/DataContext';
 
-const VoiceClient = () => {
+interface VoiceClientProps {
+    shouldRender: boolean;
+}
+
+const VoiceClient: React.FC<VoiceClientProps> = ({ shouldRender }) => {
     const webSocketRef = useRef<WebSocket | null>(null);
     const rtcPeerConnectionRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
+    const { isLoggedIn } = useData();
 
     const initializeWebRTC = () => {
         const { iceServerConfig, mediaConstraints } = config;
@@ -66,9 +72,11 @@ const VoiceClient = () => {
     };
 
     useEffect(() => {
-        initializeWebRTC();
-        initializeWebSocket();
-    }, []);
+        if (shouldRender && isLoggedIn) {
+            initializeWebRTC();
+            initializeWebSocket();
+        }
+    }, [shouldRender, isLoggedIn]);
 
     return null;
 };

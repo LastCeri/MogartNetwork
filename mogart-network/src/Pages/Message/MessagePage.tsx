@@ -24,8 +24,10 @@ const MessagePage = () => {
     const [callStatus, setCallStatus] = useState('');
 
     useEffect(() => {
+        if (isLoading) return;
+
         // Ensure isLoggedIn is checked before navigation
-        if (!isLoading && !isLoggedIn) {
+        if (!isLoggedIn) {
             navigate('/login');
         }
         // Call VoiceClient unconditionally
@@ -64,7 +66,7 @@ const MessagePage = () => {
                                 </div>
                             <div className="w-full">
                                 <ChatList chatData={chatData} startVoiceCall={startVoiceCall} />
-                                <VoiceClient /> {/* VoiceClient component is called here */}
+                                <VoiceClient shouldRender={isLoggedIn} /> {/* VoiceClient component is called here */}
                                 <VoiceCallModal isCalling={isCalling} callStatus={callStatus} setIsCalling={setIsCalling} name='User 1' profileImage='https://cdn.discordapp.com/attachments/1188239847408803891/1200054787408932924/EmilyClark.png' />
                             </div>
                         </div>
