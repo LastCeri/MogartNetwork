@@ -47,16 +47,19 @@ const GroupsPage = () => {
   const [groups, setGroups] = useState<Group[]>([]);
 
   useEffect(() => {
-    if (activeTab === 'all') {
-      fetchGroups()
-        .then(fetchedGroups => {
-          if (fetchedGroups) {
-            setGroups(fetchedGroups);
-          }
-        })
-        .catch(error => console.error('Error fetching groups:', error));
-    }
-  }, [activeTab]); 
+    const fetchAndSetGroups = async () => {
+      if (activeTab === 'all') {
+        try {
+          const fetchedGroups: Group[] = await fetchGroups();
+          setGroups(fetchedGroups);
+        } catch (error) {
+          console.error('Error fetching groups:', error);
+        }
+      }
+    };
+
+    fetchAndSetGroups();
+  }, [activeTab]);
 
   const getFilteredGroups = () => {
     switch (activeTab) {
