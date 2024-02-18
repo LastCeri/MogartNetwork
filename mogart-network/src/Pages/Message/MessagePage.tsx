@@ -4,8 +4,10 @@ import { useData } from '../../MogartBase/Context/DataContext';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import ChatList from './components/ChatList/ChatList';
-import VoiceCallModal from './components/VoiceCall/VoiceCall'; 
+import VoiceCallModal from './components/VoiceCall/VoiceCall';
 import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPhone, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Example DATA
 const initialChatData = [
@@ -20,28 +22,24 @@ const MessagePage = () => {
     const navigate = useNavigate();
     const { isLoggedIn, isLoading } = useData();
     const [chatData, setChatData] = useState(initialChatData);
-    const [isCalling, setIsCalling] = useState(false); 
+    const [isCalling, setIsCalling] = useState(false);
     const [callStatus, setCallStatus] = useState('');
 
     useEffect(() => {
         if (isLoading) return;
-
-        // Ensure isLoggedIn is checked before navigation
         if (!isLoggedIn) {
             navigate('/login');
         }
-        // Call VoiceClient unconditionally
     }, [isLoggedIn, isLoading, navigate]);
 
     const startVoiceCall = () => {
         setIsCalling(true);
-        setCallStatus('Bağlanıyor...');
-
+        setCallStatus('Connecting...');
         setTimeout(() => {
-            setCallStatus('Çalıyor...');
+            setCallStatus('Ringing...');
             setTimeout(() => {
-                setCallStatus('Arama başladı');
-            }, 3000); 
+                setCallStatus('Chat Connection Started');
+            }, 3000);
         }, 2000);
     };
 
@@ -54,21 +52,21 @@ const MessagePage = () => {
                     <div className="flex w-full h-full">
                         <div className="w-1/3 overflow-y-auto border-r border-gray-300 bg-white">
                             <div className="p-4 flex justify-between items-center border-b border-gray-300">
-                                    <h2 className="text-lg font-semibold">Chats</h2>
-                                    <div className="space-x-2">
-                                        <button onClick={startVoiceCall} className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out transform hover:-translate-y-1">
-                                            Call
-                                        </button>
-                                        <button className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out transform hover:-translate-y-1">
-                                            New Chat
-                                        </button>
-                                    </div>
+                                <h2 className="text-lg font-semibold">Chats</h2>
+                                <div className="space-x-2">
+                                    <button onClick={startVoiceCall} className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out">
+                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                                        Call
+                                    </button>
+                                    <button className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out">
+                                        <FontAwesomeIcon icon={faCommentAlt} className="mr-2" />
+                                        New Chat
+                                    </button>
                                 </div>
-                            <div className="w-full">
-                                <ChatList chatData={chatData} startVoiceCall={startVoiceCall} />
-                                <VoiceClient shouldRender={isLoggedIn} /> {/* VoiceClient component is called here */}
-                                <VoiceCallModal isCalling={isCalling} callStatus={callStatus} setIsCalling={setIsCalling} name='User 1' profileImage='https://cdn.discordapp.com/attachments/1188239847408803891/1200054787408932924/EmilyClark.png' />
                             </div>
+                            <ChatList chatData={chatData} startVoiceCall={startVoiceCall} />
+                            <VoiceClient shouldRender={isLoggedIn} />
+                            <VoiceCallModal isCalling={isCalling} callStatus={callStatus} setIsCalling={setIsCalling} name='User 1' profileImage='https://cdn.discordapp.com/attachments/1188239847408803891/1200054787408932924/EmilyClark.png' />
                         </div>
                         <div className="w-2/3 bg-white overflow-y-auto shadow-lg rounded-lg">
                             <div className="flex flex-col h-full">
