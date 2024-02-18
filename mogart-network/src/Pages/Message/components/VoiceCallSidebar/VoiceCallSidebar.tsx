@@ -5,16 +5,22 @@ import { faStickyNote, faSearch, faAdjust, faGear } from '@fortawesome/free-soli
 
 const VoiceCallSidebar: React.FC = () => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const { voiceDetectionLevel, setVoiceDetectionLevel } = useData(); 
+  const { voiceDetectionLevel, setVoiceDetectionLevel } = useData();
 
   const toggleSettings = () => {
     setIsSettingsVisible(!isSettingsVisible);
   };
 
   const handleDetectionLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newLevel = Number(e.target.value);
-    setVoiceDetectionLevel(newLevel);
+    try {
+      const newLevel = Number(e.target.value);
+      setVoiceDetectionLevel(newLevel);
+    } catch (error) {
+     
+      console.error("An error occurred in the setVoiceDetectionLevel function: ", error);
+    }
   };
+  
 
   return (
   <>
