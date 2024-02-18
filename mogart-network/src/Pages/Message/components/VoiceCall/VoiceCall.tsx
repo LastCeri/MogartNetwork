@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import VoiceCallSidebar from '../VoiceCallSidebar/VoiceCallSidebar';
-import { faPhoneSlash, faMicrophone, faMicrophoneSlash, faHeadphones, faHeadphonesAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPhoneSlash} from '@fortawesome/free-solid-svg-icons';
+import UserCallModal from '../VoiceCallModal/VoiceCallModal';
 
 interface VoiceCallModalProps {
   isCalling: boolean;
@@ -21,10 +22,6 @@ const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [isHeadphonesMuted, setIsHeadphonesMuted] = useState(false);
   const [callDuration, setCallDuration] = useState(0); 
-
-  const toggleMic = () => setIsMicMuted(!isMicMuted);
-  const toggleHeadphones = () => setIsHeadphonesMuted(!isHeadphonesMuted);
-
 
   useEffect(() => {
     let interval:any;
@@ -59,22 +56,15 @@ const VoiceCallModal: React.FC<VoiceCallModalProps> = ({
           <div className="flex space-x-4 justify-center">
             {callStatus === 'Chat Connection Started' && (
               <>  
-                <button onClick={toggleMic} className={`flex items-center ${isMicMuted ? 'bg-gray-400 hover:bg-gray-500' : 'bg-green-500 hover:bg-green-600'} text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-150 ease-in-out`}>
-                  <FontAwesomeIcon icon={isMicMuted ? faMicrophoneSlash : faMicrophone} className="mr-2" />
-                  {isMicMuted ? 'Unmute Mic' : 'Mute Mic'}
-                </button>
                 <button onClick={() => setIsCalling(false)} className="flex items-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-150 ease-in-out">
                   <FontAwesomeIcon icon={faPhoneSlash} className="mr-2" />
                   End Call
-                </button>
-                <button onClick={toggleHeadphones} className={`flex items-center ${isHeadphonesMuted ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'} text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-150 ease-in-out`}>
-                  <FontAwesomeIcon icon={isHeadphonesMuted ? faHeadphonesAlt : faHeadphones} className="mr-2" />
-                  {isHeadphonesMuted ? 'Unmute Headphones' : 'Mute Headphones'}
                 </button>
               </>
             )}
           </div>
         </div>
+        <UserCallModal />
       </div>
       </>
     )
