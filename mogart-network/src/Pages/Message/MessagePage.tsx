@@ -8,6 +8,7 @@ import VoiceCallModal from './components/VoiceCall/VoiceCall';
 import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import CallFriendsModal from './components/CallFriendsModal/CallFriendsModal';
 
 // Example DATA
 const initialChatData = [
@@ -24,6 +25,10 @@ const MessagePage = () => {
     const [chatData, setChatData] = useState(initialChatData);
     const [isCalling, setIsCalling] = useState(false);
     const [callStatus, setCallStatus] = useState('');
+    const [isCallModalOpen, setIsCallModalOpen] = useState(false);
+    const [callingFriendName, setCallingFriendName] = useState(''); 
+    const [callingFriendImage, setCallingFriendImage] = useState(''); 
+
 
     useEffect(() => {
         if (isLoading) return;
@@ -33,6 +38,14 @@ const MessagePage = () => {
     }, [isLoggedIn, isLoading, navigate]);
 
     const startVoiceCall = () => {
+        setIsCallModalOpen(true);
+      };
+
+      const handleStartCall = (friendName: string, friendImage: string) => {
+        console.log('Starting call with friend:', friendName);
+        console.log('Friend image:', friendImage);
+        setCallingFriendName(friendName); 
+        setCallingFriendImage(friendImage);
         setIsCalling(true);
         setCallStatus('Connecting...');
         setTimeout(() => {
@@ -41,8 +54,9 @@ const MessagePage = () => {
                 setCallStatus('Chat Connection Started');
             }, 3000);
         }, 2000);
+        setIsCallModalOpen(false);
     };
-
+    
     return (
         <>
             <Header />
@@ -66,7 +80,18 @@ const MessagePage = () => {
                             </div>
                             <ChatList chatData={chatData} startVoiceCall={startVoiceCall} />
                             <VoiceClient shouldRender={isLoggedIn} />
-                            <VoiceCallModal isCalling={isCalling} callStatus={callStatus} setIsCalling={setIsCalling} name='User 1' profileImage='https://cdn.discordapp.com/attachments/1188239847408803891/1200054787408932924/EmilyClark.png' />
+                            <VoiceCallModal 
+                                isCalling={isCalling} 
+                                callStatus={callStatus} 
+                                setIsCalling={setIsCalling} 
+                                name={callingFriendName}
+                                profileImage={callingFriendImage}
+                                />
+                                <CallFriendsModal 
+                                isOpen={isCallModalOpen} 
+                                onStartCall={handleStartCall} 
+                                setIsOpen={setIsCallModalOpen} 
+                                />
                         </div>
                         <div className="w-2/3 bg-white overflow-y-auto shadow-lg rounded-lg">
                             <div className="flex flex-col h-full">
