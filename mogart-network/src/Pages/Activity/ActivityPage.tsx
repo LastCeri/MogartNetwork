@@ -22,8 +22,6 @@ const ActivityItem: React.FC<{ activity: Activity }> = ({ activity }) => (
   </div>
 );
 
-
-
 const ActivityPage = () => {
   const navigate = useNavigate();
   const { isLoggedIn, userAuthID, isLoading } = useData();
@@ -64,9 +62,13 @@ const ActivityPage = () => {
           <div className="max-w-4xl mx-auto py-4">
             <h1 className="text-2xl font-bold text-gray-700 mb-4">Activity</h1>
             <div className="bg-white shadow rounded-lg">
-            {activities && activities.map((activity) => (
-              <ActivityItem key={activity.Actid} activity={activity} />
-            ))}
+              {activities.length === 0 ? (
+                <p className="text-gray-700 px-4 py-3">No activity occurred</p>
+              ) : (
+                activities.map((activity) => (
+                  <ActivityItem key={activity.Actid} activity={activity} />
+                ))
+              )}
             </div>
           </div>
         </main>
