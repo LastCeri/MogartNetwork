@@ -66,9 +66,9 @@ https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
 ## February 2024 milestones continue ⌛
 * ✅ UI/UX Design Overhaul (Phase 5): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ UI/UX Design Overhaul (Phase 6): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
-* ⌛ Blockchain Integration: Initiating messaging correspondence with smart contracts, integrating MerkleTree data, and testing on Testnet and Devnet environments.
-* ⌛ Voice Chat Technology Implementation: Developing voice chat features as part of our technology upgrade.
-* ⌛ UI/UX Design Overhaul (Phase 7): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
+* ✅ Blockchain Integration: Initiating messaging correspondence with smart contracts, integrating MerkleTree data, and testing on Testnet and Devnet environments.
+* ✅ Voice Chat Technology Implementation: Developing voice chat features as part of our technology upgrade.
+* ✅ UI/UX Design Overhaul (Phase 7): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 
 ## March 2024 milestones continue ⌛
 * ⌛ Invitations and invitation keys integration (Groups)
