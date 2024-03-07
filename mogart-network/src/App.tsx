@@ -38,6 +38,7 @@ function App() {
         <Route path="/Profile" element={<ProfilePage />} />
 
         <Route path="/Messages" element={<MessagePage />} />
+        <Route path="/Messages/:username" element={<MessagePage />} />
         <Route path=":username/Notifications" element={<NotificationsPage />} />
         <Route path=":username/Activity" element={<ActivityPage />} />
         <Route path="/Settings" element={<SettingsPage />} />

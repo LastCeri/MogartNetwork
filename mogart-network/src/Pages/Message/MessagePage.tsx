@@ -1,62 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../MogartBase/Context/DataContext';
-import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
-import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-import ChatList from './components/ChatList/ChatList';
-import VoiceCallModal from './components/VoiceCall/VoiceCall';
-import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import VoiceCallModal from './components/VoiceCall/VoiceCall';
+import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
 import CallFriendsModal from './components/CallFriendsModal/CallFriendsModal';
+import IncomingCallModal from './components/IncomingCallModal/IncomingCallModal';
+import config from '../../MogartBase/WebRTC/config';
+import useWebSocket from '../../MogartBase/WebRTC/useWebSocket';
+import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
+import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
+import axios from 'axios';
+import { API_URL } from '../../MogartBase/Api/Api';
+import ChatUserList from './components/ChatUserList/ChatUserList';
 
-// Example DATA
-const initialChatData = [
-    { id: '1', name: 'User 1', message: 'Hello, how are you?', profileImage: 'https://via.placeholder.com/50' },
-    { id: '2', name: 'User 2', message: 'What is the current status of the project?', profileImage: 'https://via.placeholder.com/50' },
-    { id: '3', name: 'User 3', message: 'The meeting is tomorrow at 10:00.', profileImage: 'https://via.placeholder.com/50' },
-    { id: '4', name: 'User 4', message: 'I sent the report, could you please check it?', profileImage: 'https://via.placeholder.com/50' },
-    { id: '5', name: 'User 5', message: 'Have you seen the new tasks?', profileImage: 'https://via.placeholder.com/50' },
-];
+export interface ChatData {
+  MessageID: string;
+  MessageAuthor: string;
+  MessageAuthorImage: string;
+  MessageAuthorTo: string;
+  MessageDate: string;
+  MessageLastAction: string;
+  MessageActions: string;
+}
 
 const MessagePage = () => {
-    const navigate = useNavigate();
-    const { isLoggedIn, isLoading } = useData();
-    const [chatData, setChatData] = useState(initialChatData);
-    const [isCalling, setIsCalling] = useState(false);
-    const [callStatus, setCallStatus] = useState('');
-    const [isCallModalOpen, setIsCallModalOpen] = useState(false);
-    const [callingFriendName, setCallingFriendName] = useState(''); 
-    const [callingFriendImage, setCallingFriendImage] = useState(''); 
+  const navigate = useNavigate();
+  const { isLoggedIn, isLoading, data } = useData();
+  const [chatData, setChatData] = useState<ChatData[]>([]);
+  const [isCalling, setIsCalling] = useState(false);
+  const [callStatus, setCallStatus] = useState('');
+  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
+  const [callingFriendName, setCallingFriendName] = useState(''); 
+  const [callingFriendImage, setCallingFriendImage] = useState(''); 
+  const [isCallIncoming, setIsCallIncoming] = useState(false); 
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<any[]>([]); 
+  const [currentMessage, setCurrentMessage] = useState('');
 
+    const { sendMessage, isConnected } = useWebSocket(config.voiceChatServer, (event:any) => {
+        console.log("WebSocket message received:", event.data);
+    });
 
     useEffect(() => {
         if (isLoading) return;
         if (!isLoggedIn) {
             navigate('/login');
         }
-    }, [isLoggedIn, isLoading, navigate]);
+        const fetchChatData = async () => {
+            try {
+                const response = await axios.get<ChatData[]>(`${API_URL}/ChatData/${data?.UserName}`);
+                setChatData(response.data);
+            } catch (error) {
+                console.error('Chat data fetching failed:', error);
+            }
+        };
+
+        fetchChatData();
+    }, [isLoggedIn, isLoading, navigate, data?.UserName]);
 
     const startVoiceCall = () => {
         setIsCallModalOpen(true);
       };
 
       const handleStartCall = (friendName: string, friendImage: string) => {
-        console.log('Starting call with friend:', friendName);
-        console.log('Friend image:', friendImage);
-        setCallingFriendName(friendName); 
-        setCallingFriendImage(friendImage);
-        setIsCalling(true);
-        setCallStatus('Connecting...');
-        setTimeout(() => {
-            setCallStatus('Ringing...');
-            setTimeout(() => {
-                setCallStatus('Chat Connection Started');
-            }, 3000);
-        }, 2000);
-        setIsCallModalOpen(false);
+        if (isConnected) {
+            sendMessage({
+                type: 'call-initiate',
+                name: friendName,
+                image: friendImage,
+            });
+        }
     };
+
+    const handleChatSelect = async (selectedChatId:any) => {
+        setSelectedChatId(selectedChatId); 
+        try {
+          const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`);
+          setMessages(response.data); 
+        } catch (error) {
+          console.error('Fetching messages failed:', error);
+        }
+      };
+      
     
+    const simulateIncomingCall = () => {
+        setIsCallIncoming(true);
+    };
     return (
         <>
             <Header />
@@ -78,7 +109,7 @@ const MessagePage = () => {
                                     </button>
                                 </div>
                             </div>
-                            <ChatList chatData={chatData} startVoiceCall={startVoiceCall} />
+                            <ChatUserList chatData={chatData} startVoiceCall={startVoiceCall} onChatSelect={handleChatSelect} />
                             <VoiceClient shouldRender={isLoggedIn} />
                             <VoiceCallModal 
                                 isCalling={isCalling} 
@@ -86,17 +117,20 @@ const MessagePage = () => {
                                 setIsCalling={setIsCalling} 
                                 name={callingFriendName}
                                 profileImage={callingFriendImage}
-                                />
-                                <CallFriendsModal 
+                                isRinging={false} 
+                            />
+                            <CallFriendsModal 
                                 isOpen={isCallModalOpen} 
                                 onStartCall={handleStartCall} 
                                 setIsOpen={setIsCallModalOpen} 
-                                />
+                            />
                         </div>
                         <div className="w-2/3 bg-white overflow-y-auto shadow-lg rounded-lg">
                             <div className="flex flex-col h-full">
                                 <div className="flex-1 overflow-y-auto">
-                                    {/* Chat messages go here */}
+                                    {messages.map((message, index) => (
+                                            <div key={index}>{message.MessageContent}</div>
+                                        ))}
                                 </div>
                                 <div className="border-t border-gray-300 p-4 flex items-center">
                                     <input
@@ -109,7 +143,7 @@ const MessagePage = () => {
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div>         
                     </div>
                 </div>
             </div>
