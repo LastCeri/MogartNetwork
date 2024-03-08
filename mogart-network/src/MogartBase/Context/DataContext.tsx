@@ -26,6 +26,16 @@ interface UserData {
   voiceDetectionLevel: number;
 }
 
+export interface SiteData {
+  SiteName: string;
+  SiteDesc: string;
+  SiteLogo: string;
+  SiteStatus: number;
+  SiteStatusText: string;
+  SiteLoginBackgroundURL:string;
+  SiteRegisterBackgroundURL:string;
+}
+
 const initialUserData: UserData = {
   ProfileImage: '',
   Birthdate: '',
@@ -45,8 +55,19 @@ const initialUserData: UserData = {
   voiceDetectionLevel: 50, 
 };
 
+const initialSiteData: SiteData = {
+  SiteName: '',
+  SiteDesc:'',
+  SiteLogo:'',
+  SiteStatus: 0,
+  SiteStatusText: '',
+  SiteLoginBackgroundURL:'',
+  SiteRegisterBackgroundURL:'',
+};
+
 const DataContext = createContext<{
   data: UserData;
+  siteData: SiteData;
   chatData: ChatMessage[];
   csrfToken: string;
   isLoggedIn: boolean;
@@ -56,6 +77,7 @@ const DataContext = createContext<{
   voiceDetectionLevel: number;
   updateData: (newData: UserData) => void;
   setChatData: (newChatData: ChatMessage[]) => void;
+  setSiteData: (newSiteData: SiteData) => void;
   setCsrfToken: (token: string) => void;
   setLoginStatus: (status: boolean) => void;
   setUserAuthToken: (token: string) => void;
@@ -63,6 +85,7 @@ const DataContext = createContext<{
   setVoiceDetectionLevel: (level: number) => void;
 }>({
   data: initialUserData,
+  siteData: initialSiteData,
   chatData: [],
   csrfToken: '',
   isLoggedIn: false,
@@ -72,6 +95,7 @@ const DataContext = createContext<{
   voiceDetectionLevel: 50,
   updateData: () => {},
   setChatData: () => {},
+  setSiteData: () => {},
   setCsrfToken: () => {},
   setLoginStatus: () => {},
   setUserAuthToken: () => {},
@@ -82,6 +106,7 @@ const DataContext = createContext<{
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<UserData>(initialUserData);
   const [chatData, setChatData] = useState<ChatMessage[]>([]);
+  const [siteData, setSiteData] = useState<SiteData>(initialSiteData);
   const [csrfToken, setCsrfToken] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userAuthToken, setUserAuthToken] = useState('');
@@ -91,6 +116,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const savedData = localStorage.getItem('data');
+    const savedSiteData = localStorage.getItem('sitedata');
     const savedCsrfToken = localStorage.getItem('csrfToken');
     const savedIsLoggedIn = localStorage.getItem('isLoggedIn');
     const savedUserAuthToken = localStorage.getItem('userAuthToken');
@@ -99,6 +125,10 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
     if (savedData) {
       setData(JSON.parse(savedData));
+    }
+    if (savedSiteData) {
+      console.log("saved__datasite",savedSiteData);
+      SetSiteData(JSON.parse(savedSiteData));
     }
     if (savedCsrfToken) {
       setCsrfToken(savedCsrfToken);
@@ -119,6 +149,10 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
+  const SetSiteData = (newSiteData: SiteData) => {
+    setSiteData(newSiteData);
+    localStorage.setItem('sitedata', JSON.stringify(newSiteData));
+  };
   const updateData = (newData: UserData) => {
     setData(newData);
     localStorage.setItem('data', JSON.stringify(newData));
@@ -159,6 +193,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     <DataContext.Provider value={{
       data,
       chatData,
+      siteData,
       csrfToken,
       isLoggedIn,
       userAuthToken,
@@ -167,6 +202,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       voiceDetectionLevel,
       updateData,
       setChatData,
+      setSiteData,
       setCsrfToken: setCsrfTokenHandler,
       setLoginStatus,
       setUserAuthToken: setUserAuthTokenHandler,
