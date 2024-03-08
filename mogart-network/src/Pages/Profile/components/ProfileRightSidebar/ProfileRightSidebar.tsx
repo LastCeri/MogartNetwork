@@ -62,9 +62,9 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
           )}
       </div>
       {isModalOpen && selectedPhotoIndex !== null && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300">
           <div 
-            className="relative bg-white p-4 rounded-lg overflow-auto" 
+             className="relative bg-white p-4 rounded-lg shadow-xl overflow-auto transition-transform transform duration-300 scale-95 hover:scale-100" 
             style={{ width: '600px', height: 'auto', maxWidth: '90%', maxHeight: '90vh' }}
           >
             <img
@@ -73,13 +73,13 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
               className="rounded-md"
               style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain' }}
             />
-            <button onClick={closeModal} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded hover:bg-red-700">
+             <button onClick={closeModal} className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded hover:bg-red-600 transition-colors duration-200">
               <FontAwesomeIcon icon={faXmark} />
             </button>
-            <button onClick={goToPrevious} className="absolute left-2 top-1/2 bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+            <button onClick={goToPrevious} className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-200">
               <FontAwesomeIcon icon={faChevronLeft} />
             </button>
-            <button onClick={goToNext} className="absolute right-2 top-1/2 bg-blue 500 text-white p-2 rounded hover:bg-blue-700">
+            <button onClick={goToNext} className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-200">
               <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
