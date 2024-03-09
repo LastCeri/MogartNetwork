@@ -36,7 +36,7 @@ function HomePage() {
   return (
     <div className="flex flex-col">
       <Header />
-      {siteData && siteData.SiteStatus.toString() === "1" ? (
+      {siteData && siteData.SiteStatus === "1" ? (
         <div className="flex flex-1 pt-16"> 
           <Navbar />
           <div className="flex flex-1 pl-16">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
 import { UserData } from '../../Profile';
+import { useData } from '../../../../MogartBase/Context/DataContext';
 
 
 interface ProfileHeaderProps {
@@ -9,13 +10,15 @@ interface ProfileHeaderProps {
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData }) => {
   if (!userData) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+    <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
+  </div>;
   }
-  
   return (
     <div className="flex justify-center items-end pt-16">
       <div className="w-full max-w-7xl mx-auto p-4 mt-8 rounded-xl" style={{ 
-        backgroundImage: `url(${userData.UsrBackgroundImage || 'https://cdn.discordapp.com/attachments/1202263923101802506/1202263980203311154/MogartProfileDefaultImage.webp'})`,
+        backgroundImage: `url(${userData.UsrBackgroundImage})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center'

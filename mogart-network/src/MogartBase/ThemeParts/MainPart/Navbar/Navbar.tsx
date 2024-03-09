@@ -10,6 +10,7 @@ import Notification, { MessageType } from '../../Notification/Notification';
 
 export default function Navbar() {
   const { isLoggedIn, data } = useData();
+  const [rememberMe, setRememberMe] = useState(false);
   const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
   const navigate = useNavigate();
   
@@ -40,13 +41,19 @@ export default function Navbar() {
   
     try {
       const savedUserAuthID = localStorage.getItem('userAuthID');
+      const rememberemail = localStorage.getItem('rememberuserEmail');
       const response = await logout({ userid: savedUserAuthID, email: data.Email, walletadress: data.walletAddress });
   
       if (response.success === false) {
         showNotification(MessageType.Error, response.message);
       } else {
         showNotification(MessageType.Success, "Logout successful");
-        localStorage.clear();
+        if(rememberemail)
+        {
+          localStorage.clear();
+          localStorage.setItem('rememberuserEmail', rememberemail);
+        }else { localStorage.clear();}
+        
         navigate("/login");
       }
     } catch (error) {

@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { isLoggedIn, data,siteData } = useData();
+  const { isLoggedIn, data,siteData,isLoading } = useData();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   useEffect(() => {
+
     const handleClickOutside = (event:any) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
@@ -24,14 +25,16 @@ export default function Header() {
     };
   }, []);
 
-  const profileImageURL = data?.ProfileImage || 'https://cdn.discordapp.com/attachments/1188239804756926474/1196953627827388527/9131529.png?ex=65e7a56f&is=65d5306f&hm=b0c2a8fd6cb940e32c9898244f7b5097676a4018a23112c572cc92808c149f1d&';
+  if (isLoading || !siteData) return null;
+  const profileImageURL = data?.ProfileImage || siteData?.SiteDefaultProfileImageURL;
+  const siteLogoURL = siteData?.SiteLogo;
 
   return (
     <>
       <header className="fixed top-0 left-16 right-0 bg-white shadow-md z-10">
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <div className="flex items-center">
-            <img src={siteData?.SiteLogo} alt="Mogart Network Logo" className="h-8 w-8 mr-2"/>
+            <img src={siteLogoURL} alt="Mogart Network Logo" className="h-8 w-8 mr-2"/>
             <span className="font-bold text-xl text-gray-800">Mogart Network</span>
           </div>
           

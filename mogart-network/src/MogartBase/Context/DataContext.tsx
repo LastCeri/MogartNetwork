@@ -30,10 +30,12 @@ export interface SiteData {
   SiteName: string;
   SiteDesc: string;
   SiteLogo: string;
-  SiteStatus: number;
+  SiteStatus: string;
   SiteStatusText: string;
   SiteLoginBackgroundURL:string;
   SiteRegisterBackgroundURL:string;
+  SiteDefaultProfileImageURL:string;
+  SiteDefaultProfileBackgroundImageURL:string;
 }
 
 const initialUserData: UserData = {
@@ -59,10 +61,12 @@ const initialSiteData: SiteData = {
   SiteName: '',
   SiteDesc:'',
   SiteLogo:'',
-  SiteStatus: 0,
+  SiteStatus:'',
   SiteStatusText: '',
   SiteLoginBackgroundURL:'',
   SiteRegisterBackgroundURL:'',
+  SiteDefaultProfileImageURL:'',
+  SiteDefaultProfileBackgroundImageURL:'',
 };
 
 const DataContext = createContext<{
@@ -127,7 +131,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       setData(JSON.parse(savedData));
     }
     if (savedSiteData) {
-      console.log("saved__datasite",savedSiteData);
       SetSiteData(JSON.parse(savedSiteData));
     }
     if (savedCsrfToken) {
@@ -150,41 +153,66 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const SetSiteData = (newSiteData: SiteData) => {
-    setSiteData(newSiteData);
-    localStorage.setItem('sitedata', JSON.stringify(newSiteData));
+    try {
+      setSiteData(newSiteData);
+      localStorage.setItem('sitedata', JSON.stringify(newSiteData));
+    } catch (error) {
+      console.error('SetSiteData error:', error);
+    }
   };
+  
   const updateData = (newData: UserData) => {
-    setData(newData);
-    localStorage.setItem('data', JSON.stringify(newData));
+    try {
+      setData(newData);
+      localStorage.setItem('data', JSON.stringify(newData));
+    } catch (error) {
+      console.error('updateData error:', error);
+    }
   };
-
+  
   const setCsrfTokenHandler = (token: string) => {
-    setCsrfToken(token);
-    localStorage.setItem('csrfToken', token);
+    try {
+      setCsrfToken(token);
+      localStorage.setItem('csrfToken', token);
+    } catch (error) {
+      console.error('setCsrfTokenHandler error:', error);
+    }
   };
-
+  
   const setLoginStatus = (status: boolean) => {
-    setIsLoggedIn(status);
-    localStorage.setItem('isLoggedIn', status ? 'true' : 'false');
+    try {
+      setIsLoggedIn(status);
+      localStorage.setItem('isLoggedIn', status ? 'true' : 'false');
+    } catch (error) {
+      console.error('setLoginStatus error:', error);
+    }
   };
-
+  
   const setUserAuthTokenHandler = (token: string) => {
-    setUserAuthToken(token);
-    localStorage.setItem('userAuthToken', token);
+    try {
+      setUserAuthToken(token);
+      localStorage.setItem('userAuthToken', token);
+    } catch (error) {
+      console.error('setUserAuthTokenHandler error:', error);
+    }
   };
-
+  
   const setUserAuthIDHandler = (id: string) => {
-    setUserAuthID(id);
-    localStorage.setItem('userAuthID', id);
+    try {
+      setUserAuthID(id);
+      localStorage.setItem('userAuthID', id);
+    } catch (error) {
+      console.error('setUserAuthIDHandler error:', error);
+    }
   };
-
+  
   const setVoiceDetectionLevelHandler = (level: number) => {
     try {
       setVoiceDetectionLevel(level);
       updateData({ ...data, voiceDetectionLevel: level });
       localStorage.setItem('voiceDetectionLevel', level.toString());
     } catch (error) {
-      console.error('localStorage error:', error);
+      console.error('setVoiceDetectionLevelHandler error:', error);
     }
   };
   
@@ -202,9 +230,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       voiceDetectionLevel,
       updateData,
       setChatData,
-      setSiteData,
+      setSiteData:SetSiteData,
       setCsrfToken: setCsrfTokenHandler,
-      setLoginStatus,
+      setLoginStatus: setLoginStatus,
       setUserAuthToken: setUserAuthTokenHandler,
       setUserAuthID: setUserAuthIDHandler,
       setVoiceDetectionLevel: setVoiceDetectionLevelHandler,
