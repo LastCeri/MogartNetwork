@@ -7,6 +7,7 @@ interface LatestBlog {
     Bauthor: string;
     Bdate: string;
     Bimage: string;
+    Burl: string;
   }
 
 
@@ -28,7 +29,7 @@ interface LatestBlog {
             <li key={blog.Bid} className="rounded-md flex items-start">
               <img src={blog.Bimage || "placeholder-image-url.jpg"} alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
               <div>
-                <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">{blog.Bname}</a>
+                <a href={blog.Burl} className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">{blog.Bname}</a>
                 <p className="text-xs text-gray-600">Published on {blog.Bdate} by {blog.Bauthor}</p>
               </div>
             </li>

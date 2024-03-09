@@ -26,7 +26,7 @@ const BlogDetailsCategories: React.FC = () => {
           <li key={category.CatID} className="rounded-md flex items-start">
             <img src={category.CatIcon} alt={`Category Icon ${category.CatName}`} className="w-10 h-10 mr-2 rounded-full" />
             <div>
-              <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">{category.CatName}</a>
+            <a href={`/Category/${category.CatName}`} className="block text-sm font-semibold text-blue-500 hover:text-blue-700">{category.CatName}</a>
               <p className="text-xs text-gray-600">{category.CatDesc}</p>
             </div>
           </li>
