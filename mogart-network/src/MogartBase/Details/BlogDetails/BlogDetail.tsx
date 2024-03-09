@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { faThumbsUp, faEye, faThumbsDown, faMessage,faTags,faFolderOpen,faUserPlus,faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { Link, useParams } from 'react-router-dom';
+import { faThumbsUp, faEye, faThumbsDown, faMessage, faTags, faFolderOpen, faUserPlus, faShare } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import BlogDetailsCategories from './components/Categories/categories';
@@ -8,6 +8,7 @@ import BlogDetailsLatest from './components/Latest/Latest';
 import { API_URL } from '../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SharePopup from '../../ThemeParts/Popup/SharePopup';
 
 interface BlogPost {
   Bid: number;
@@ -24,17 +25,17 @@ interface BlogPost {
 }
 
 const icons = [
-  { icon: faUserPlus, alt: 'Follow', to: '/', style: { color: "#545e75" }},
-  { icon: faThumbsUp, alt: 'Like', to: '/Search', style: { color: "#545e75" }},
-  { icon: faThumbsDown, alt: 'DisLike', to: '/Notifications', style: { color: "#545e75" }},
-  { icon: faMessage, alt: 'Message', to: '/Groups', style: { color: "#545e75" }},
-  { icon: faShareNodes, alt: 'Share', to: '/Share', style: { color: "#545e75" }},
+  { icon: faUserPlus, alt: 'Follow', to: '/', style: { color: "#545e75" } },
+  { icon: faThumbsUp, alt: 'Like', to: '/Like', style: { color: "#545e75" } },
+  { icon: faThumbsDown, alt: 'DisLike', to: '/Dislike', style: { color: "#545e75" } },
+  { icon: faMessage, alt: 'Message', to: '/MessageTo', style: { color: "#545e75" } },
+  { icon: faShare, alt: 'Share', to: '/Share', style: { color: "#545e75" } },
 ];
-
 
 const BlogDetail = () => {
   const { blogurl } = useParams();
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
+  const [showSharePopup, setShowSharePopup] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -54,14 +55,21 @@ const BlogDetail = () => {
   }, [blogurl]);
 
   if (!blogPost) {
-    return  <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
-    <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
-  </div>;
+    return <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+      <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
+    </div>;
   }
 
+  const handleShareClick = () => {
+    setShowSharePopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowSharePopup(false);
+  };
   return (
-    <>    
+    <>
       <Header />
       <Navbar />
       <div className="flex flex-row justify-center items-start mt-20">
@@ -80,45 +88,59 @@ const BlogDetail = () => {
             </div>
 
             <div className="mt-4">
-              {icons.map((item, index) => (
-              <button key={index} className={`mb-4 ${index === 0 ? 'mb-2' : ''} hover:bg-gray-200 p-2 rounded-full transition duration-300`}>
+            {icons.map((item, index) => (
+              <button 
+                key={index} 
+                className={`mb-4 ${index === 0 ? 'mb-2' : ''} hover:bg-gray-200 p-2 rounded-full transition duration-300`} 
+                onClick={item.alt === 'Share' ? handleShareClick : undefined} 
+              >
                 <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
               </button>
             ))}
-          </div>
+            </div>
           </header>
 
-            {/* Blog Image */}
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
-              <img src={blogPost.Bimage} alt={blogPost.Bname} className="w-5/6 max-h-[400px] h-auto mx-auto"/>
-            </div>
+          {/* Blog Image */}
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+            <img src={blogPost.Bimage} alt={blogPost.Bname} className="w-5/6 max-h-[400px] h-auto mx-auto" />
+          </div>
 
-            {/* Blog Content */}
-            <div className="bg-white shadow-lg rounded-lg p-6 overflow-hidden">
-              <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.Bcontent }} />
-            </div>
-            <div>
-              <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
-                <FontAwesomeIcon icon={faEye} /> {blogPost.Bviews} 
-              </span>
-              <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
-                <FontAwesomeIcon icon={faTags} />{blogPost.Btags && blogPost.Btags.split(',').map(tag => (
-                <span key={tag} className="bg-gray-100 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                  {tag.trim()}
-                </span>
-                ))}
-              </span>
-              <span className="float-right bg-slate-100 text-blue-700 text-xs font-semibold inline-block px-3 p-2 rounded-full shadow-lg">
-                <FontAwesomeIcon icon={faFolderOpen} /> {blogPost.Bcategory}
-              </span>
+          {/* Blog Content */}
+          <div className="bg-white shadow-lg rounded-lg p-6 overflow-hidden">
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.Bcontent }} />
+          </div>
+          <div>
+            <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
+              <FontAwesomeIcon icon={faEye} /> {blogPost.Bviews}
+            </span>
+            <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
+            <Link to={`/Tags/${blogPost.Btags}`}>
+            <FontAwesomeIcon icon={faTags} />
+            {blogPost.Btags &&
+              blogPost.Btags.split(',').map(tag => {
+                const trimmedTag = tag.trim();
+                return (
+                  <Link key={trimmedTag} to={`/Tags/${trimmedTag}`} className="bg-gray-100 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                    {trimmedTag}
+                  </Link>
+                );
+              })}
+          </Link>
+            </span>
+            <span className="float-right bg-slate-100 text-blue-700 text-xs font-semibold inline-block px-3 p-2 rounded-full shadow-lg">
+            <Link to={`/Category/${blogPost.Bcategory}`} className="text-blue-500 hover:text-blue-700">
+            <FontAwesomeIcon icon={faFolderOpen} /> {blogPost.Bcategory}
+            </Link>
+            </span>
           </div>
         </main>
-      <aside className="px-4">
-        <BlogDetailsLatest />
-        <div className="mb-8"></div>
-        <BlogDetailsCategories />
-      </aside>
-    </div>
+        <aside className="px-4">
+          <BlogDetailsLatest />
+          <div className="mb-8"></div>
+          <BlogDetailsCategories />
+        </aside>
+      </div>
+      {showSharePopup && <SharePopup url={blogPost.Burl} title={blogPost.Bname} onClose={handleClosePopup} />}
     </>
   );
 };
