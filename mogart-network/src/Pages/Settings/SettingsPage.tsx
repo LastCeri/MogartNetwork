@@ -18,7 +18,7 @@ const themeOptions = [
 
 const ProfileSettingsPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, data, isLoading } = useData();
+  const { isLoggedIn, data, siteData, isLoading } = useData();
   const [profileImage, setProfileImage] = useState('');
   const [visibleUsername, setVisibleUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -40,7 +40,7 @@ const ProfileSettingsPage = () => {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
-      setProfileImage(data.ProfileImage || 'default_image_url');
+      setProfileImage(data?.ProfileImage ||siteData?.SiteDefaultProfileBackgroundImageURL);
       setVisibleUsername(data.Displayname || '');
       setWalletAddress(data.walletAddress || '');
       setEmail(data.Email || '');

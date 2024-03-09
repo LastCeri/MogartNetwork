@@ -1,7 +1,8 @@
-import React, { useRef,useState } from 'react';
-import { useData } from '../../MogartBase/Context/DataContext';
-import { register } from '../../MogartBase/Api/Api';
+import React, { useEffect, useRef,useState } from 'react';
+import { SiteData, useData } from '../../MogartBase/Context/DataContext';
+import { API_URL, register } from '../../MogartBase/Api/Api';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Register() {
   const { csrfToken } = useData();
@@ -9,6 +10,19 @@ function Register() {
   const navigate = useNavigate();
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { siteData,setSiteData,data, updateData } = useData();
+
+
+  useEffect(() => {
+    axios.get<SiteData[]>(`${API_URL}/MogartSiteData`)
+      .then(response => {
+        const siteData: SiteData = response.data[0];
+        setSiteData(siteData);
+      })
+      .catch(error => {
+        console.error('Error fetching site data:', error);
+      });
+  }, [setSiteData]);
 
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -99,7 +113,7 @@ function Register() {
         </div>
       </div>
 
-      <div className="flex-1 hidden lg:block" style={{ backgroundImage: 'url("https://cdn.discordapp.com/attachments/1188239804756926474/1190675902405804153/Mogart-Register-Background-1.png")', backgroundSize: 'cover' }}>
+      <div className="flex-1 hidden lg:block" style={{ backgroundImage: `url('${siteData?.SiteRegisterBackgroundURL}')`, backgroundSize: 'cover' }}>
         <div className="flex h-full bg-black bg-opacity-50 items-center justify-center">
           <div className="text-center text-white p-10">
             <h2 className="text-4xl font-bold mb-2">Let's Do Great Things Together</h2>

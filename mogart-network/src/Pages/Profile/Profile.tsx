@@ -55,31 +55,32 @@ export interface Friend {
 const Profile = () => {
   const navigate = useNavigate();
   const { username: urlUsername } = useParams<{ username?: string }>();
-  const { isLoggedIn, isLoading, data } = useData();
+  const { isLoggedIn, isLoading, data,siteData } = useData();
 
   const [userData, setUserData] = useState<UserData | null>(null);
 
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
 
   useEffect(() => {
-    if (isLoading) {
-      return;
-    }
+    if (isLoading) return;
 
     const fetchUserData = async () => {
       try {
         const response = await axios.get<UserData[]>(`${API_URL}/GetUserData/${username}`);
         if (response.data && response.data.length > 0) {
-          const userData = response.data[0];
-          if (userData.Photos && typeof userData.Photos === 'string') {
-            userData.Photos = JSON.parse(userData.Photos);
+          let fetchedUserData = response.data[0];
+          if (fetchedUserData.Photos && typeof fetchedUserData.Photos === 'string') {
+            fetchedUserData.Photos = JSON.parse(fetchedUserData.Photos);
           }
-          setUserData(userData);
+          if (!fetchedUserData.UsrBackgroundImage && siteData && siteData.SiteDefaultProfileBackgroundImageURL) {
+            fetchedUserData = { ...fetchedUserData, UsrBackgroundImage: siteData?.SiteDefaultProfileBackgroundImageURL };
+          }
+          setUserData(fetchedUserData); 
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
-    };
+    };   
 
     if (username) {
       fetchUserData();
