@@ -62,29 +62,32 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
           )}
       </div>
       {isModalOpen && selectedPhotoIndex !== null && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300">
-          <div 
-             className="relative bg-white p-4 rounded-lg shadow-xl overflow-auto transition-transform transform duration-300 scale-95 hover:scale-100" 
-            style={{ width: '600px', height: 'auto', maxWidth: '90%', maxHeight: '90vh' }}
-          >
-            <img
-              src={photos[selectedPhotoIndex].PhotoURL}
-              alt="Selected"
-              className="rounded-md"
-              style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain' }}
-            />
-             <button onClick={closeModal} className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded hover:bg-red-600 transition-colors duration-200">
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
-            <button onClick={goToPrevious} className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-200">
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            <button onClick={goToNext} className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors duration-200">
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+        <div className="relative bg-white rounded-lg shadow-xl overflow-hidden" style={{ maxWidth: '90%', maxHeight: '90vh' }}>
+          <img
+            src={photos[selectedPhotoIndex].PhotoURL}
+            alt="Selected"
+            className="w-full h-auto"
+          />
+          <button onClick={closeModal} className="absolute top-2 right-2 text-gray-100 bg-red-500 hover:bg-red-600 p-2 rounded-full transition-colors duration-300 focus:outline-none focus:ring focus:ring-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <button onClick={goToPrevious} className="absolute top-1/2 left-2 transform -translate-y-1/2 text-gray-100 bg-blue-500 hover:bg-blue-600 p-2 rounded-full transition-colors duration-300 focus:outline-none focus:ring focus:ring-blue-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button onClick={goToNext} className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-100 bg-blue-500 hover:bg-blue-600 p-2 rounded-full transition-colors duration-300 focus:outline-none focus:ring focus:ring-blue-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
-      )}
+      </div>
+    )}
+
     </aside>
   );
 };

@@ -23,6 +23,7 @@ import SearchPage from './Pages/Search/SearchPage.tsx';
 import NotFoundPage from './Pages/ErrorPages/404/404.tsx';
 import ServerErrorPage from './Pages/ErrorPages/500/500.tsx';
 import ForbiddenPage from './Pages/ErrorPages/403/403.tsx';
+import CategoryDetails from './MogartBase/Details/CategoryDetails/CategoryDetails.tsx';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
         <Route path="/Tags/:tagname" element={<TagsDetail />} />
+        <Route path="/Category/:catname" element={<CategoryDetails />} />
 
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/403" element={<ForbiddenPage  />} />

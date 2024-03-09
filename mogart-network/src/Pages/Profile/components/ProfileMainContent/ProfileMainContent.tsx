@@ -71,7 +71,9 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
   return (
     <main className="flex-1 p-6 overflow-auto">
       {userPosts.length === 0 ? (
-        <p>No posts available.</p>
+      <div className="flex items-center justify-center h-full">
+      <p className="text-gray-500 text-lg">No posts available.</p>
+    </div>
       ) : (
         userPosts.map((post) => (
           <div key={post.GlobalId} className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700">
