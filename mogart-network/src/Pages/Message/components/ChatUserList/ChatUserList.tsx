@@ -12,11 +12,10 @@ type ChatItem = {
 
 interface ChatListProps {
   chatData: ChatItem[];
-  startVoiceCall: () => void;
   onChatSelect: (selectedChatId: string) => void;
 }
 
-const ChatUserList: React.FC<ChatListProps> = ({ chatData, startVoiceCall, onChatSelect }) => {
+const ChatUserList: React.FC<ChatListProps> = ({ chatData, onChatSelect }) => {
   return (
     <div className="w-full">
         {chatData.map((user) => (
