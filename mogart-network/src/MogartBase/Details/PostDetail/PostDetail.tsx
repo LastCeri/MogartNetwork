@@ -3,102 +3,125 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSliders, faThumbsUp, faComment, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { API_URL } from '../../Api/Api';
 
 interface Post {
   Post_Title: string;
   Post_Author: string;
   Post_Image: string;
   Post_Content: string;
+  Avatar?: string;
+  Post_Date?: string;
+}
+
+interface Comment {
+  id: number;
+  author: string;
+  content: string;
 }
 
 const PostDetail = () => {
-  let { posturl } = useParams();
+  const { posturl } = useParams<{ posturl: string }>();
   const [post, setPost] = useState<Post | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState('');
 
   useEffect(() => {
     const fetchPost = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get<Post>(`http://localhost:3040/Posts/${posturl}`);
+        const response = await axios.get<Post>(`${API_URL}/GetPosts/${posturl}`);
         setPost(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error('Post fetch error:', error);
+        setError('Failed to fetch post');
+        setIsLoading(false);
       }
     };
 
     fetchPost();
   }, [posturl]);
 
+  const handleAddComment = () => {
+    if (commentText.trim() !== '') {
+      const newComment = {
+        id: Date.now(), 
+        author: 'Current User',
+        content: commentText,
+      };
+      setComments([...comments, newComment]);
+      setCommentText(''); 
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!post) return <div>No post found</div>;
+
   return (
-    <>    
+    <>
       <Header />
       <Navbar />
-      <div className="flex flex-row justify-center items-start mt-20">
-        <main className="w-full max-w-4xl p-4">
-          <div className="bg-gray-200 text-center py-6 rounded-lg">
-            <h1 className="text-3xl font-bold">{post?.Post_Title}</h1>
-            <span className="text-xl">By {post?.Post_Author}</span>
+      <div className="flex flex-col min-h-screen justify-center items-center">
+       
+        <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700 max-w-lg w-full h-auto">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <img className="h-8 w-8 rounded-full mr-2" src={post.Avatar || 'default-avatar-url'} alt={`${post.Post_Author}'s avatar`} />
+              <div>
+                <div className="font-medium">{post.Post_Author}</div>
+                <div className="text-xs text-gray-500">{post.Post_Date}</div>
+              </div>
+            </div>
+            <div className="text-gray-500 hover:text-gray-700 cursor-pointer">
+              <FontAwesomeIcon icon={faSliders} />
+            </div>
+          </div>
+          
+          <p className="mb-3">{post.Post_Content}</p>
+          
+          <div className="border-t pt-3 mt-3 text-sm flex justify-between items-center">
+            <button onClick={() => setShowCommentInput(!showCommentInput)} className="text-gray-500 hover:text-blue-600 focus:outline-none">
+              <FontAwesomeIcon icon={faThumbsUp} /> Like
+            </button>
+            <button onClick={() => setShowCommentInput(!showCommentInput)} className="text-gray-500 hover:text-green-600 focus:outline-none">
+              <FontAwesomeIcon icon={faComment} /> Comment
+            </button>
+            <button onClick={() => console.log('Share')} className="text-gray-500 hover:text-red-600 focus:outline-none">
+              <FontAwesomeIcon icon={faShareNodes} /> Share
+            </button>
           </div>
 
-          <div className="mt-4 bg-white shadow-lg rounded-lg overflow-hidden">
-            <img src={post?.Post_Image} alt={post?.Post_Title} className="w-full h-auto"/>
-            <div className="p-4" dangerouslySetInnerHTML={{ __html: post?.Post_Content || '' }} />
-          </div>
-        </main>
+          {showCommentInput && (
+            <div className="pt-2">
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Type a comment..."
+                className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500"
+                autoFocus
+                rows={3}
+              ></textarea>
+              <button onClick={handleAddComment} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
+                Add Comment
+              </button>
+            </div>
+          )}
 
-        <div className="px-4">
-          <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-                <h3 className="font-semibold text-xl mb-4 text-gray-800">Latest Posts</h3>
-                <ul className="space-y-2">
-                    <li className="rounded-md flex items-start">
-                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
-                        <div>
-                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">How to Foster Inclusive Conversations Online</a>
-                            <p className="text-xs text-gray-600">Published on Jan 1, 2024 by Author A</p>
-                        </div>
-                    </li>
-                    <li className="rounded-md flex items-start">
-                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
-                        <div>
-                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">5 Tips for Managing a Remote Community</a>
-                            <p className="text-xs text-gray-600">Published on Feb 1, 2024 by Author B</p>
-                        </div>
-                    </li>
-                    <li className="rounded-md flex items-start">
-                        <img src="placeholder-image-url.jpg" alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full"/>
-                        <div>
-                            <a href="#" className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">The Rise of Niche Social Platforms</a>
-                            <p className="text-xs text-gray-600">Published on Mar 1, 2024 by Author C</p>
-                        </div>
-                    </li>
-                </ul>
-            </aside>
-            <div className="mb-8"></div>
-            <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-              <h3 className="font-semibold text-xl mb-4 text-gray-800">Categories</h3>
-              <ul className="space-y-2">
-                  <li className="rounded-md flex items-start">
-                      <img src="category-icon-1.jpg" alt="Category Icon 1" className="w-10 h-10 mr-2 rounded-full" />
-                      <div>
-                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Technology</a>
-                          <p className="text-xs text-gray-600">Latest trends and innovations</p>
-                      </div>
-                  </li>
-                  <li className="rounded-md flex items-start">
-                      <img src="category-icon-2.jpg" alt="Category Icon 2" className="w-10 h-10 mr-2 rounded-full" />
-                      <div>
-                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Health & Wellness</a>
-                          <p className="text-xs text-gray-600">Tips for a healthy lifestyle</p>
-                      </div>
-                  </li>
-                  <li className="rounded-md flex items-start">
-                      <img src="category-icon-3.jpg" alt="Category Icon 3" className="w-10 h-10 mr-2 rounded-full"/>
-                      <div>
-                          <a href="#" className="block text-sm font-semibold text-blue-500 hover:text-blue-700">Travel</a>
-                          <p className="text-xs text-gray-600">Explore new destinations</p>
-                      </div>
-                  </li>
-              </ul>
-            </aside>
+          <div className="mt-4">
+            {comments.map((comment) => (
+              <div key={comment.id} className="bg-gray-100 rounded p-2 my-2">
+                <div className="font-semibold">{comment.author}</div>
+                <p>{comment.content}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

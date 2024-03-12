@@ -14,7 +14,7 @@ const MostPopularMember = () => {
         setMostPopularMembers(data);
       })
       .catch((error) => {
-        console.error('Verileri getirirken bir hata oluştu: ', error);
+        console.error('An error occurred while fetching data: ', error);
       });
   }, []);
 
