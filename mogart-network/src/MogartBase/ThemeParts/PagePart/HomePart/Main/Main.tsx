@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane,faThumbsUp,faShareNodes,faComment,faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useFetchMogartPosts, createPost } from '../../../../Api/Api';
@@ -12,7 +13,7 @@ interface PostType {
   Date: string;
 }
 
-function Post({ Author, Avatar, Content: PostContent, Date: PostDate }: PostType): React.JSX.Element {
+function Post({ Author, Avatar,GlobalId, Content: PostContent, Date: PostDate }: PostType): React.JSX.Element {
   const [showCommentInput, setShowCommentInput] = useState(false);
 
   const handleLike = () => {
@@ -28,8 +29,9 @@ function Post({ Author, Avatar, Content: PostContent, Date: PostDate }: PostType
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700">
+    <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700">  
       <div className="flex items-center justify-between mb-3">
+      <Link to={`/posts/${GlobalId}`} key={GlobalId} style={{ textDecoration: 'none' }}>
         <div className="flex items-center">
           <img className="h-8 w-8 rounded-full mr-2" src={Avatar || 'default-avatar-url'} alt={`${Author}'s avatar`} />
           <div>
@@ -37,10 +39,11 @@ function Post({ Author, Avatar, Content: PostContent, Date: PostDate }: PostType
             <div className="text-xs text-gray-500">{PostDate}</div>
           </div>
         </div>
-
+        </Link>
         <div className="text-gray-500 hover:text-gray-700 cursor-pointer">
           <FontAwesomeIcon icon={faSliders} />
-        </div>
+        </div>   
+       
       </div>
       
       <p className="mb-3">{PostContent}</p>
@@ -49,9 +52,11 @@ function Post({ Author, Avatar, Content: PostContent, Date: PostDate }: PostType
         <button type="button" onClick={handleLike} className="text-gray-500 hover:text-blue-600 focus:outline-none mr-2">
           <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
         </button>
-        <button type="button" onClick={handleComment} className="text-gray-500 hover:text-green-600 focus:outline-none mx-2">
-          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
-        </button>
+        <Link to={`/posts/${GlobalId}`} key={GlobalId} style={{ textDecoration: 'none' }}>
+          <button type="button" className="text-gray-500 hover:text-green-600 focus:outline-none mx-2">
+            <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
+          </button>
+        </Link>
         <div className="flex-grow"></div>
         <button type="button" onClick={handleShare} className="text-gray-500 hover:text-red-600 focus:outline-none">
           <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
@@ -144,16 +149,15 @@ function MainContent() {
         </ul>
       </div>
       <div className="space-y-4">
-        {posts.map((post) => (
+      {posts.map((post) => (
           <Post
-            key={post.GlobalId}
             GlobalId={post.GlobalId}
             Author={post.Author}
             Avatar={post.Avatar}
             Content={post.Content}
             Date={post.Date}
           />
-        ))}
+      ))}
       </div>
     </main>
   );
