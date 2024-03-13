@@ -1,7 +1,7 @@
 import React from 'react';
 import Groups from './Components/Groups/Groups.tsx';
 import MostPMember from './Components/MostPopular/MostPopularMembers.tsx';
-import ActiveFriends from './Components/PopularTags/PopularTags.tsx';
+import PopularTags from './Components/PopularTags/PopularTags.tsx';
 
 export default function RightSidebar() {
 
@@ -12,8 +12,8 @@ export default function RightSidebar() {
        {/* Most Popular Members */}
       <MostPMember />
 
-      {/* Active Friends */}
-      <ActiveFriends />
+      {/* PopularTags */}
+      <PopularTags />
       
       {/* Groups */}
       <Groups />
