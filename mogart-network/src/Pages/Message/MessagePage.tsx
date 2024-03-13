@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt, faPhone, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-import axios from 'axios';
 import { API_URL } from '../../MogartBase/Api/Api';
 import ChatUserList from './components/ChatUserList/ChatUserList';
 import VoiceChat from '../VoiceChat/VoiceChat';
+import axios from 'axios';
 
 const MessagePage = () => {
   const navigate = useNavigate();
@@ -142,30 +142,29 @@ const MessagePage = () => {
             <div className="w-2/3 bg-white overflow-y-auto shadow-lg rounded-lg">
               <div className="flex flex-col h-full">
               <div className="flex-1 overflow-y-auto">
-  {messages.map((message, index) => (
-    <div
-      key={index}
-      className={`message-container relative flex items-center cursor-pointer p-3 my-2 mx-4 rounded-lg transition-all duration-200 ease-in-out ${
-        selectedMessages.includes(message.MessageID) ? 'bg-blue-100 border-l-4 border-blue-500' : 'bg-white border border-gray-200'
-      }`}
-      onClick={() => handleSelectMessage(message.MessageID, message.MessageContent)}
-    >
-      <div
-        className={`ml-4 ${selectedMessages.includes(message.MessageID) ? 'text-green-500' : 'opacity-0'}`}
-      >
-        <FontAwesomeIcon icon={faCheckCircle} />
-      </div>
-      <div
-        className={`message flex items-center rounded-lg shadow-sm p-4 ${
-          message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
-        }`}
-      >
-        <p>{message.MessageContent}</p>
-      </div>
-    </div>
-  ))}
-</div>
-
+                  {messages.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`message-container relative flex items-center cursor-pointer p-3 my-2 mx-4 rounded-lg transition-all duration-200 ease-in-out ${
+                            selectedMessages.includes(message.MessageID) ? 'bg-blue-100 border-l-4 border-blue-500' : 'bg-white border border-gray-200'
+                          }`}
+                          onClick={() => handleSelectMessage(message.MessageID, message.MessageContent)}
+                        >
+                          <div
+                            className={`ml-4 ${selectedMessages.includes(message.MessageID) ? 'text-green-500' : 'opacity-0'}`}
+                          >
+                            <FontAwesomeIcon icon={faCheckCircle} />
+                          </div>
+                          <div
+                            className={`message flex items-center rounded-lg shadow-sm p-4 ${
+                              message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+                            }`}
+                          >
+                            <p>{message.MessageContent}</p>
+                          </div>
+                        </div>
+                      ))}
+                </div>
               </div>
               <div className="border-t border-gray-300 p-4 flex items-center">
                 <input

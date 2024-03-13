@@ -8,16 +8,17 @@ import { faSliders, faThumbsUp, faComment, faShareNodes } from '@fortawesome/fre
 import { API_URL } from '../../Api/Api';
 
 interface Post {
-  Post_Title: string;
-  Post_Author: string;
-  Post_Image: string;
-  Post_Content: string;
-  Avatar?: string;
-  Post_Date?: string;
+  PstTitle: string;
+  PstAuthor: string;
+  PstViews: string;
+  PstContent: string;
+  PstAuthorAvatar: string;
+  PstDate: string;
+  PstComments: Comment[];
 }
 
 interface Comment {
-  id: number;
+  comment_id: number;
   author: string;
   content: string;
 }
@@ -36,7 +37,14 @@ const PostDetail = () => {
       setIsLoading(true);
       try {
         const response = await axios.get<Post>(`${API_URL}/GetPosts/${posturl}`);
+        console.log("res",response);
         setPost(response.data);
+
+        if (response.data.PstComments === null) {
+          response.data.PstComments = [];
+        }
+
+        setComments(response.data.PstComments);
         setIsLoading(false);
       } catch (error) {
         console.error('Post fetch error:', error);
@@ -51,7 +59,7 @@ const PostDetail = () => {
   const handleAddComment = () => {
     if (commentText.trim() !== '') {
       const newComment = {
-        id: Date.now(), 
+        comment_id: Date.now(), 
         author: 'Current User',
         content: commentText,
       };
@@ -66,65 +74,67 @@ const PostDetail = () => {
 
   return (
     <>
-      <Header />
-      <Navbar />
-      <div className="flex flex-col min-h-screen justify-center items-center">
-       
-        <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700 max-w-lg w-full h-auto">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center">
-              <img className="h-8 w-8 rounded-full mr-2" src={post.Avatar || 'default-avatar-url'} alt={`${post.Post_Author}'s avatar`} />
-              <div>
-                <div className="font-medium">{post.Post_Author}</div>
-                <div className="text-xs text-gray-500">{post.Post_Date}</div>
-              </div>
-            </div>
-            <div className="text-gray-500 hover:text-gray-700 cursor-pointer">
-              <FontAwesomeIcon icon={faSliders} />
-            </div>
-          </div>
-          
-          <p className="mb-3">{post.Post_Content}</p>
-          
-          <div className="border-t pt-3 mt-3 text-sm flex justify-between items-center">
-            <button onClick={() => setShowCommentInput(!showCommentInput)} className="text-gray-500 hover:text-blue-600 focus:outline-none">
-              <FontAwesomeIcon icon={faThumbsUp} /> Like
-            </button>
-            <button onClick={() => setShowCommentInput(!showCommentInput)} className="text-gray-500 hover:text-green-600 focus:outline-none">
-              <FontAwesomeIcon icon={faComment} /> Comment
-            </button>
-            <button onClick={() => console.log('Share')} className="text-gray-500 hover:text-red-600 focus:outline-none">
-              <FontAwesomeIcon icon={faShareNodes} /> Share
-            </button>
-          </div>
-
-          {showCommentInput && (
-            <div className="pt-2">
-              <textarea
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Type a comment..."
-                className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500"
-                autoFocus
-                rows={3}
-              ></textarea>
-              <button onClick={handleAddComment} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
-                Add Comment
-              </button>
-            </div>
-          )}
-
-          <div className="mt-4">
-            {comments.map((comment) => (
-              <div key={comment.id} className="bg-gray-100 rounded p-2 my-2">
-                <div className="font-semibold">{comment.author}</div>
-                <p>{comment.content}</p>
-              </div>
-            ))}
+  <Header />
+  <Navbar />
+  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    
+    <div className="w-full max-w-lg p-4 bg-white rounded-lg shadow-md mt-20 text-gray-900">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <img className="h-10 w-10 rounded-full mr-3" src={post.PstAuthorAvatar || 'default-avatar-url'} alt={`${post.PstAuthor}'s avatar`} />
+          <div>
+            <div className="font-semibold">{post.PstAuthor}</div>
+            <div className="text-xs text-gray-400">{post.PstDate}</div>
           </div>
         </div>
+        <div className="p-2 rounded-full text-gray-400 hover:text-gray-500 cursor-pointer">
+          <FontAwesomeIcon icon={faSliders} size="lg" />
+        </div>
       </div>
-    </>
+      
+      <p className="mb-4">{post.PstContent}</p>
+      
+      <div className="border-t pt-4 mt-4 text-xs flex justify-between items-center">
+        <button className="flex items-center text-gray-400 hover:text-blue-500 focus:outline-none">
+          <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
+        </button>
+        <button className="flex items-center text-gray-400 hover:text-green-500 focus:outline-none">
+          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
+        </button>
+        <button className="flex items-center text-gray-400 hover:text-red-500 focus:outline-none">
+          <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
+        </button>
+      </div>
+
+      {showCommentInput && (
+        <div className="mt-4">
+          <textarea
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            placeholder="Type a comment..."
+            className="w-full p-3 text-sm text-gray-900 bg-gray-100 rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            autoFocus
+            rows={3}
+          ></textarea>
+          <button className="mt-3 w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow">
+            Add Comment
+          </button>
+        </div>
+      )}
+
+      <div className="mt-4 space-y-2">
+        {comments.map((comment) => (
+          <div key={comment.comment_id} className="bg-gray-100 rounded-lg p-3">
+            <div className="font-semibold">{comment.author}</div>
+            <p className="text-sm text-gray-800">{comment.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+  </div>
+</>
+
   );
 };
 
