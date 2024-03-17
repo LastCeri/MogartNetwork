@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
-import { UserData } from '../../Profile';
+import { Friend, UserData } from '../../Profile';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 
 
 interface ProfileHeaderProps {
   userData: UserData | null;
+  onSelect: (selectedContent: string) => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => {
+  const { data } = useData();
+  const userFriends: Friend[] = typeof userData?.UsrFriends === 'string'
+    ? JSON.parse(userData?.UsrFriends || '[]')
+    : userData?.UsrFriends || [];
+    
   if (!userData) {
-    return <div className="flex justify-center items-center h-screen">
-    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
-    <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
-  </div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+        <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
+      </div>
+    );
   }
+  
+  const isFriend = userFriends.some(friend => friend.name === data?.UserName);
+  
   return (
     <div className="flex justify-center items-end pt-16">
       <div className="w-full max-w-7xl mx-auto p-4 mt-8 rounded-xl" style={{ 
@@ -36,12 +47,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData }) => {
               <p className="text-md">{userData.UsrFollowers} Followers · {userData.UsrFollowing} Following · {userData.UsrScore} Points</p>
             </div>
           </div>
-          <div className="flex space-x-2">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Following</button>
-            <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Friends</button>
-          </div>
+          {!isFriend && (
+            <div className="flex space-x-2">
+              <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Follow</button>
+              <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Add Friend</button>
+            </div>
+          )}
         </div>
-        <ProfileNavigation />
+        <ProfileNavigation onSelect={onSelect} />
       </div>
     </div>
   );
