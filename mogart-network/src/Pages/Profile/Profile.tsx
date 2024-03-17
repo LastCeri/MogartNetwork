@@ -5,9 +5,10 @@ import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart.tsx';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
 import ProfileHeader from './components/ProfileHeader/ProfileHeader.tsx';
-import ProfileMainContent from './components/ProfileMainContent/ProfileMainContent.tsx';
+import ProfileMainContent from './components/ProfileContent/MainContent/ProfileMainContent.tsx';
 import ProfileLeftSidebar from './components/ProfileLeftSidebar/ProfileLeftSidebar.tsx';
 import ProfileRightSidebar from './components/ProfileRightSidebar/ProfileRightSidebar.tsx';
+import ProfilePhotosContent from './components/ProfileContent/PhotosContent/ProfilePhotosContent.tsx';
 import { API_URL } from '../../MogartBase/Api/Api.tsx';
 import axios from 'axios'; 
 
@@ -56,10 +57,26 @@ const Profile = () => {
   const navigate = useNavigate();
   const { username: urlUsername } = useParams<{ username?: string }>();
   const { isLoggedIn, isLoading, data,siteData } = useData();
-
   const [userData, setUserData] = useState<UserData | null>(null);
-
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
+
+  const [selectedContent, setSelectedContent] = useState('Posts');
+
+  const handleSelect = (selected:any) => {
+    setSelectedContent(selected);
+  };
+
+  let contentComponent;
+  switch (selectedContent) {
+    case 'Posts':
+      contentComponent = <ProfileMainContent userData={userData} />;
+      break;
+    case 'Photos':
+      contentComponent = <ProfilePhotosContent userData={userData} />;
+      break;
+    default:
+      contentComponent = <ProfileMainContent userData={userData} />;
+  }
 
   useEffect(() => {
     if (isLoading) return;
@@ -87,6 +104,21 @@ const Profile = () => {
     }
   }, [username, isLoading]);
 
+switch (selectedContent) {
+  case 'Posts':
+    contentComponent = <ProfileMainContent userData={userData} />;
+    break;
+  case 'Photos':
+    contentComponent = <ProfilePhotosContent userData={userData} />;
+    break;
+  default:
+    contentComponent = <ProfileMainContent userData={userData} />;
+}
+
+<div className="flex justify-center flex-1 overflow-hidden">
+  {contentComponent}
+</div>
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
@@ -100,9 +132,10 @@ const Profile = () => {
         </div>
                 
         <div className="flex flex-col flex-1 pt-4">
-        <ProfileHeader userData={userData} />
+          <ProfileHeader userData={userData} onSelect={handleSelect} />
+
           <div className="flex justify-center flex-1 overflow-hidden">
-            <ProfileMainContent userData={userData} />
+            {contentComponent}
           </div>
         </div>
         
