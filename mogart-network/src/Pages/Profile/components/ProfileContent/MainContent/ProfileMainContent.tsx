@@ -1,6 +1,6 @@
 // ProfileMainContent.tsx
 import React, { useState } from 'react';
-import { UserData, PostType } from '../../Profile';
+import { UserData, PostType } from '../../../Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSliders, faThumbsUp, faComment, faShareNodes } from '@fortawesome/free-solid-svg-icons';
 
