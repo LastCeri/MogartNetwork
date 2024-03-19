@@ -9,6 +9,10 @@ import ProfileMainContent from './components/ProfileContent/MainContent/ProfileM
 import ProfileLeftSidebar from './components/ProfileLeftSidebar/ProfileLeftSidebar.tsx';
 import ProfileRightSidebar from './components/ProfileRightSidebar/ProfileRightSidebar.tsx';
 import ProfilePhotosContent from './components/ProfileContent/PhotosContent/ProfilePhotosContent.tsx';
+import ProfileInvitationsContent from './components/ProfileContent/InvitationsContent/ProfileInvitationsContent.tsx';
+import ProfileGroupsContent from './components/ProfileContent/GroupsContent/ProfileGroupsContent.tsx';
+import ProfileActivityContent from './components/ProfileContent/ActivityContent/ProfileActivityContent.tsx';
+import ProfileFriendsContent from './components/ProfileContent/FriendsContent/ProfileFriendsContent.tsx';
 import { API_URL } from '../../MogartBase/Api/Api.tsx';
 import axios from 'axios'; 
 
@@ -59,7 +63,6 @@ const Profile = () => {
   const { isLoggedIn, isLoading, data,siteData } = useData();
   const [userData, setUserData] = useState<UserData | null>(null);
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
-
   const [selectedContent, setSelectedContent] = useState('Posts');
 
   const handleSelect = (selected:any) => {
@@ -74,6 +77,18 @@ const Profile = () => {
     case 'Photos':
       contentComponent = <ProfilePhotosContent userData={userData} />;
       break;
+    case 'Invitations':
+        contentComponent = <ProfileInvitationsContent userData={userData} />;
+      break;
+    case 'Groups':
+      contentComponent = <ProfileGroupsContent userData={userData} />;
+      break;    
+    case 'Activity':
+      contentComponent = <ProfileActivityContent userData={userData} />;
+      break;    
+    case 'Friends':
+        contentComponent = <ProfileFriendsContent userData={userData} />;
+        break;    
     default:
       contentComponent = <ProfileMainContent userData={userData} />;
   }
@@ -103,21 +118,6 @@ const Profile = () => {
       fetchUserData();
     }
   }, [username, isLoading]);
-
-switch (selectedContent) {
-  case 'Posts':
-    contentComponent = <ProfileMainContent userData={userData} />;
-    break;
-  case 'Photos':
-    contentComponent = <ProfilePhotosContent userData={userData} />;
-    break;
-  default:
-    contentComponent = <ProfileMainContent userData={userData} />;
-}
-
-<div className="flex justify-center flex-1 overflow-hidden">
-  {contentComponent}
-</div>
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
