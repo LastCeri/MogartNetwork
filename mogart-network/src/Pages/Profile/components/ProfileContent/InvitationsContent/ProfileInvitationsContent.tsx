@@ -1,51 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CreateInvitationModal from './Modals/CreateInvitationModal';
+import PendingInvitationsModal from './Modals/PendingInvitationsModal';
 import { UserData } from '../../../Profile';
+import PastInvitationsModal from './Modals/PastInvitationsModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faShareNodes, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-
+import { faClock, faEnvelope, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const dummyUserData = {
-    Invitations: [
-      { Subject: "Join our team meeting", SenderName: "Alice" },
-      { Subject: "Weekly Sync-up", SenderName: "Bob" },
-      { Subject: "Project Kickoff", SenderName: "Charlie" },
-    ],
-  };
-
+  Invitations: [
+    { Subject: "Join our team meeting", SenderName: "Alice",Date:"03.10.2024" },
+    { Subject: "Weekly Sync-up", SenderName: "Bob" ,Date:"03.5.2024" },
+    { Subject: "Project Kickoff", SenderName: "Charlie" ,Date:"02.14.2024" },
+  ],
+};
 
 interface ProfileInvitationsContentProps {
   userData: UserData | null;
 }
 
 const ProfileInvitationsContent: React.FC<ProfileInvitationsContentProps> = ({ userData }) => {
+  const [activeModal, setActiveModal] = useState('');
   const invitations = dummyUserData?.Invitations || [];
+
+  const handleCreateInvitation = (invitation:any) => {
+    console.log(invitation); 
+    setActiveModal(''); 
+  };
+
+
+  let contentComponent;
+  switch (activeModal) {
+    case 'create':
+      contentComponent = <CreateInvitationModal isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />;
+      break;
+    case 'pending':
+      contentComponent = <PendingInvitationsModal isOpen={true} onClose={() => setActiveModal('')} invitations={invitations} />;
+      break;
+    case 'past':
+      contentComponent = <PastInvitationsModal isOpen={true} onClose={() => setActiveModal('')} invitations={invitations} />;
+      break;
+    default:
+      contentComponent = <PendingInvitationsModal isOpen={true} onClose={() => setActiveModal('')} invitations={invitations} />;;
+  }
 
   return (
     <main className="flex-1 p-6 overflow-auto">
-      {invitations.length === 0 ? (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500 text-lg">No invitations available.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {invitations.map((invitation, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
-              <div className="mb-2">
-                <h3 className="text-lg font-semibold">{invitation.Subject}</h3>
-                <p className="text-sm text-gray-500">From: {invitation.SenderName}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                <button className="text-white bg-green-500 hover:bg-green-600 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
-                  Accept
-                </button>
-                <button className="text-gray-500 border border-gray-300 hover:bg-gray-100 focus:outline-none rounded-lg text-sm px-5 py-2.5 text-center">
-                  Decline
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+     <div className="flex justify-center items-center space-x-4">
+     <button onClick={() => setActiveModal('pending')} className="mb-4 px-4 py-2 rounded text-purple-600 border border-purple-500 hover:bg-purple-700 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
+     <FontAwesomeIcon icon={faEnvelope} className="mr-2" /> Pending Invitations
+      </button>
+      <button onClick={() => setActiveModal('past')} className="mb-4 px-4 py-2 rounded text-green-600 border border-green-600 hover:bg-green-700 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
+      <FontAwesomeIcon icon={faClock} className="mr-2" /> Recent Invitations
+      </button>
+      <button onClick={() => setActiveModal('create')} className="mb-4 px-4 py-2 rounded text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
+      <FontAwesomeIcon icon={faPlus} className="mr-2" />  Create Invitation
+      </button>
+    </div>
+      {contentComponent}
     </main>
   );
 };
