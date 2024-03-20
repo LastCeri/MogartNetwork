@@ -13,7 +13,7 @@ const ProfileLeftSidebar: React.FC<ProfileLeftSidebarProps> = ({ userData }) => 
     : userData?.UsrFriends || [];
 
   return (
-    <aside className="w-96 bg-white p-12 h-auto rounded-lg shadow space-y-4">
+    <aside className="w-96 bg-white shadow-lg p-12 h-auto rounded-lg  space-y-4">
       
       <h2 className="font-bold text-lg mb-2">{userData?.UsrDisplayName}'S FRIENDS</h2>
       

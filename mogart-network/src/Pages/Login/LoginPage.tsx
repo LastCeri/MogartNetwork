@@ -3,6 +3,7 @@ import { SiteData, useData } from '../../MogartBase/Context/DataContext';
 import { API_URL, login } from '../../MogartBase/Api/Api';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { checkMinaProvider, requestAccounts } from '../../MogartBase/WalletProc/Wallet';
 
 function Login() {
   const navigate = useNavigate();
@@ -39,6 +40,45 @@ function Login() {
   const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRememberMe(event.target.checked);
   };
+
+  const handleWalletLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const providerResponse = await checkMinaProvider(); 
+    
+    if (providerResponse === true) {
+      console.log("Provider Found, proceeding with WalletLogin...");
+      const walletAddress = await requestAccounts();
+      try{
+
+        const response = await login({walletAddress});
+        const { message, status, token, userId, userData } = response;
+        
+        if (status === "Ok") {
+          setUserAuthToken(token);
+          setLoginSuccess(true);
+          setLoginStatus(true);
+          setUserAuthID(userId);
+          updateData(userData);
+          setTimeout(() => navigate('/'), 2500);
+        }else if (status === "alreadylogged"){
+          navigate('/');
+        }else if (status === "Bad Request") {
+          setErrorMessage(message);
+        } else if (status === "Not Found") {
+          setErrorMessage(message);
+        }else {
+          setErrorMessage(message || "An error occurred during login.");
+        }
+
+      }catch (error) {
+        console.error(error);
+        setErrorMessage('An error occurred during login.');
+      }
+    } else {
+      console.log("Provider not found, please log in with a provider.");
+    }
+  };
+ 
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -125,8 +165,12 @@ function Login() {
               <button onClick={handleLogin} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                 Login
               </button>
+            </div> <p className='mb-6 text-center'>OR</p>
+            <div className="mb-6">
+              <button onClick={handleWalletLogin} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+               Wallet Connect
+              </button>
             </div>
-
             <div className="text-center">
               <a href="/register" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                 Register
