@@ -16,13 +16,18 @@ function HomePage() {
   useEffect(() => {
     axios.get<SiteData[]>(`${API_URL}/MogartSiteData`)
       .then(response => {
-        const siteData: SiteData = response.data[0];
-        setSiteData(siteData);
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const siteData: SiteData = response.data[0];
+          setSiteData(siteData);
+        } else {
+          console.error('Site data is empty or in an unexpected format');
+        }
       })
       .catch(error => {
         console.error('Error fetching site data:', error);
       });
   }, [setSiteData]);
+  
 
   if (isLoading) {
     return (

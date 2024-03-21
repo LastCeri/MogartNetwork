@@ -10,7 +10,7 @@ function Login() {
   const { userAuthID, setUserAuthID } = useData();
   const { userAuthToken, setUserAuthToken } = useData();
   const { isLoggedIn, setLoginStatus } = useData();
-  const { siteData,setSiteData,data, updateData } = useData();
+  const { siteData, setSiteData, data, updateData } = useData();
   const formRef = useRef<HTMLFormElement>(null);
   const [LoginSuccess, setLoginSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -46,24 +46,20 @@ function Login() {
     const providerResponse = await checkMinaProvider(); 
     
     if (providerResponse === true) {
-      console.log("Provider Found, proceeding with WalletLogin...");
-     
       try{ 
-        
         const walletAddress = await requestAccounts();
-     
         if(!walletAddress)
         {  throw new Error('Failed to retrieve wallet address. Please check your wallet extension.');}     
         
         const response = await login({walletAddress});
-        const { message, status, token, userId, userData } = response;
+        const { message, status, token, userId, userdata } = response;
         
         if (status === "Ok") {
           setUserAuthToken(token);
           setLoginSuccess(true);
           setLoginStatus(true);
           setUserAuthID(userId);
-          updateData(userData);
+          updateData(userdata);
           setTimeout(() => navigate('/'), 2500);
         }else if (status === "alreadylogged"){
           navigate('/');
@@ -89,13 +85,11 @@ function Login() {
           setTimeout(() => setErrorMessage(""), 2500)
         }
       }
-          
     } else {
       setErrorMessage("Provider not found, please log in with a provider.");
       setTimeout(() => setErrorMessage(""), 2500)
     }
   };
- 
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -108,26 +102,22 @@ function Login() {
         setTimeout(() => setErrorMessage(""), 2500)
         return;
       }
-  
       const email = formData.get('email') as string; 
       const password = formData.get('password') as string;
-  
       if (rememberMe && email) {
         localStorage.setItem('rememberuserEmail', email);
       } else {
         localStorage.removeItem('rememberuserEmail');
       }
-
       if (!email || !password) {
         setErrorMessage("Please fill in all fields.");
         setTimeout(() => setErrorMessage(""), 2500)
         return;
       }
-  
       try {
         const response = await login({email, password});
         const { message, status, token, userId, userdata } = response;
-      
+
         if (status === "Ok") {
           setUserAuthToken(token);
           setLoginSuccess(true);
