@@ -28,7 +28,7 @@ const MessagePage = () => {
     if (isLoading) return;
     if (!isLoggedIn) {
       navigate('/login');
-    }
+    } 
     const fetchChatData = async () => {
       try {
         const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}`);
@@ -124,13 +124,16 @@ const MessagePage = () => {
                 <h2 className="text-lg font-semibold">Chats</h2>
                 <div className="space-x-2">
                   <button
-                    onClick={() => (setIsCallModalOpen(true))}
-                    className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
+                    onClick={() => setIsCallModalOpen(true)}
+                    className="inline-flex items-center bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
                   >
                     <FontAwesomeIcon icon={faPhone} className="mr-2" />
                     Call
                   </button>
-                  <button className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out">
+                  <button
+                    onClick={() => {}}
+                    className="inline-flex items-center bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50 shadow-lg hover:shadow-xl transition duration-150 ease-in-out"
+                  >
                     <FontAwesomeIcon icon={faCommentAlt} className="mr-2" />
                     New Chat
                   </button>
@@ -141,7 +144,7 @@ const MessagePage = () => {
             </div>
             <div className="w-2/3 bg-white overflow-y-auto shadow-lg rounded-lg">
               <div className="flex flex-col h-full">
-              <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto">
                   {messages.map((message, index) => (
                         <div
                           key={index}
