@@ -1,7 +1,7 @@
 // RightSidebar.tsx
 import React, { useState } from 'react';
 import { UserData } from '../../Profile';
-import { faChevronRight, faChevronLeft, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faSuperscript, faChevronLeft, faStairs, faUserSecret, faMask,faUserClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ProfileRightSidebarProps {
@@ -37,13 +37,23 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
   };
   return (
     <aside className="w-96 bg-white p-4 rounded-lg shadow space-y-4">
-      <div>
+      <div className="bg-white shadow-lg rounded-lg p-4 max-w-sm mx-auto">
+          <h2 className="font-semibold text-lg border-b pb-2">Badges</h2>
+          <div className="flex flex-wrap items-center mt-2">
+            <div className="m-2">
+              <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1.5 rounded-full uppercase font-bold tracking-wide shadow">
+              <FontAwesomeIcon icon={faUserClock} /> New User
+              </span>
+            </div>
+          </div>
+      </div>
+      <div className="bg-white shadow-lg rounded-lg p-4 max-w-sm mx-auto">
         <h2 className="font-semibold text-lg border-b pb-2">ABOUT</h2>
-        <p className="text-sm mt-2">
+        <p className="text-sm mt-2 break-words max-w-xl">
         {userData?.UsrDetail || `Hi, I am ${userData?.UsrName}`}
       </p>
       </div>
-      <div>
+      <div className="bg-white shadow-lg rounded-lg p-4 max-w-sm mx-auto">
         <h2 className="font-semibold text-lg border-b pb-2">PHOTOS</h2>
         {photos.length > 0 ? (
             <div className="grid grid-cols-3 gap-2 mt-2">
