@@ -1,13 +1,14 @@
-import { PostRequest } from '../Api/Api';
+import axios from 'axios';
 
 declare global {
   interface Window { mina: any; }
 }
 
 export type SendPaymentParams = {
-  content: string;
-  email: string;
-  deliverydate: string;
+  type: string;
+  userAuth1Key: string;
+  userAuth2Key: string;
+  TimeStamp: string;
 };
 
 export async function checkMinaProvider(): Promise<boolean> {
@@ -35,6 +36,16 @@ export async function requestAccounts(): Promise<string[]> {
     const accounts = await window.mina.requestAccounts();
     return accounts;
   } catch (error) {
+    throw error;
+  }
+}
+
+export async function sendPayment(params: SendPaymentParams): Promise<void> {
+  try {
+    const response = await axios.post('', params);
+    console.log('Payment success:', response.data);
+  } catch (error) {
+    console.error('Payment error:', error);
     throw error;
   }
 }
