@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,14 +6,17 @@ import { useData } from '../../../../MogartBase/Context/DataContext';
 import { logout } from '../../../Api/Api';
 import Notification, { MessageType } from '../../Notification/Notification';
 
-
-
 export default function Navbar() {
-  const { isLoggedIn, data } = useData();
-  const [rememberMe, setRememberMe] = useState(false);
+  const { isLoggedIn,isLoading, data,userAuthID } = useData();
   const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+  }, [data]);
+
   const createUserDependentUrl = (basePath:string, userDependentPath:string) => {
     return data?.UserName ? `/${data.UserName}${userDependentPath}` : basePath;
   };
@@ -35,32 +38,22 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     if (!isLoggedIn) {
-      console.log("User is not logged in");
       return;
     }
   
     try {
-      const savedUserAuthID = localStorage.getItem('userAuthID');
-      const rememberemail = localStorage.getItem('rememberuserEmail');
-      const response = await logout({ userid: savedUserAuthID, email: data.Email, walletadress: data.walletAddress });
+      const response = await logout({ userid: userAuthID, email: data?.Email, walletaddress: data?.WalletAddress });
   
       if (response.success === false) {
         showNotification(MessageType.Error, response.message);
       } else {
         showNotification(MessageType.Success, "Logout successful");
-        if(rememberemail)
-        {
-          localStorage.clear();
-          localStorage.setItem('rememberuserEmail', rememberemail);
-        }else { localStorage.clear();}
-        
         navigate("/login");
       }
     } catch (error) {
       showNotification(MessageType.Error, "Logout error.");
     }
   };
-  
 
   return (
     <div className="fixed inset-y-0 w-16 bg-white flex flex-col items-center py-4 shadow-lg z-10">
