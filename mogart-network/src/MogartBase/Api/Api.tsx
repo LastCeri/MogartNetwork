@@ -57,16 +57,15 @@ export const getUserData = (sessionToken:any) => handleRequest('GET', 'getUserDa
 
 
 export const fetchGroups = async () => {
-  try {
-    const response = await fetch(`${API_URL}/GetGroups`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  } catch (error) {
+  axios.get(`${API_URL}/GetGroups`)
+  .then(response => {
+    console.log('Fetched groups:', response.data);
+    return response.data;
+  })
+  .catch(error => {
     console.error('Error fetching groups:', error);
     return [];
-  }
+  });
 };
 
 

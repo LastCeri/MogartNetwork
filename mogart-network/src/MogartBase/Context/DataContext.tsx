@@ -17,7 +17,7 @@ interface UserData {
   Score: string;
   SocialNetworkAdress: string;
   Details: string;
-  walletAddress: string;
+  WalletAddress: string;
   Email: string;
   EmailVerified: boolean;
   Theme: string;
@@ -48,7 +48,7 @@ const initialUserData: UserData = {
   Score: '',
   SocialNetworkAdress: '',
   Details: '',
-  walletAddress: '',
+  WalletAddress: '',
   Email: '',
   Theme: '',
   Language: '',
@@ -128,7 +128,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const savedVoiceDetectionLevel = localStorage.getItem('voiceDetectionLevel');
 
     if (savedData) {
-      setData(JSON.parse(savedData));
+        setData(JSON.parse(savedData));
     }
     if (savedSiteData) {
       SetSiteData(JSON.parse(savedSiteData));
@@ -228,8 +228,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       userAuthID,
       isLoading,
       voiceDetectionLevel,
-      updateData,
-      setChatData,
+      updateData:updateData,
+      setChatData:setChatData,
       setSiteData:SetSiteData,
       setCsrfToken: setCsrfTokenHandler,
       setLoginStatus: setLoginStatus,
