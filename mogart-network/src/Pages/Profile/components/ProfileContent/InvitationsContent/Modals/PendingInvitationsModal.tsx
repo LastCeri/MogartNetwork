@@ -22,7 +22,7 @@ function PendingInvitationsModal({ isOpen, onClose, invitations }: PendingInvita
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {invitations.map((invitation, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
+            <div key={index} className="bg-white border border-purple-300 rounded-lg  shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
               <div className="mb-2">
                 <h3 className="text-lg font-semibold">{invitation.Subject}</h3>
                 <p className="text-sm text-gray-500">From: {invitation.SenderName}</p>
