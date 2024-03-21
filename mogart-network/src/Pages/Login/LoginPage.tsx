@@ -47,9 +47,14 @@ function Login() {
     
     if (providerResponse === true) {
       console.log("Provider Found, proceeding with WalletLogin...");
-      const walletAddress = await requestAccounts();
-      try{
-
+     
+      try{ 
+        
+        const walletAddress = await requestAccounts();
+     
+        if(!walletAddress)
+        {  throw new Error('Failed to retrieve wallet address. Please check your wallet extension.');}     
+        
         const response = await login({walletAddress});
         const { message, status, token, userId, userData } = response;
         
@@ -64,18 +69,30 @@ function Login() {
           navigate('/');
         }else if (status === "Bad Request") {
           setErrorMessage(message);
+          setTimeout(() => setErrorMessage(""), 2500)
         } else if (status === "Not Found") {
           setErrorMessage(message);
+          setTimeout(() => setErrorMessage(""), 2500)
         }else {
           setErrorMessage(message || "An error occurred during login.");
+          setTimeout(() => setErrorMessage(""), 2500)
         }
 
-      }catch (error) {
-        console.error(error);
-        setErrorMessage('An error occurred during login.');
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error);
+          setErrorMessage(error.message);
+          setTimeout(() => setErrorMessage(""), 2500)
+        } else {
+          console.error("An unknown error occurred");
+          setErrorMessage("An unknown error occurred");
+          setTimeout(() => setErrorMessage(""), 2500)
+        }
       }
+          
     } else {
-      console.log("Provider not found, please log in with a provider.");
+      setErrorMessage("Provider not found, please log in with a provider.");
+      setTimeout(() => setErrorMessage(""), 2500)
     }
   };
  
@@ -88,6 +105,7 @@ function Login() {
   
       if (!formData.has('email') || !formData.has('password')) {
         setErrorMessage("Please fill in all fields.");
+        setTimeout(() => setErrorMessage(""), 2500)
         return;
       }
   
@@ -102,6 +120,7 @@ function Login() {
 
       if (!email || !password) {
         setErrorMessage("Please fill in all fields.");
+        setTimeout(() => setErrorMessage(""), 2500)
         return;
       }
   
@@ -120,14 +139,24 @@ function Login() {
           navigate('/');
         }else if (status === "Bad Request") {
           setErrorMessage(message);
+          setTimeout(() => setErrorMessage(""), 2500)
         } else if (status === "Not Found") {
           setErrorMessage(message);
+          setTimeout(() => setErrorMessage(""), 2500)
         }else {
           setErrorMessage(message || "An error occurred during login.");
+          setTimeout(() => setErrorMessage(""), 2500)
         }
-      } catch (error) {
-        console.error(error);
-        setErrorMessage('An error occurred during login.');
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error);
+          setErrorMessage(error.message);
+          setTimeout(() => setErrorMessage(""), 2500)
+        } else {
+          console.error("An unknown error occurred");
+          setErrorMessage("An unknown error occurred");
+          setTimeout(() => setErrorMessage(""), 2500)
+        }
       }
     }
   };
@@ -137,42 +166,42 @@ function Login() {
       <div className="flex flex-1 items-center justify-center p-10">
         <div className="w-full max-w-md">
           <form ref={formRef} className="bg-white shadow-lg rounded px-12 pt-6 pb-8 mb-4">
-
-            <div className="text-center mb-4">
-              <p className="text-gray-700 text-2xl">Welcome back</p>
-              <span className="text-sm text-gray-400">Welcome back! Please enter your details.</span>
+            <div className="text-center mb-8">
+              <p className="text-gray-800 text-3xl font-semibold">Welcome Back</p>
+              <span className="text-md text-gray-500">Please enter your details.</span>
+              <div className="mt-4 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
             </div>
-
             <div className="mb-4">
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="email" id="email" type="text" placeholder="Email" />
+              <input className="shadow-lg appearance-none border-0 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-150 ease-in-out" name="email" id="email" type="email" placeholder="Email" />
             </div>
 
             <div className="mb-6">
-              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" name="password" id="password" type="password" placeholder="Password" />
+              <input className="shadow-lg appearance-none border-0 rounded-lg w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-150 ease-in-out" name="password" id="password" type="password" placeholder="Password" />
             </div>
 
             <div className="flex items-center justify-between mb-6">
-              <label className="inline-flex items-center">
-                <input type="checkbox" className="form-checkbox text-indigo-600" checked={rememberMe} onChange={handleRememberMe} />
-                <span className="ml-2">Remember me</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="form-checkbox text-indigo-600 w-4 h-4 rounded border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" checked={rememberMe} onChange={handleRememberMe} />
+                <span className="ml-2 text-gray-700 hover:text-gray-700 transition duration-150 ease-in-out">Remember me</span>
               </label>
-              <a href="#" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+              <a href="/LostPassword" className="inline-block align-baseline font-semibold text-sm text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out">
                 Lost your password?
               </a>
             </div>
 
-            <div className="mb-6">
-              <button onClick={handleLogin} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+            <div className="mb-2">
+              <button onClick={handleLogin} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 shadow-lg transform hover:scale-105 transition duration-150 ease-in-out" type="button">
                 Login
               </button>
-            </div> <p className='mb-6 text-center'>OR</p>
-            <div className="mb-6">
-              <button onClick={handleWalletLogin} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-               Wallet Connect
+            </div> 
+            <p className='mb-2 text-center text-gray-600'>OR</p>
+            <div className="mb-2">
+              <button onClick={handleWalletLogin} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-opacity-50 shadow-lg transform hover:scale-105 transition duration-150 ease-in-out" type="button">
+                Wallet Connect
               </button>
             </div>
-            <div className="text-center">
-              <a href="/register" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+            <div className="text-center mt-6">
+              <a href="/register" className="inline-block align-baseline font-bold text-sm text-gray-700 hover:text-gray-900 transition duration-150 ease-in-out">
                 Register
               </a>
             </div>
