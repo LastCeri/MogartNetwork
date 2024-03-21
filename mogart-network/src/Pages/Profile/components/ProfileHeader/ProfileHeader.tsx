@@ -37,15 +37,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
         <div className="flex items-center justify-between mt-12">
           <div className="flex items-center space-x-4">
             <img
-              className="h-24 w-24 rounded-full border-4 border-white"
+              className="h-24 w-24 rounded-full border-4 border-white object-cover"
               src={userData.UsrProfileImage}
               alt={userData.UsrName}
             />
-            <div className="text-white">
-              <h2 className="text-4xl font-bold">{userData.UsrDisplayName}</h2>
+           <div className="text-white">
+              <h2 className="text-4xl font-bold break-words max-w-xl">{userData.UsrDisplayName}</h2>
               <p className="text-md">@{userData.UsrName} - Joined {userData.UsrRegisterDate}</p>
               <p className="text-md">{userData.UsrFollowers} Followers · {userData.UsrFollowing} Following · {userData.UsrScore} Points</p>
-            </div>
+          </div>
           </div>
           {!isFriend && (
             <div className="flex space-x-2">
