@@ -30,74 +30,83 @@ const CreateGroupPage = () => {
   };
 
   return (
-    <main className="flex p-4 bg-gray-100 h-screen">
-      <div className="max-w-md w-full mx-auto bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-700 mb-6">Create New Group</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-          <div className="relative group">
+    <main className="flex p-4h-auto items-center justify-center">
+      <div className="max-w-lg w-full mx-auto bg-white rounded-lg shadow-md p-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Create New Group</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative group mb-4">
             {groupLogo && (
               <img
                 src={groupLogo}
                 alt="Group Logo Preview"
-                className="w-full h-40 object-cover rounded mb-2"
+                className="w-full h-40 object-cover rounded-lg mb-2"
               />
             )}
+            <input
+              type="file"
+              id="groupLogo"
+              className="w-full p-2 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100
+              cursor-pointer border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              onChange={handleFileUpload}
+            />
           </div>
 
-          <label htmlFor="groupLogo" className="text-gray-700 text-sm font-bold">
-            Image Upload
-          </label>
-          <input
-            type="file"
-            id="groupLogo"
-            className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            onChange={handleFileUpload}
-          />
+          <div>
+            <label htmlFor="groupName" className="block text-gray-700 text-sm font-bold mb-2">
+              Group Name
+            </label>
+            <input
+              type="text"
+              id="groupName"
+              placeholder="Set Group Name"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+            />
+          </div>
 
-          <label htmlFor="groupName" className="text-gray-700 text-sm font-bold">
-            Group Name
-          </label>
-          <input
-            type="text"
-            id="groupName"
-            placeholder='Set Group Name'
-            className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-          />
+          <div>
+            <label htmlFor="groupDescription" className="block text-gray-700 text-sm font-bold mb-2">
+              Group Description
+            </label>
+            <textarea
+              id="groupDescription"
+              rows={4}
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Set Group Description"
+              value={groupDescription}
+              onChange={(e) => setGroupDescription(e.target.value)}
+            ></textarea>
+          </div>
 
-          <label htmlFor="groupDescription" className="text-gray-700 text-sm font-bold">
-            Group Description
-          </label>
-          <textarea
-            id="groupDescription"
-            className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={groupDescription}
-            placeholder='Set Group Description'
-            onChange={(e) => setGroupDescription(e.target.value)}
-          />
-
-          <label htmlFor="groupTags" className="text-gray-700 text-sm font-bold">
-            Group Tags
-          </label>
-          <input
-            type="text"
-            id="groupTags"
-            className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={groupTags}
-            onChange={(e) => setGroupTags(e.target.value)}
-            placeholder="Separate tags with commas"
-          />
+          <div>
+            <label htmlFor="groupTags" className="block text-gray-700 text-sm font-bold mb-2">
+              Group Tags
+            </label>
+            <input
+              type="text"
+              id="groupTags"
+              placeholder="Separate tags with commas"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={groupTags}
+              onChange={(e) => setGroupTags(e.target.value)}
+            />
+          </div>
 
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
           >
             Create Group
           </button>
         </form>
       </div>
     </main>
+
   );
 };
 
