@@ -38,15 +38,15 @@ export default function LeftSidebarComponentsBlogs() {
           {blogs.map((blog) => (
             <li key={blog.Bid} className="hover:bg-gray-100 rounded-md transition duration-200 p-2">
               <a href={`/Blogs/${blog.Burl}`} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <img className="h-12 w-12 rounded-lg" src={blog.Bimage} alt="Blog Thumbnail" />
+                <img className="h-14 w-14 rounded-lg object-cover" src={blog.Bimage} alt="Blog Thumbnail" />
                 <div className="flex-1">
                   <span className="text-ms font-medium">{blog.Bname}</span>
                   <div className="text-xs text-gray-500 mt-1">
                     <div className="flex items-center">
-                      <img className="h-6 w-6 rounded-full" src={blog.BauthorImage} alt="Author" />
-                      <span className="ml-2">Author: {blog.Bauthor}</span>
+                      <img className="h-8 w-8 rounded-full object-cover" src={blog.BauthorImage} alt="Author" />
+                      <span className="ml-2 font-medium">{blog.Bauthor}</span>
                     </div>
-                    <p><FontAwesomeIcon icon={faCalendarDays} /> {blog.Bdate}</p>
+                    <p className="mt-2"><FontAwesomeIcon icon={faCalendarDays} /> {blog.Bdate}</p>
                     <p><FontAwesomeIcon icon={faFolderOpen} /> {blog.Bcategory}</p>
                     <div className="flex items-center">
                       <FontAwesomeIcon icon={faEye} />
