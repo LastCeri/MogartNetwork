@@ -25,6 +25,7 @@ import ServerErrorPage from './Pages/ErrorPages/500/500.tsx';
 import ForbiddenPage from './Pages/ErrorPages/403/403.tsx';
 import CategoryDetails from './MogartBase/Details/CategoryDetails/CategoryDetails.tsx';
 import LostPasswordPage from './Pages/LostPassword/LostPasswordPage.tsx';
+import CommunicationPage from './Pages/Communication/CommunicationPage.tsx';
 
 function App() {
   return (
@@ -46,6 +47,9 @@ function App() {
         <Route path="/Settings" element={<SettingsPage />} />
         <Route path="/Search" element={<SearchPage />} />
 
+        <Route path="/Communication" element={<CommunicationPage />} />
+        <Route path="/Com" element={<CommunicationPage />} />
+        
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
 
