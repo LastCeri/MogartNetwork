@@ -4,8 +4,10 @@ import axios from 'axios';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSliders, faThumbsUp, faComment, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { faSliders, faThumbsUp, faComment, faShareNodes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { API_URL } from '../../Api/Api';
+import RightSidebar from '../../ThemeParts/PagePart/HomePart/RightSidebar/RightSidebar';
+import LeftSidebar from '../../ThemeParts/PagePart/HomePart/LeftSidebar/LeftSidebar';
 
 interface Post {
   PstTitle: string;
@@ -37,7 +39,6 @@ const PostDetail = () => {
       setIsLoading(true);
       try {
         const response = await axios.get<Post>(`${API_URL}/GetPosts/${posturl}`);
-        console.log("res",response);
         setPost(response.data);
 
         if (response.data.PstComments === null) {
@@ -79,65 +80,78 @@ const PostDetail = () => {
     <>
   <Header />
   <Navbar />
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-    
-    <div className="w-full max-w-lg p-4 bg-white rounded-lg shadow-md mt-20 text-gray-900">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <img className="h-10 w-10 rounded-full mr-3" src={post.PstAuthorAvatar || 'default-avatar-url'} alt={`${post.PstAuthor}'s avatar`} />
-          <div>
-            <div className="font-semibold">{post.PstAuthor}</div>
-            <div className="text-xs text-gray-400">{post.PstDate}</div>
+  <div className="w-full flex flex-1 pl-16 mt-20">
+    <LeftSidebar/>
+    <main className="flex-grow">
+      <div className="max-w-xl mx-auto p-4">
+        {isLoading ? (
+          <div className="flex justify-center items-center space-x-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500"></div>
+            <p className="text-lg text-blue-600 font-semibold">Loading...</p>
           </div>
-        </div>
-        <div className="p-2 rounded-full text-gray-400 hover:text-gray-500 cursor-pointer">
-          <FontAwesomeIcon icon={faSliders} size="lg" />
-        </div>
-      </div>
-      
-      <p className="mb-4">{post.PstContent}</p>
-      
-      <div className="border-t pt-4 mt-4 text-xs flex justify-between items-center">
-        <button className="flex items-center text-gray-400 hover:text-blue-500 focus:outline-none">
-          <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
-        </button>
-        <button className="flex items-center text-gray-400 hover:text-green-500 focus:outline-none">
-          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
-        </button>
-        <button className="flex items-center text-gray-400 hover:text-red-500 focus:outline-none">
-          <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
-        </button>
-      </div>
+        ) : error ? (
+          <div className="text-red-500 text-center">{error}</div>
+        ) : (
+          post && (
+            <article className="bg-white w-full rounded-lg shadow overflow-hidden">
+              <div className="p-5 border-b border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <img className="h-12 w-12 rounded-full object-cover" src={post.PstAuthorAvatar || 'default-avatar-url.jpg'} alt={`${post.PstAuthor}'s avatar`} />
+                  <div>
+                    <h4 className="font-bold text-lg">{post.PstAuthor}</h4>
+                    <p className="text-sm text-gray-500">{post.PstDate}</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-gray-800">{post.PstContent}</p>
+              </div>
 
-      {showCommentInput && (
-        <div className="mt-4">
-          <textarea
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            placeholder="Type a comment..."
-            className="w-full p-3 text-sm text-gray-900 bg-gray-100 rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            autoFocus
-            rows={3}
-          ></textarea>
-          <button className="mt-3 w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow">
-            Add Comment
-          </button>
-        </div>
-      )}
+              <div className="px-5 py-4 flex justify-between items-center text-gray-500">
+                <button className="flex items-center space-x-1 hover:text-blue-600">
+                  <FontAwesomeIcon icon={faThumbsUp} /><span>Like</span>
+                </button>
+                <button className="flex items-center space-x-1 hover:text-green-600">
+                  <FontAwesomeIcon icon={faComment} /><span>Comment</span>
+                </button>
+                <button className="flex items-center space-x-1 hover:text-red-600">
+                  <FontAwesomeIcon icon={faShareNodes} /><span>Share</span>
+                </button>
+              </div>
 
-      <div className="mt-4 space-y-2">
-        {comments.map((comment) => (
-          <div key={comment.comment_id} className="bg-gray-100 rounded-lg p-3">
-            <div className="font-semibold">{comment.author}</div>
-            <p className="text-sm text-gray-800">{comment.content}</p>
-          </div>
-        ))}
+              {showCommentInput && (
+                <div className="p-5 border-t border-gray-200">
+                  <textarea
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                    placeholder="Type a comment..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    rows={3}
+                  ></textarea>
+                  <button className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200" onClick={handleAddComment}>Add Comment</button>
+                </div>
+              )}
+
+              <div className="space-y-4 p-5">
+                {comments.map((comment) => (
+                  <div key={comment.comment_id} className="bg-gray-50 rounded-xl p-4 shadow transition-shadow duration-300 ease-in-out hover:shadow-lg">
+                    <div className="flex items-start space-x-3">
+                      <img src="default-user-avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full object-cover shadow-sm" />
+                      <div className="flex-1">
+                        <h5 className="font-semibold text-gray-900">{comment.author}</h5>
+                        <p className="text-sm text-gray-600 mt-1">{comment.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </article>
+          )
+        )}
       </div>
-    </div>
-    
+    </main>
+    <RightSidebar />
   </div>
 </>
-
   );
 };
 
