@@ -82,6 +82,8 @@ export const useFetchMogartPosts = () => {
           Author: post.PstAuthor,
           Avatar: post.PstAuthorAvatar,
           Content: post.PstContent,
+          VideoUrl: post.PstVideos,
+          ImageUrl: post.PstImages,
           Date: post.PstDate,
           DisLike: post.PstDisLike,
           Like: post.PstLike,
@@ -91,6 +93,8 @@ export const useFetchMogartPosts = () => {
           PostCode: post.PstPostCode,
           Space: post.PstSpace,
           Title: post.PstTitle,
+          VideoTitle: post.PstTitle,
+          VideoDesc: post.PstContent,
           Url: post.PstUrl,
           Views: post.PstViews,
         }));

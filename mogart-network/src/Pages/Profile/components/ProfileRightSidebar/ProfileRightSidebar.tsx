@@ -71,6 +71,7 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
             <p>The user does not have any pictures.</p>
           )}
       </div>
+      
       {isModalOpen && selectedPhotoIndex !== null && (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
         <div className="relative bg-white rounded-lg shadow-xl overflow-hidden" style={{ maxWidth: '90%', maxHeight: '90vh' }}>
@@ -96,8 +97,7 @@ const ProfileRightSidebar: React.FC<ProfileRightSidebarProps> = ({ userData }) =
           </button>
         </div>
       </div>
-    )}
-
+      )}
     </aside>
   );
 };

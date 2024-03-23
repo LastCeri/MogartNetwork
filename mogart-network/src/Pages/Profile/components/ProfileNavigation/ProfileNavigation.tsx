@@ -6,7 +6,7 @@ interface ProfileNavigationProps {
 
 const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ onSelect }) => {
   const [activeItem, setActiveItem] = useState<string>('Posts');
-  const navItems = ['Posts', 'Activity', 'Friends', 'Photos', 'Messages', 'Groups', 'Invitations'];
+  const navItems = ['Posts', 'Activity', 'Friends', 'Photos', 'Groups', 'Invitations'];
 
   const handleSelect = (item: string) => {
     setActiveItem(item);

@@ -41,6 +41,8 @@ export interface PostType {
   Author: string;
   Avatar: string;
   Content: string;
+  VideoUrl: string;
+  ImageUrl: string;
   Date: string;
 }
 
