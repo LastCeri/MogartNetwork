@@ -22,15 +22,15 @@ interface LatestBlog {
     }, []);
   
     return (
-      <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-        <h3 className="font-semibold text-xl mb-4 text-gray-800">Latest Blogs</h3>
-        <ul className="space-y-2">
+      <aside className="w-full max-w-md p-8 mr-8 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+        <h3 className="font-bold text-2xl mb-2 text-gray-900">Latest Blogs</h3>
+        <ul className="divide-y divide-gray-200">
           {blogs.map(blog => (
-            <li key={blog.Bid} className="rounded-md flex items-start">
-              <img src={blog.Bimage || "placeholder-image-url.jpg"} alt="Post Thumbnail" className="w-10 h-10 mr-2 rounded-full" />
-              <div>
-                <a href={blog.Burl} className="block text-sm hover:bg-gray-100 rounded-md text-blue-500 hover:text-blue-700">{blog.Bname}</a>
-                <p className="text-xs text-gray-600">Published on {blog.Bdate} by {blog.Bauthor}</p>
+            <li key={blog.Bid} className="py-2 last:pb-0 first:pt-0 transform hover:translate-x-2 transition-transform duration-200 ease-out">
+              <img src={blog.Bimage || "placeholder-image-url.jpg"} alt="Post Thumbnail" className="w-12 h-12 rounded-full object-cover shadow-sm" />
+              <div className="flex-1 min-w-0">
+                <a href={blog.Burl} className="text-lg font-semibold text-indigo-600 hover:text-indigo-800 transition-colors duration-150 ease-in-out block">{blog.Bname}</a>
+                <p className="text-sm text-gray-500 mt-1">Published on {blog.Bdate} by {blog.Bauthor}</p>
               </div>
             </li>
           ))}
