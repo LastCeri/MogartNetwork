@@ -4,59 +4,76 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane,faThumbsUp,faShareNodes,faComment,faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useFetchMogartPosts, createPost } from '../../../../Api/Api';
 import { useData } from '../../../../Context/DataContext';
+import ReactPlayer from 'react-player'
 
 interface PostType {
-  GlobalId: string;
   Author: string;
   Avatar: string;
-  Content: string;
+  GlobalId: string;
+  Content: string; 
   Date: string;
+  VideoTitle?: string;
+  VideoDesc?: string;
+  ImageUrl?: string;
+  VideoUrl?: [];
 }
 
-function Post({ Author, Avatar,GlobalId, Content: PostContent, Date: PostDate }: PostType): React.JSX.Element {
+function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, VideoTitle, VideoDesc,ImageUrl,VideoUrl }: PostType): React.JSX.Element {
   const [showCommentInput, setShowCommentInput] = useState(false);
-  const {siteData} = useData();
-  const handleLike = () => {
-  };
+  const [play, setPlay] = useState(false);
+  const { siteData } = useData();
 
-  const handleComment = () => {
-    setShowCommentInput(!showCommentInput);
+  const startVideo = () => {
+    setPlay(true);
   };
-
-  const handleShare = () => {
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700">  
+    
+    <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700 hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-center justify-between mb-3">
-      <Link to={`/posts/${GlobalId}`} key={GlobalId} style={{ textDecoration: 'none' }}>
-        <div className="flex items-center">
+        <Link to={`/posts/${GlobalId}`} className="flex items-center no-underline text-gray-700">
           <img className="h-8 w-8 rounded-full mr-2 object-cover" src={Avatar || siteData?.SiteDefaultProfileImageURL} alt={`${Author}'s avatar`} />
           <div>
             <div className="font-medium">{Author}</div>
             <div className="text-xs text-gray-500">{PostDate}</div>
           </div>
-        </div>
         </Link>
-        <div className="text-gray-500 hover:text-gray-700 cursor-pointer">
-          <FontAwesomeIcon icon={faSliders} />
-        </div>   
-       
+        <FontAwesomeIcon icon={faSliders} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
       </div>
       
       <p className="mb-3">{PostContent}</p>
-      
-      <div className="border-t pt-3 mt-3 text-sm flex p-2 justify-start items-center">
-        <button type="button" onClick={handleLike} className="text-gray-500 hover:text-blue-600 focus:outline-none mr-2">
+
+      {ImageUrl && !VideoUrl && (
+        <img src={ImageUrl} alt="Post" className="mb-3 max-w-full h-auto rounded-lg shadow" />
+      )}
+
+      {VideoUrl && !ImageUrl &&(
+        <div className="flex justify-center items-center bg-black">
+        <div className="video-player-container bg-gray-800 rounded-lg overflow-hidden shadow-lg max-w-xl w-full">
+          <ReactPlayer
+            url={VideoUrl}
+            playing={play}
+            controls={true}
+            onStart={startVideo}
+            width="100%"
+            height="100%"
+            className="react-player rounded-lg"
+          />
+          <div className="p-4">
+            <h2 className="text-xl font-semibold text-white">{VideoTitle}</h2>
+            <p className="text-gray-400">{VideoDesc}</p>
+          </div>
+        </div>
+      </div>
+      )}
+
+      <div className="border-t pt-3 mt-3 text-sm flex items-center space-x-4">
+        <button type="button" onClick={() => {}} className="flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
           <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
         </button>
-        <Link to={`/posts/${GlobalId}`} key={GlobalId} style={{ textDecoration: 'none' }}>
-          <button type="button" onClick={handleComment} className="text-gray-500 hover:text-green-600 focus:outline-none mx-2">
-            <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
-          </button>
-        </Link>
-        <div className="flex-grow"></div>
-        <button type="button" onClick={handleShare} className="text-gray-500 hover:text-red-600 focus:outline-none">
+        <button type="button" onClick={() => setShowCommentInput(!showCommentInput)} className="flex items-center text-gray-500 hover:text-green-600 focus:outline-none">
+          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
+        </button>
+        <button type="button" onClick={() => {}} className="flex items-center text-gray-500 hover:text-red-600 focus:outline-none ml-auto">
           <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
         </button>
       </div>
@@ -66,7 +83,7 @@ function Post({ Author, Avatar,GlobalId, Content: PostContent, Date: PostDate }:
           <input
             type="text"
             placeholder="Type a comment..."
-            className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500"
+            className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out"
             autoFocus
           />
         </div>
@@ -142,13 +159,17 @@ function MainContent() {
         </ul>
       </div>
       <div className="space-y-4">
-      {posts.map((post) => (
+      {posts.map((post,key) => (
           <Post
+            key={key}
             GlobalId={post.GlobalId}
             Author={post.Author}
             Avatar={post.Avatar}
             Content={post.Content}
             Date={post.Date}
+            VideoUrl={post.VideoUrl}
+            VideoTitle={post.VideoTitle}
+            VideoDesc={post.VideoDesc}
           />
       ))}
       </div>
