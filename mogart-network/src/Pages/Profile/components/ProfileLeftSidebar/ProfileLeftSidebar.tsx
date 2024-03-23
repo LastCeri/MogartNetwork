@@ -13,39 +13,35 @@ const ProfileLeftSidebar: React.FC<ProfileLeftSidebarProps> = ({ userData }) => 
     : userData?.UsrFriends || [];
 
   return (
-    <aside className="w-96 bg-white shadow-lg p-6 sm:p-12 h-auto rounded-lg space-y-4">
+    <aside className="w-96 bg-gray-50 p-6 rounded-xl shadow-lg space-y-6">
+    <div className="bg-white rounded-xl p-6 shadow-sm">
+      <h2 className="font-bold text-2xl mb-6 text-gray-800">{userData?.UsrDisplayName}'S FRIENDS</h2>
   
-  <h2 className="font-bold text-xl mb-4 break-words">{userData?.UsrDisplayName}'S FRIENDS</h2>
+      <div className="flex mb-6 space-x-2">
+        <button className="text-sm font-semibold text-indigo-600 py-2 px-4 rounded-full bg-indigo-50 transition-colors duration-150 ease-in-out hover:bg-indigo-100 hover:text-indigo-700">Newest</button>
+        <button className="text-sm font-semibold text-gray-600 py-2 px-4 rounded-full bg-gray-100 transition-colors duration-150 ease-in-out hover:bg-gray-200">Active</button>
+        <button className="text-sm font-semibold text-gray-600 py-2 px-4 rounded-full bg-gray-100 transition-colors duration-150 ease-in-out hover:bg-gray-200">Popular</button>
+      </div>
   
-  <div className="flex mb-4 space-x-2">
-    <button className="text-sm font-semibold text-blue-600 py-2 px-4 rounded-lg transition-colors duration-150 ease-in-out hover:bg-blue-50">Newest</button>
-    <button className="text-sm font-semibold text-gray-600 py-2 px-4 rounded-lg transition-colors duration-150 ease-in-out hover:bg-gray-50">Active</button>
-    <button className="text-sm font-semibold text-gray-600 py-2 px-4 rounded-lg transition-colors duration-150 ease-in-out hover:bg-gray-50">Popular</button>
-  </div>
-
-  <ul className="space-y-3">
-    {userFriends.length === 0 ? (
-      <li className="text-sm text-gray-600">This person has no friends.</li>
-    ) : (
-      userFriends.map((friend, index) => (
-        <Link to={`/Profile/${friend.name}`} key={index} className="block">
-          <li className="flex items-center space-x-3 p-2 rounded-lg transition duration-300 ease-in-out hover:bg-gray-50 hover:shadow-lg">
-            <img
-              className="h-10 w-10 rounded-full object-cover"
-              src={friend.image}
-              alt={friend.name}
-            />
-            <div>
-              <h3 className="font-semibold text-gray-800">{friend.name}</h3>
-              <p className="text-xs text-gray-600">{friend.status}</p>
-            </div>
-          </li>
-        </Link>
-      ))
-    )}
-  </ul>
-</aside>
-
+      <ul className="space-y-4">
+        {userFriends.length === 0 ? (
+          <li className="text-sm text-gray-500">This person has no friends.</li>
+        ) : (
+          userFriends.map((friend, index) => (
+            <Link to={`/Profile/${friend.name}`} key={index} className="block hover:bg-gray-100 rounded-lg transition duration-300 ease-in-out">
+              <li className="flex items-center space-x-4 p-3">
+                <img className="h-12 w-12 rounded-full object-cover shadow" src={friend.image} alt={friend.name} />
+                <div>
+                  <h3 className="font-semibold text-gray-900">{friend.name}</h3>
+                  <p className="text-sm text-gray-500">{friend.status}</p>
+                </div>
+              </li>
+            </Link>
+          ))
+        )}
+      </ul>
+    </div>
+  </aside>
   );
 };
 
