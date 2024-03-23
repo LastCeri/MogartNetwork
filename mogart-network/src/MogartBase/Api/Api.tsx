@@ -49,6 +49,14 @@ export const login = (credentials:any) => handleRequest('POST', 'LoginUser', cre
 export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData);
 export const logout = (userData:any) => handleRequest('POST', 'LogoutUser', userData);
 
+
+// Action (Like, Dislike, Comment) functions
+
+export const PostSendLike = (credentials:any) => handleRequest('POST', 'Like', credentials);
+export const PostSendDislike = (credentials:any) => handleRequest('POST', 'Dislike', credentials);
+export const PostSendComment = (credentials:any) => handleRequest('POST', 'Comment', credentials);
+
+
 // Post and user data related functions
 export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartPost', postData);
 export const fetchActivity = (userId:any) => handleRequest('GET', `GetActivity/${userId}`);
@@ -84,6 +92,8 @@ export const useFetchMogartPosts = () => {
           Content: post.PstContent,
           VideoUrl: post.PstVideos,
           ImageUrl: post.PstImages,
+          CommentCount: post.PstCommentCount,
+          LikeCount: post.PstLikeCount,
           Date: post.PstDate,
           DisLike: post.PstDisLike,
           Like: post.PstLike,
