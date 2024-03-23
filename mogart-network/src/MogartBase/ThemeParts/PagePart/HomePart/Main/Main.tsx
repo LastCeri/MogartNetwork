@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane,faThumbsUp,faShareNodes,faComment,faSliders } from '@fortawesome/free-solid-svg-icons';
-import { useFetchMogartPosts, createPost } from '../../../../Api/Api';
+import { useFetchMogartPosts, createPost, PostSendLike, PostSendDislike, PostSendComment } from '../../../../Api/Api';
 import { useData } from '../../../../Context/DataContext';
 import ReactPlayer from 'react-player'
+import SharePopup from '../../../Popup/SharePopup';
 
 interface PostType {
   Author: string;
@@ -12,40 +13,64 @@ interface PostType {
   GlobalId: string;
   Content: string; 
   Date: string;
+  CommentCount:string;
+  LikeCount:string;
   VideoTitle?: string;
   VideoDesc?: string;
   ImageUrl?: string;
   VideoUrl?: [];
 }
 
-function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, VideoTitle, VideoDesc,ImageUrl,VideoUrl }: PostType): React.JSX.Element {
+function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, VideoTitle, VideoDesc,ImageUrl,VideoUrl,CommentCount,LikeCount }: PostType): React.JSX.Element {
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [showSharePopup, setShowSharePopup] = useState(false);
   const [play, setPlay] = useState(false);
-  const { siteData } = useData();
+  const { siteData, data } = useData();
+  const [commentText, setCommentText] = useState(""); 
+
 
   const startVideo = () => {
     setPlay(true);
   };
+
+  const SendLike = async (globalId: string) => { await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
+  const SendDisLike = async (globalId: string) => {  await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
+  const SendComment = async (globalId: string, commentcontent: string) => {await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"}); };
+
+  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommentText(event.target.value);
+  };
+
+  const handleShareClick = () => {
+    setShowSharePopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowSharePopup(false);
+  };
+
   return (
     
     <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700 hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-center justify-between mb-3">
-        <Link to={`/posts/${GlobalId}`} className="flex items-center no-underline text-gray-700">
+        <Link to={`/posts/${GlobalId}`}>  
+        <div className="flex items-center no-underline text-gray-700">
           <img className="h-8 w-8 rounded-full mr-2 object-cover" src={Avatar || siteData?.SiteDefaultProfileImageURL} alt={`${Author}'s avatar`} />
-          <div>
-            <div className="font-medium">{Author}</div>
-            <div className="text-xs text-gray-500">{PostDate}</div>
-          </div>
+            <div>
+              <div className="font-medium">{Author}</div>
+              <div className="text-xs text-gray-500">{PostDate}</div>
+            </div>
+        </div>
         </Link>
         <FontAwesomeIcon icon={faSliders} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
       </div>
-      
+     
       <p className="mb-3">{PostContent}</p>
 
       {ImageUrl && !VideoUrl && (
         <img src={ImageUrl} alt="Post" className="mb-3 max-w-full h-auto rounded-lg shadow" />
       )}
-
+      
       {VideoUrl && !ImageUrl &&(
         <div className="flex justify-center items-center bg-black">
         <div className="video-player-container bg-gray-800 rounded-lg overflow-hidden shadow-lg max-w-xl w-full">
@@ -66,28 +91,44 @@ function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, 
       </div>
       )}
 
-      <div className="border-t pt-3 mt-3 text-sm flex items-center space-x-4">
-        <button type="button" onClick={() => {}} className="flex items-center text-gray-500 hover:text-blue-600 focus:outline-none">
-          <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
-        </button>
-        <button type="button" onClick={() => setShowCommentInput(!showCommentInput)} className="flex items-center text-gray-500 hover:text-green-600 focus:outline-none">
-          <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
-        </button>
-        <button type="button" onClick={() => {}} className="flex items-center text-gray-500 hover:text-red-600 focus:outline-none ml-auto">
-          <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
+      <div className="border-t pt-3 mt-3 text-sm flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button type="button" onClick={() => SendLike(GlobalId)} className="flex items-center text-gray-600 hover:text-blue-700 transition-colors duration-200 ease-in-out">
+            <FontAwesomeIcon icon={faThumbsUp} className="text-xl mr-2" /> 
+            <span className="font-medium">{LikeCount} Like</span>
+          </button>
+          <button type="button" onClick={() => setShowCommentInput(!showCommentInput)} className="flex items-center text-gray-600 hover:text-green-700 transition-colors duration-200 ease-in-out">
+            <FontAwesomeIcon icon={faComment} className="text-xl mr-2" />
+            <span className="font-medium">{CommentCount} Comment</span>
+          </button>
+        </div>
+        <button type="button" onClick={handleShareClick} className="flex items-center text-gray-600 hover:text-red-700 transition-colors duration-200 ease-in-out">
+          <FontAwesomeIcon icon={faShareNodes} className="text-xl mr-2" /> 
+          <span className="font-medium">Share</span>
         </button>
       </div>
 
+
       {showCommentInput && (
-        <div className="pt-2">
+        <div className="pt-2 flex items-center space-x-2">
           <input
             type="text"
+            value={commentText}
+            onChange={handleCommentChange} 
             placeholder="Type a comment..."
-            className="w-full p-2 text-sm text-gray-500 rounded-lg border focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out"
+            className="w-full p-3 text-sm text-gray-500 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out"
             autoFocus
           />
+          <button 
+            className="p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-150 ease-in-out flex-shrink-0"
+            onClick={() => SendComment(GlobalId, commentText)} 
+          >
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </button>
         </div>
       )}
+
+      {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/posts/${GlobalId}`} title={Author} onClose={handleClosePopup} />}
     </div>
   );
 }
@@ -170,6 +211,8 @@ function MainContent() {
             VideoUrl={post.VideoUrl}
             VideoTitle={post.VideoTitle}
             VideoDesc={post.VideoDesc}
+            CommentCount={post.CommentCount}
+            LikeCount={post.LikeCount}
           />
       ))}
       </div>
