@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { UserData, PostType } from '../../../Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSliders, faThumbsUp, faComment, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { faSliders, faThumbsUp, faComment, faShareNodes, faUserSlash, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import ReactPlayer from 'react-player';
 
 interface ProfileMainContentProps {
   userData: UserData | null;
@@ -10,6 +11,7 @@ interface ProfileMainContentProps {
 
 const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => {
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [play, setPlay] = useState(false);
 
   const handleLike = () => {
     console.log("Like button pressed.");
@@ -19,22 +21,34 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
     setShowCommentInput(!showCommentInput);
   };
 
+  const startVideo = () => {
+    setPlay(true);
+  };
+
   const handleShare = () => {
     console.log("Share button pressed.");
   };
 
   if (!userData) {
     return (
-      <main className="flex-1 p-6 overflow-auto">
-        <p>No user data available.</p>
-      </main>
+      <main className="flex-1 p-6 overflow-hidden flex items-center justify-center bg-gray-50">
+      <div className="text-center p-4 max-w-sm mx-auto bg-white rounded-lg border border-gray-200 shadow-lg">
+        <FontAwesomeIcon icon={faUserSlash} className="text-gray-400 h-16 w-16 mx-auto mt-2" />
+        <p className="mt-4 text-lg font-semibold text-gray-800">No user data available.</p>
+        <p className="text-gray-500">Please check back later or try refreshing the page.</p>
+      </div>
+    </main>
     );
   }
 
   if (!userData.Posts) {
     return (
-      <main className="flex-1 p-6 overflow-auto">
-        <p>No posts available for this user.</p>
+      <main className="flex-1 p-6 overflow-hidden flex items-center justify-center bg-gray-50">
+        <div className="text-center p-4 max-w-sm mx-auto bg-white rounded-lg border border-gray-200 shadow-lg">
+          <FontAwesomeIcon icon={faFolderOpen} className="text-gray-400 h-16 w-16 mx-auto mt-2" />
+          <p className="mt-4 text-lg font-semibold text-gray-800">No user posts available.</p>
+          <p className="text-gray-500">Start sharing your moments or try again later.</p>
+        </div>
       </main>
     );
   }
@@ -90,6 +104,31 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
               </div>
             </div>
             <p className="mb-3">{post.Content}</p>
+
+            {post.ImageUrl && !post.VideoUrl && (
+              <img src={post.ImageUrl} alt="Post" className="mb-3 max-w-full h-auto rounded-lg shadow" />
+            )}
+
+            {post.VideoUrl && (
+                <div className="flex justify-center items-center bg-black">
+                <div className="video-player-container bg-gray-800 rounded-lg overflow-hidden shadow-lg max-w-xl w-full">
+                  <ReactPlayer
+                    url={post.VideoUrl}
+                    playing={play}
+                    controls={true}
+                    onStart={startVideo}
+                    width="100%"
+                    height="100%"
+                    className="react-player rounded-lg"
+                  />
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold text-white">{post.Title}</h2>
+                    <p className="text-gray-400">{post.Content}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="border-t pt-3 mt-3 text-sm flex p-2 justify-start items-center">
               <button type="button" onClick={handleLike} className="text-gray-500 hover:text-blue-600 focus:outline-none mr-2">
                 <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
