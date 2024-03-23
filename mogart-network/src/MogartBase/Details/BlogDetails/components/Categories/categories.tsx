@@ -19,20 +19,22 @@ const BlogDetailsCategories: React.FC = () => {
   }, []);
 
   return (
-    <aside className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-      <h3 className="font-semibold text-xl mb-4 text-gray-800">Categories</h3>
-      <ul className="space-y-2">
-        {categories.map(category => (
-          <li key={category.CatID} className="rounded-md flex items-start">
-            <img src={category.CatIcon} alt={`Category Icon ${category.CatName}`} className="w-10 h-10 mr-2 rounded-full" />
+    <aside className="w-full max-w-md p-8 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+    <h3 className="font-bold text-2xl mb-8 text-gray-900">Categories</h3>
+    <ul className="divide-y divide-gray-200">
+      {categories.map((category) => (
+        <li key={category.CatID} className="py-4 last:pb-0 first:pt-0 transform hover:translate-x-2 transition-transform duration-200 ease-out">
+          <a href={`/Category/${category.CatName}`} className="flex items-center space-x-4">
+            <img src={category.CatIcon} alt={`Category Icon ${category.CatName}`} className="flex-shrink-0 w-12 h-12 rounded-full object-cover shadow-sm" />
             <div>
-            <a href={`/Category/${category.CatName}`} className="block text-sm font-semibold text-blue-500 hover:text-blue-700">{category.CatName}</a>
-              <p className="text-xs text-gray-600">{category.CatDesc}</p>
+              <p className="text-lg font-semibold text-indigo-600 hover:text-indigo-800 transition-colors duration-150 ease-in-out">{category.CatName}</p>
+              <p className="text-sm text-gray-500">{category.CatDesc}</p>
             </div>
-          </li>
-        ))}
-      </ul>
-    </aside>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </aside>
   );
 };
 
