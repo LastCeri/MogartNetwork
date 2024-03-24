@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 type ChatItem = {
   MessageID: string;
@@ -16,17 +16,30 @@ interface ChatListProps {
 }
 
 const ChatUserList: React.FC<ChatListProps> = ({ chatData, onChatSelect }) => {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const handleChatSelect = (userId: string) => {
+    onChatSelect(userId);
+    setSelectedUserId(userId);
+  };
+
   return (
     <div className="w-full">
-        {chatData.map((user) => (
-            <div key={user.MessageID} className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-3 transition duration-150 ease-in-out" onClick={() => onChatSelect(user.MessageAuthor)}>
-                <img src={user.MessageAuthorImage} alt="Profile" className="w-16 h-16 rounded-full object-cover border border-gray-200" />
-                <div>
-                    <div className="text-lg font-semibold">{user.MessageAuthor}</div>
-                    <div className="text-xs text-gray-500">{user.MessageLastAction ? `${user.MessageLastAction.substring(0, 20)}...` : ''}</div>
-                </div>
-            </div>
-        ))}
+      {chatData.map((user) => (
+        <div
+          key={user.MessageID}
+          className={`p-4 hover:bg-gray-100 cursor-pointer flex items-center gap-4 transition duration-150 ease-in-out rounded-lg ${
+            selectedUserId === user.MessageID ? 'bg-blue-50 border-l-4 border-blue-500 shadow-md' : 'bg-white'
+          }`}
+          onClick={() => handleChatSelect(user.MessageID)}
+        >
+          <img src={user.MessageAuthorImage} alt="Profile" className="w-16 h-16 rounded-full object-cover shadow-sm" />
+          <div>
+            <div className="text-lg font-semibold text-gray-800">{user.MessageAuthor}</div>
+            <div className="text-sm text-gray-500">{user.MessageLastAction ? `${user.MessageLastAction.substring(0, 25)}...` : ''}</div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
