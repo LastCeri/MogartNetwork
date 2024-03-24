@@ -25,16 +25,19 @@ interface CallFriendsModalProps {
 
 
 const CallFriendsModal: React.FC<CallFriendsModalProps> = ({ isOpen, onStartCall, setIsOpen }) => {
-    const { isLoggedIn, isLoading, data } = useData();
+    const { isLoggedIn, isLoading, data,userAuthToken } = useData();
     const [friendsList, setFriendsList] = useState<Friend[]>([]);
     const [hasFriends, setHasFriends] = useState(true);
 
     useEffect(() => {
         const fetchFriends = async () => {
             if (!isLoggedIn || isLoading) return;
-
             try {
-                const response = await axios.get(`${API_URL}/GetFriends/${data?.UserName}`);
+                const response = await axios.get(`${API_URL}/GetFriends/${data?.UserName}`, {
+                    headers: {
+                        'Authorization': `Bearer ${userAuthToken}`
+                    }
+                });                
                 const friendsData = response.data[0]?.friends;
                 if (friendsData && friendsData.length > 0) {
                     setFriendsList(friendsData);
@@ -43,9 +46,9 @@ const CallFriendsModal: React.FC<CallFriendsModalProps> = ({ isOpen, onStartCall
                     setHasFriends(false);
                 }
             } catch (error) {
-                console.error('Friends list fetching failed:', error);
-                setHasFriends(false);
+                console.error('An error occurred during the API request:', error);
             }
+            
         };
 
         if (isOpen) {
@@ -56,38 +59,40 @@ const CallFriendsModal: React.FC<CallFriendsModalProps> = ({ isOpen, onStartCall
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                <div className="bg-white rounded-lg p-4 max-w-md w-full">
-                    <h2 className="text-lg font-semibold mb-4">Select a friend to call</h2>
-                    {hasFriends ? (
-                        <div className="space-y-2">
-                            {friendsList.map((friend, index) => (
-                                <div key={index} className="flex items-center justify-between">
-                                    <div className="flex items-center">
-                                        <img src={friend.image} alt={friend.name} className="w-10 h-10 rounded-full mr-2" />
-                                        <div>
-                                            <span>{friend.name}</span>
-                                        </div>
-                                        <span className={`text-sm ${friend.status === 'online' ? 'text-green-600' : friend.status === 'offline' ? 'text-red-600' : 'text-gray-600'}`}>
-                                            {friend.status}
-                                        </span>
-                                    </div>
-                                    <button onClick={() => onStartCall(friend.name, friend.image)} className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600 focus:outline-none shadow-lg transition duration-150 ease-in-out">
-                                        <FontAwesomeIcon icon={faPhone} />
-                                    </button>
-                                </div>
-                            ))}
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-lg w-full">
+                <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Select a friend to call</h2>
+                {hasFriends ? (
+                    <div className="space-y-4 overflow-y-auto max-h-80">
+                    {friendsList.map((friend, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 p-4 rounded-xl shadow transition-all duration-200 ease-in-out hover:shadow-lg transform hover:-translate-y-1">
+                        <div className="flex items-center">
+                            <img src={friend.image} alt={friend.name} className="w-12 h-12 rounded-full mr-3 shadow" />
+                            <div className="flex flex-col">
+                            <span className="font-medium text-gray-800">{friend.name}</span>
+                            <span className={`mt-1 text-sm font-semibold ${friend.status === 'online' ? 'text-green-500' : friend.status === 'offline' ? 'text-red-500' : 'text-gray-500'}`}>
+                                {friend.status}
+                            </span>
+                            </div>
                         </div>
-                    ) : (
-                        <div>You have no friends to call.</div>
-                    )}
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="mt-4 w-full bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 focus:outline-none shadow-lg transition duration-150 ease-in-out"
-                    >
-                        Close
-                    </button>
+                        <button onClick={() => onStartCall(friend.name, friend.image)} className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 focus:outline-none shadow transition duration-200 ease-in-out">
+                            <FontAwesomeIcon icon={faPhone} className="text-lg" />
+                        </button>
+                        </div>
+                    ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-600 text-center">You have no friends to call.</p>
+                )}
+                <button
+                    onClick={() => setIsOpen(false)}
+                    className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white rounded-md px-4 py-2 focus:outline-none shadow-lg transition duration-200 ease-in-out"
+                >
+                    Close
+                </button>
                 </div>
+            </div>
             </div>
     );
 };
