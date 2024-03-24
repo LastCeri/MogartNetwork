@@ -2,25 +2,26 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../../MogartBase/Api/Api';
 import { useData } from '../../../../MogartBase/Context/DataContext';
+import { useNavigate } from 'react-router-dom';
 
 interface Group {
-  id: number;
-  name: string;
-  description: string;
-  tags: string[];
-  logo: string;
+  GrpID: number;
+  GrpName: string;
+  GrpDesc: string;
+  GrpTags: string[];
+  GrpLogo: string;
 }
 
 const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:scale-105 duration-300">
-      <img src={group.logo} alt={group.name} className="w-full h-32 sm:h-48 object-cover" />
+      <img src={group.GrpLogo} alt={group.GrpName} className="w-full h-32 sm:h-48 object-cover" />
       <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{group.name}</div>
-        <p className="text-gray-700 text-base">{group.description}</p>
+        <div className="font-bold text-xl mb-2">{group.GrpName}</div>
+        <p className="text-gray-700 text-base">{group.GrpDesc}</p>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.tags.length} tags</span>
+        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpTags.length} tags</span>
       </div>
       <div className="px-6 py-4">
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -33,20 +34,39 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
 
 const MyGroupsPage = () => {
   const [myGroups, setMyGroups] = useState<Group[]>([]);
-  const { isLoggedIn, isLoading, data,siteData } = useData();
+  const { isLoggedIn, isLoading, data,siteData,userAuthToken } = useData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyGroups = async () => {
       try {
-        const response = await axios.get(`${API_URL}/GetGroups/${data.UserName}`);
-        setMyGroups(response.data); 
-      } catch (error) {
-        console.error('Error fetching my groups:', error);
+        const response = await axios.get<Group[]>(`${API_URL}/GetGroups/${data.UserName}`, {
+          headers: {
+              'Authorization': `Bearer ${userAuthToken}`
+          }
+      });  
+        setMyGroups(response.data);
+      }catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.code === "ERR_NETWORK") {
+            console.error('Network error:', error);
+            navigate('/NetworkError');
+          } else if (error.response) {
+            console.error('Chat data fetching failed:', error.response.data);
+          } else {
+            console.error('Error:', error.message);
+          }
+        } else {
+          console.error('An unexpected error occurred', error);
+        }
       }
     };
 
-    fetchMyGroups();
-  }, []); 
+    if (isLoggedIn) {
+      fetchMyGroups();
+    }
+  }, [isLoggedIn, data.UserName]);
+
   if (!isLoggedIn) return <p className="text-center text-black-600 font-semibold ml-4">No group information can be obtained without user login.</p>;
   if (isLoading) return  <div className="flex justify-center items-center h-screen">
   <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
@@ -68,7 +88,7 @@ const MyGroupsPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {myGroups.map((group) => (
-            <GroupItem key={group.id} group={group} />
+            <GroupItem key={group.GrpID} group={group} />
           ))}
         </div>
       )}
