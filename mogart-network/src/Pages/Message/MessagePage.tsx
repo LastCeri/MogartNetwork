@@ -35,7 +35,7 @@ interface ChatMessage {
 const MessagePage = () => {
   const navigate = useNavigate();
   const [hasMore, setHasMore] = useState(true);
-  const { isLoggedIn, isLoading, data } = useData();
+  const { isLoggedIn, isLoading, data,userAuthToken } = useData();
   const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessageDetail[]>([]);
@@ -89,7 +89,11 @@ const MessagePage = () => {
   
     const fetchChatData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}`);
+        const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}`, {
+          headers: {
+              'Authorization': `Bearer ${userAuthToken}`
+          }
+      });  
         setChatData(response.data);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

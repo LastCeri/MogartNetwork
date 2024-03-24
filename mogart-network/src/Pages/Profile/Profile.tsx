@@ -62,7 +62,7 @@ export interface Friend {
 const Profile = () => {
   const navigate = useNavigate();
   const { username: urlUsername } = useParams<{ username?: string }>();
-  const { isLoggedIn, isLoading, data,siteData } = useData();
+  const { isLoggedIn, isLoading, data,siteData,userAuthToken } = useData();
   const [userData, setUserData] = useState<UserData | null>(null);
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
   const [selectedContent, setSelectedContent] = useState('Posts');
@@ -100,7 +100,11 @@ const Profile = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get<UserData[]>(`${API_URL}/GetUserData/${username}`);
+          const response = await axios.get<UserData[]>(`${API_URL}/GetUserData/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${userAuthToken}`
+            }
+        });  
         if (response.data && response.data.length > 0) {
           let fetchedUserData = response.data[0];
           if (fetchedUserData.Photos && typeof fetchedUserData.Photos === 'string') {
@@ -111,8 +115,19 @@ const Profile = () => {
           }
           setUserData(fetchedUserData); 
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.code === "ERR_NETWORK") {
+            console.error('Network error:', error);
+            navigate('/NetworkError');
+          } else if (error.response) {
+            console.error('Chat data fetching failed:', error.response.data);
+          } else {
+            console.error('Error:', error.message);
+          }
+        } else {
+          console.error('An unexpected error occurred', error);
+        }
       }
     };   
 

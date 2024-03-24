@@ -6,6 +6,7 @@ import { API_URL } from '../../MogartBase/Api/Api.tsx';
 import CreateGroupPage from './SubPage/CreateGroups/CreateGroupsPage.tsx';
 import MyGroupsPage from './SubPage/MyGroups/MyGroups.tsx';
 import { useData } from '../../MogartBase/Context/DataContext.tsx';
+import { useNavigate } from 'react-router-dom';
 
 type Group = {
   GrpID: number;
@@ -39,6 +40,7 @@ const GroupsPage = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [groups, setGroups] = useState<Group[]>([]);
   const { isLoggedIn, isLoading, data,siteData } = useData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAndSetGroups = async () => {
@@ -46,8 +48,19 @@ const GroupsPage = () => {
         try {
           const response = await axios.get<Group[]>(`${API_URL}/GetGroups`);
           setGroups(response.data);
-        } catch (error) {
-          console.error('Error fetching groups:', error);
+        } catch (error: unknown) {
+          if (axios.isAxiosError(error)) {
+            if (error.code === "ERR_NETWORK") {
+              console.error('Network error:', error);
+              navigate('/NetworkError');
+            } else if (error.response) {
+              console.error('Chat data fetching failed:', error.response.data);
+            } else {
+              console.error('Error:', error.message);
+            }
+          } else {
+            console.error('An unexpected error occurred', error);
+          }
         }
       }
     };

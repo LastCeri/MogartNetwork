@@ -26,6 +26,7 @@ import ForbiddenPage from './Pages/ErrorPages/403/403.tsx';
 import CategoryDetails from './MogartBase/Details/CategoryDetails/CategoryDetails.tsx';
 import LostPasswordPage from './Pages/LostPassword/LostPasswordPage.tsx';
 import CommunicationPage from './Pages/Communication/CommunicationPage.tsx';
+import ERR_NETWORKPage from './Pages/ErrorPages/Server/ERR_NETWORK.tsx';
 
 function App() {
   return (
@@ -62,7 +63,7 @@ function App() {
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/403" element={<ForbiddenPage  />} />
         <Route path="/500" element={<ServerErrorPage/>} />
-        
+        <Route path="/NetworkError" element={<ERR_NETWORKPage/>} />
         <Route path="/LostPassword" element={<LostPasswordPage/>} />
         
         <Route path="*" element={<Navigate to="/" replace />} />

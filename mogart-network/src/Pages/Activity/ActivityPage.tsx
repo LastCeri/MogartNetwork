@@ -44,8 +44,14 @@ const ActivityPage = () => {
         }
       })
       .catch(error => {
-        console.error('Error fetching activities:', error);
-        setActivities([]);
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('Chat data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
     }
   }, [isLoggedIn, navigate, userAuthID, isLoading]);

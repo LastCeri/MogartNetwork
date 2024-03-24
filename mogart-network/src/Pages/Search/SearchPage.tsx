@@ -3,6 +3,7 @@ import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { API_URL } from '../../MogartBase/Api/Api';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchResultItem {
   ScID: string;
@@ -14,6 +15,7 @@ interface SearchResultItem {
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const navigate = useNavigate();
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -30,7 +32,14 @@ const SearchPage = () => {
         }
       })
       .catch(error => {
-        console.error("Error GetSearch:", error);
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('Chat data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, []);
   

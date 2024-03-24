@@ -55,8 +55,14 @@ const NotificationsPage = () => {
               }
             })
             .catch(error => {
-             
-              console.error("Hata oluştu:", error);
+              if (error.code === "ERR_NETWORK") {
+                console.error('Network error:', error);
+                navigate('/NetworkError');
+              } else if (error.response) {
+                console.error('Chat data fetching failed:', error.response.data);
+              } else {
+                console.error('Error:', error.message);
+              }
             });
         }
       }, [isLoggedIn, navigate, isLoading, username]);
