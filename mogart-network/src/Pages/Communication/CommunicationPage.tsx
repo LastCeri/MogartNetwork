@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import FriendRequests from './components/FriendRequests';
-import EventRequests from './components/EventRequests';
-import GroupRequests from './components/GroupRequest';
+import EventInvitations from './components/EventInvitation';
+import GroupInvitation from './components/GroupRequest';
 import MessageRequests from './components/MessageRequests';
+import { useData } from '../../MogartBase/Context/DataContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const CommunicationPage = () => {
   const [activeModule, setActiveModule] = useState('friendRequests');
+  const { isLoggedIn, isLoading} = useData();
+  const navigate = useNavigate();
+
+  useEffect(() => {  
+    if (isLoading) return;
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  });
 
   return (
     <>
@@ -22,10 +34,10 @@ const CommunicationPage = () => {
                 Friend Requests
             </button>
             <button onClick={() => setActiveModule('eventRequests')} className={`w-full text-left font-medium ${activeModule === 'eventRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
-                Event Requests
+                Event Invitations
             </button>
             <button onClick={() => setActiveModule('groupRequests')} className={`w-full text-left font-medium ${activeModule === 'groupRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
-                Group Requests
+                Group Invitations
             </button>
             <button onClick={() => setActiveModule('messageRequests')} className={`w-full text-left font-medium ${activeModule === 'messageRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
                 Message Requests
@@ -36,13 +48,13 @@ const CommunicationPage = () => {
 
         <div className="flex-1 flex flex-col">
           <div className="bg-gray-100 p-4 shadow-md">
-            <h3 className="text-lg font-semibold">Requests Details</h3>
+            <h3 className="text-lg font-semibold">Requests List</h3>
           </div>
           
           <div className="flex-1 overflow-y-auto p-4">
             {activeModule === 'friendRequests' && <FriendRequests />}
-            {activeModule === 'eventRequests' && <EventRequests />}
-            {activeModule === 'groupRequests' && <GroupRequests />}
+            {activeModule === 'eventRequests' && <EventInvitations />}
+            {activeModule === 'groupRequests' && <GroupInvitation />}
             {activeModule === 'messageRequests' && <MessageRequests />}
           </div>
         </div>
