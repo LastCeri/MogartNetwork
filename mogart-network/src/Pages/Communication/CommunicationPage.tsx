@@ -3,7 +3,7 @@ import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import FriendRequests from './components/FriendRequests';
 import EventInvitations from './components/EventInvitation';
-import GroupInvitation from './components/GroupRequest';
+import GroupInvitation from './components/GroupInvitation';
 import MessageRequests from './components/MessageRequests';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
