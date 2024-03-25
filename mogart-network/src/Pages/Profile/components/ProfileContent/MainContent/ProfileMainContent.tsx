@@ -4,6 +4,8 @@ import { UserData, PostType } from '../../../Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSliders, faThumbsUp, faComment, faShareNodes, faUserSlash, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import ReactPlayer from 'react-player';
+import { useData } from '../../../../../MogartBase/Context/DataContext';
+import { PostSendComment, PostSendDislike, PostSendLike } from '../../../../../MogartBase/Api/Api';
 
 interface ProfileMainContentProps {
   userData: UserData | null;
@@ -11,16 +13,27 @@ interface ProfileMainContentProps {
 
 const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => {
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [showSharePopup, setShowSharePopup] = useState(false);
   const [play, setPlay] = useState(false);
+  const { siteData, data } = useData();
+  const [commentText, setCommentText] = useState(""); 
 
-  const handleLike = () => {
-    console.log("Like button pressed.");
+
+  const SendLike = async (globalId: string) => { await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
+  const SendDisLike = async (globalId: string) => {  await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
+  const SendComment = async (globalId: string, commentcontent: string) => {await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"}); };
+
+  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommentText(event.target.value);
   };
 
-  const handleComment = () => {
-    setShowCommentInput(!showCommentInput);
+  const handleShareClick = () => {
+    setShowSharePopup(true);
   };
 
+  const handleClosePopup = () => {
+    setShowSharePopup(false);
+  };
   const startVideo = () => {
     setPlay(true);
   };
@@ -122,23 +135,27 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
                     className="react-player rounded-lg"
                   />
                   <div className="p-4">
-                    <h2 className="text-xl font-semibold text-white">{post.Title}</h2>
+                    <h2 className="text-xl font-semibold text-white">{post.Author}</h2>
                     <p className="text-gray-400">{post.Content}</p>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="border-t pt-3 mt-3 text-sm flex p-2 justify-start items-center">
-              <button type="button" onClick={handleLike} className="text-gray-500 hover:text-blue-600 focus:outline-none mr-2">
-                <FontAwesomeIcon icon={faThumbsUp} className="mr-1" /> Like
-              </button>
-              <button type="button" onClick={handleComment} className="text-gray-500 hover:text-green-600 focus:outline-none mx-2">
-                <FontAwesomeIcon icon={faComment} className="mr-1" /> Comment
-              </button>
-              <div className="flex-grow"></div>
-              <button type="button" onClick={handleShare} className="text-gray-500 hover:text-red-600 focus:outline-none">
-                <FontAwesomeIcon icon={faShareNodes} className="mr-1" /> Share
+            <div className="border-t pt-3 mt-3 text-sm flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button type="button" onClick={() => SendLike(post.GlobalId)} className="flex items-center text-gray-600 hover:text-blue-700 transition-colors duration-200 ease-in-out">
+                  <FontAwesomeIcon icon={faThumbsUp} className="text-xl mr-2" /> 
+                  <span className="font-medium">{post.LikeCount} Like</span>
+                </button>
+                <button type="button" onClick={() => setShowCommentInput(!showCommentInput)} className="flex items-center text-gray-600 hover:text-green-700 transition-colors duration-200 ease-in-out">
+                  <FontAwesomeIcon icon={faComment} className="text-xl mr-2" />
+                  <span className="font-medium">{post.CommentCount} Comment</span>
+                </button>
+              </div>
+              <button type="button" onClick={handleShareClick} className="flex items-center text-gray-600 hover:text-red-700 transition-colors duration-200 ease-in-out">
+                <FontAwesomeIcon icon={faShareNodes} className="text-xl mr-2" /> 
+                <span className="font-medium">Share</span>
               </button>
             </div>
             {showCommentInput && (

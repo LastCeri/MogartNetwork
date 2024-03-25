@@ -36,14 +36,17 @@ export interface UserData {
   Photos: PhotoType[];
 }
 export interface PostType {
-  GlobalId: string;
-  Title: string;
   Author: string;
   Avatar: string;
-  Content: string;
-  VideoUrl: string;
-  ImageUrl: string;
+  GlobalId: string;
+  Content: string; 
   Date: string;
+  CommentCount:string;
+  LikeCount:string;
+  VideoTitle?: string;
+  VideoDesc?: string;
+  ImageUrl?: string;
+  VideoUrl?: [];
 }
 
 export interface PhotoType {

@@ -14,7 +14,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
   const userFriends: Friend[] = typeof userData?.UsrFriends === 'string'
     ? JSON.parse(userData?.UsrFriends || '[]')
     : userData?.UsrFriends || [];
-    
+  
+  const isProfilePage = window.location.pathname === '/Profile' || window.location.pathname.includes(data?.UserName);
+
   if (!userData) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -47,7 +49,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
               <p className="text-md">{userData.UsrFollowers} Followers · {userData.UsrFollowing} Following · {userData.UsrScore} Points</p>
           </div>
           </div>
-          {!isFriend && (
+          {!isProfilePage && !isFriend && (
             <div className="flex space-x-2">
               <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Follow</button>
               <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Add Friend</button>
