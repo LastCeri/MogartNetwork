@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
 import { Friend, UserData } from '../../Profile';
 import { useData } from '../../../../MogartBase/Context/DataContext';
+import { PostSendFollowRequest, PostSendFriendRequest } from '../../../../MogartBase/Api/Api';
 
 
 interface ProfileHeaderProps {
@@ -11,6 +12,8 @@ interface ProfileHeaderProps {
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => {
   const { data } = useData();
+  const [popup, setPopup] = useState({ visible: false, message: '' });
+
   const userFriends: Friend[] = typeof userData?.UsrFriends === 'string'
     ? JSON.parse(userData?.UsrFriends || '[]')
     : userData?.UsrFriends || [];
@@ -28,6 +31,31 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
   
   const isFriend = userFriends.some(friend => friend.name === data?.UserName);
   
+
+  const SendFriendRequest = async (UserName: string) => {
+    const response = await PostSendFriendRequest({ UserID: data.UserName, UserName: UserName, Type: "Friend" });
+    setPopup({ visible: true, message: 'Friend request sent' });
+    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
+  };
+
+  const SendFollowRequest = async (UserName: string) => {
+    const response = await PostSendFollowRequest({ UserID: data.UserName, UserName: UserName, Type: "Follow" });
+    setPopup({ visible: true, message: 'Follow request sent' });
+    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
+  };
+
+  
+  const handleSendFriendRequestClick = async () => {
+    if(userData && data) {
+      await SendFriendRequest(userData.UsrName);
+    }
+  };
+  const handleSendFollowRequestClick = async () => {
+    if(userData && data) {
+      await SendFollowRequest(userData.UsrName);
+    }
+  };
+
   return (
     <div className="flex justify-center items-end pt-16">
       <div className="w-full max-w-7xl mx-auto p-4 mt-8 rounded-xl" style={{ 
@@ -51,11 +79,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
           </div>
           {!isProfilePage && !isFriend && (
             <div className="flex space-x-2">
-              <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Follow</button>
-              <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Add Friend</button>
+              <button onClick={handleSendFollowRequestClick} className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Follow</button>
+              <button onClick={handleSendFriendRequestClick} className="text-blue-500 border border-blue-500 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:text-white">Add Friend</button>
             </div>
           )}
         </div>
+        {popup.visible && (
+            <div className="fixed bottom-0 inset-x-0 pb-4 flex justify-center items-center">
+              <div className="bg-white rounded-lg px-6 py-4 shadow-xl border border-gray-200">
+                <p className="text-sm text-gray-800">{popup.message}</p>
+              </div>
+            </div>
+          )}
         <ProfileNavigation onSelect={onSelect} />
       </div>
     </div>
