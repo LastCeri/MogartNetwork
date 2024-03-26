@@ -56,6 +56,32 @@ export const PostSendLike = (credentials:any) => handleRequest('POST', 'Like', c
 export const PostSendDislike = (credentials:any) => handleRequest('POST', 'Dislike', credentials);
 export const PostSendComment = (credentials:any) => handleRequest('POST', 'Comment', credentials);
 
+// Send Requests (Follow, Friend, Message)
+
+export const PostSendFollowRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
+export const PostSendFriendRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
+export const PostSendMessageRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
+
+// Accept Requests (Friend, Message)
+
+export const PostAcceptFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostAcceptMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostAcceptFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+
+// Reject Requests (Friend, Message)
+
+export const PostRejectFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostRejectMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+
+
+// Create Invations (Event,Groups,Meeting, Webinar, Other )
+
+export const CreateEventInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
+export const CreateGroupsInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
+export const CreateMeetingInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
+export const CreateWebinarInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
+export const CreateOtherInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
 
 // Post and user data related functions
 export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartPost', postData);
