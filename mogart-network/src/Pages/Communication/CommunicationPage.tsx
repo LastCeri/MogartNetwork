@@ -7,6 +7,7 @@ import GroupInvitation from './components/GroupInvitation';
 import MessageRequests from './components/MessageRequests';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
+import FollowRequests from './components/FollowRequests';
 
 
 const CommunicationPage = () => {
@@ -33,6 +34,9 @@ const CommunicationPage = () => {
             <button onClick={() => setActiveModule('friendRequests')} className={`w-full text-left font-medium ${activeModule === 'friendRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
                 Friend Requests
             </button>
+            <button onClick={() => setActiveModule('followRequests')} className={`w-full text-left font-medium ${activeModule === 'followRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
+                Follow Requests
+            </button>
             <button onClick={() => setActiveModule('eventRequests')} className={`w-full text-left font-medium ${activeModule === 'eventRequests' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'} py-3 px-5 rounded-lg shadow transition duration-300 ease-in-out hover:shadow-md`}>
                 Event Invitations
             </button>
@@ -54,6 +58,7 @@ const CommunicationPage = () => {
           <div className="flex-1 overflow-y-auto p-4">
             {activeModule === 'friendRequests' && <FriendRequests />}
             {activeModule === 'eventRequests' && <EventInvitations />}
+            {activeModule === 'followRequests' && <FollowRequests />}
             {activeModule === 'groupRequests' && <GroupInvitation />}
             {activeModule === 'messageRequests' && <MessageRequests />}
           </div>
