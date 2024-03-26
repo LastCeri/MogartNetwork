@@ -8,7 +8,7 @@ import MyGroupsPage from './SubPage/MyGroups/MyGroups.tsx';
 import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import { useNavigate } from 'react-router-dom';
 
-type Group = {
+export type Group = {
   GrpID: number;
   GrpName: string;
   GrpDesc: string;
@@ -54,7 +54,7 @@ const GroupsPage = () => {
               console.error('Network error:', error);
               navigate('/NetworkError');
             } else if (error.response) {
-              console.error('Chat data fetching failed:', error.response.data);
+              console.error('Groups data fetching failed:', error.response.data);
             } else {
               console.error('Error:', error.message);
             }

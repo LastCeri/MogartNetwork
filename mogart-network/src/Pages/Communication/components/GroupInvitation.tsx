@@ -75,7 +75,7 @@ const GroupInvitations = () => {
 
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-gray-50">
-       <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Group Requests</h2>
+       <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Group Invitations</h2>
       {requests.length > 0 ? (
         <div className="w-full max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">

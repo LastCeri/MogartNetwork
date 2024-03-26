@@ -91,16 +91,26 @@ function Register() {
       
       try {
         const response = await register({ email, username, password, walletAddress: "" });
-        if (response.status === true) {
+        if (response.status === "Success") {
           setRegistrationSuccess(true);
 
           setTimeout(() => navigate('/login'), 3000);
         } else {
           setErrorMessage(response.message || 'Registration failed with an unspecified error.');
         }
-      } catch (error) {
-        console.error('Registration error:', error);
-        setErrorMessage('An error occurred during registration.');
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.code === "ERR_NETWORK") {
+            console.error('Network error:', error);
+            navigate('/NetworkError');
+          } else if (error.response) {
+            console.error('Register failed:', error.response.data);
+          } else {
+            console.error('Error:', error.message);
+          }
+        } else {
+          console.error('An unexpected error occurred', error);
+        }
       }
     }
   };

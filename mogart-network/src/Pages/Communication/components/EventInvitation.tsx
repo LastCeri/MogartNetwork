@@ -31,7 +31,8 @@ const EventInvitations = () => {
             'Authorization': `Bearer ${userAuthToken}`
         }
     });  
-      console.log('API',response);
+ 
+    
       if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidEventInvitation(invite))) {
         console.error('API response is not an array or contains invalid data');
         return;
