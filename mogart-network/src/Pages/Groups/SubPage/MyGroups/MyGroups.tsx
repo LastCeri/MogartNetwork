@@ -3,8 +3,9 @@ import axios from 'axios';
 import { API_URL } from '../../../../MogartBase/Api/Api';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
+import { isValidMyGroups } from '../../../../MogartBase/Api/Sec-2/Checkers/GroupsChecker';
 
-interface Group {
+export interface MyGroupInterface {
   GrpID: number;
   GrpName: string;
   GrpDesc: string;
@@ -12,7 +13,7 @@ interface Group {
   GrpLogo: string;
 }
 
-const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
+const GroupItem: React.FC<{ group: MyGroupInterface }> = ({ group }) => {
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:scale-105 duration-300">
       <img src={group.GrpLogo} alt={group.GrpName} className="w-full h-32 sm:h-48 object-cover" />
@@ -21,7 +22,7 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
         <p className="text-gray-700 text-base">{group.GrpDesc}</p>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpTags.length} tags</span>
+        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpTags?.length ?? 0} tags</span>
       </div>
       <div className="px-6 py-4">
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -33,18 +34,24 @@ const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
 };
 
 const MyGroupsPage = () => {
-  const [myGroups, setMyGroups] = useState<Group[]>([]);
+  const [myGroups, setMyGroups] = useState<MyGroupInterface[]>([]);
   const { isLoggedIn, isLoading, data,siteData,userAuthToken } = useData();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyGroups = async () => {
       try {
-        const response = await axios.get<Group[]>(`${API_URL}/GetGroups/${data.UserName}`, {
+        const response = await axios.get<MyGroupInterface[]>(`${API_URL}/GetGroups/${data.UserName}`, {
           headers: {
               'Authorization': `Bearer ${userAuthToken}`
           }
       });  
+
+      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidMyGroups(invite))) {
+        console.error('API response is not an array or contains invalid data');
+        return;
+      }
+
         setMyGroups(response.data);
       }catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -52,7 +59,7 @@ const MyGroupsPage = () => {
             console.error('Network error:', error);
             navigate('/NetworkError');
           } else if (error.response) {
-            console.error('Chat data fetching failed:', error.response.data);
+            console.error('MyGroups data fetching failed:', error.response.data);
           } else {
             console.error('Error:', error.message);
           }
@@ -76,7 +83,7 @@ const MyGroupsPage = () => {
   return (
     <main className="flex p-4 h-fit items-center justify-center">
     <div className="max-w-4xl w-full mx-auto bg-white rounded-lg shadow-lg p-8">
-      {myGroups.length === 0 ? (
+      {myGroups?.length === 0 ? (
         <div className="text-center text-gray-600">
           <p>You haven't joined any groups yet.</p>
           <button
@@ -87,7 +94,7 @@ const MyGroupsPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {myGroups.map((group) => (
+          {myGroups?.map((group) => (
             <GroupItem key={group.GrpID} group={group} />
           ))}
         </div>

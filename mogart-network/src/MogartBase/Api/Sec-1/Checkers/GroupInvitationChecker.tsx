@@ -1,4 +1,4 @@
-import { GroupInvitation } from "../../../../Pages/Communication/components/GroupRequest";
+import { GroupInvitation } from "../../../../Pages/Communication/components/GroupInvitation";
 
 export const isValidGroupRequest = (data: any): data is GroupInvitation => {
     return typeof data.ID === 'number' &&
