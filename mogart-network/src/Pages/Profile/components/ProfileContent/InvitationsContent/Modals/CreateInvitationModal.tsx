@@ -23,25 +23,31 @@ const CreateInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, o
     const [invitationType, setInvitationType] = useState('');
     const [accessType, setAccessType] = useState('');
     const [entryFee, setEntryFee] = useState('');
-    const [popup, setPopup] = useState({ visible: false, message: '' });
+    const [sendpopup, setSendPopup] = useState({ visible: false, message: '' });
+    const [responsepopup, setResponsePopup] = useState({ visible: false, message: '' });
     const { data, userAuthID} = useData();
+    const [invitationsCode, setInvitationsCode] = useState('');
 
 
   if (!isOpen) return null;
 
   const handleInvitations = async (subject:string, validUntil:string, invitationType:string, accessType:string, entryFee:string) => {
     await CreateEvent(subject, validUntil, invitationType, accessType, entryFee);
-    setPopup({ visible: true, message: 'CreateEvent' });
-    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
+    setSendPopup({ visible: true, message: 'CreateEvent' });
+    setTimeout(() => setSendPopup({ visible: false, message: '' }), 3000);
   };
 
 {/* The merkle&witness operation will come here along with the Contract along with o1js. */}
   const CreateEvent = async (subject:string, validUntil:string, invitationType:string, accessType:string, entryFee:string) => {
     const response = await CreateEventInvation({ UserID:userAuthID, Subject:subject, ValidUntil:validUntil, InvitationType:invitationType, AccessType:accessType, EntryFee:entryFee, WalletAdress: data.WalletAddress, TransactionHash:"" });
-    console.log(response);
-    setPopup({ visible: true, message: 'CreateEvent' });
-    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
-    onClose();
+    console.log("response",response);
+    const responseData = JSON.parse(response);
+    if (responseData.Status === "Success") {
+      setInvitationsCode(responseData.InvitationsCode); 
+      setResponsePopup({ visible: true, message: 'Invitation Created Successfully!' });
+    } else {
+      setResponsePopup({ visible: true, message: 'Failed to Create Invitation' });
+    }
   };
 {/* ------------------------------------------------------------------------------------ */}
 
@@ -118,14 +124,54 @@ const CreateInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, o
           </div>
         </form>
 
-        {popup.visible && (
-            <div className="fixed bottom-0 inset-x-0 pb-4 flex justify-center items-center">
-              <div className="bg-white rounded-lg px-6 py-4 shadow-xl border border-gray-200">
-                <p className="text-sm text-gray-800">{popup.message}</p>
+        {sendpopup.visible && (
+          <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-60">
+            <div className="bg-white rounded-xl shadow-2xl border border-gray-300 transform transition duration-300 ease-out scale-95 hover:scale-105 max-w-md mx-auto overflow-hidden">
+              <div className="px-8 py-6">
+                <p className="text-lg text-gray-800 font-medium">{sendpopup.message}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+          {responsepopup.visible && (
+            <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-60">
+              <div className="bg-white rounded-lg shadow-2xl border border-gray-300 transform transition-all duration-300 ease-out scale-95 hover:scale-105 max-w-3xl w-full overflow-hidden">
+                <div className="px-8 py-6 space-y-4">
+                  <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <div className="flex items-center space-x-4">
+                      <p className="text-xl text-gray-800 font-bold bg-blue-50 px-3 py-1 rounded-md">{invitationsCode}</p>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(invitationsCode)}
+                        className="text-gray-500 hover:text-blue-500 transition-colors duration-200 ease-in-out"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 3h4a2 2 0 012 2v4a2 2 0 01-2 2h-4a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-lg text-gray-800">{responsepopup.message}</p>
+                </div>
+                <div className="flex justify-end space-x-3 bg-gray-50 px-8 py-4">
+                  <button 
+                    className="text-gray-800 bg-white hover:bg-gray-100 border border-gray-300 font-medium py-2 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out hover:shadow-md"
+                    onClick={() => onClose()}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="text-white bg-blue-500 hover:bg-blue-600 font-bold py-2 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out hover:shadow-md"
+                    onClick={() => onClose()}
+                  >
+                    OK
+                  </button>
+                </div>
               </div>
             </div>
           )}
-
       </div>
     </div>
   );
