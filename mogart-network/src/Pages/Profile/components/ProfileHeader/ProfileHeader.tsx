@@ -84,13 +84,20 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
             </div>
           )}
         </div>
+        
         {popup.visible && (
-            <div className="fixed bottom-0 inset-x-0 pb-4 flex justify-center items-center">
-              <div className="bg-white rounded-lg px-6 py-4 shadow-xl border border-gray-200">
-                <p className="text-sm text-gray-800">{popup.message}</p>
+            <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-60">
+              <div className="bg-white rounded-xl shadow-2xl border border-gray-300 transform transition duration-300 ease-out scale-95 hover:scale-105 max-w-md mx-auto overflow-hidden animate-bounce">
+                <div className="px-8 py-6 text-center">
+                  <div className="mb-4 p-2 rounded-full bg-green-100 inline-flex items-center justify-center">
+                    <svg className="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <p className="text-lg text-gray-800 font-medium">{popup.message}</p>
+                </div>
               </div>
             </div>
           )}
+
         <ProfileNavigation onSelect={onSelect} />
       </div>
     </div>
