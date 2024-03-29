@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import VoiceCallModal from './components/VoiceCall/VoiceCall';
 import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
 import CallFriendsModal from './components/CallFriendsModal/CallFriendsModal';
 import IncomingCallModal from './components/IncomingCallModal/IncomingCallModal';
-import config from '../../MogartBase/WebRTC/config';
-import useWebSocket from '../../MogartBase/WebRTC/useWebSocket';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,9 +22,6 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOp
     const [callingFriendImage, setCallingFriendImage] = useState('');
     const [isCallIncoming, setIsCallIncoming] = useState(false);
 
-    const { sendMessage, isConnected } = useWebSocket(config.voiceChatServer, (event: any) => {
-        console.log("WebSocket message received:", event.data);
-    });
 
     useEffect(() => {
         if (isLoading) return;
@@ -38,16 +31,18 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOp
     }, [isLoggedIn, isLoading, navigate, data?.UserName]);
 
     const handleStartCall = (friendName: string, friendImage: string) => {
-        if (isConnected) {
-            sendMessage({
-                type: 'call-initiate',
-                name: friendName,
-                image: friendImage,
-            });
-        }
-    };
-        const simulateIncomingCall = () => {
-        setIsCallIncoming(true);
+        console.log('Starting call with friend:', friendName);
+        console.log('Friend image:', friendImage);
+        setCallingFriendName(friendName); 
+        setCallingFriendImage(friendImage);
+        setIsCalling(true);
+        setCallStatus('Connecting...');
+    
+        setTimeout(() => {
+            setCallStatus('Chat Connection Started');
+        }, 2000);
+    
+        setIsCallModalOpen(false);
     };
 
     return (
