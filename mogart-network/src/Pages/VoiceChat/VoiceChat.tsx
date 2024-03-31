@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import VoiceCallModal from './components/VoiceCall/VoiceCall';
-import VoiceClient from '../../MogartBase/WebRTC/VoiceClient';
 import CallFriendsModal from './components/CallFriendsModal/CallFriendsModal';
 import IncomingCallModal from './components/IncomingCallModal/IncomingCallModal';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
+import { useVoiceCall } from '../../MogartBase/Context/VoiceCallProvider';
+import { RTCStartCallPack } from '../../MogartBase/WebRTC/Packs/RTCStartCallPack';
 
 
 interface VoiceChatProps {
@@ -16,12 +17,12 @@ interface VoiceChatProps {
 const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOpen }) => {
     const navigate = useNavigate();
     const { isLoggedIn, isLoading, data } = useData();
+    const { startCall, isCallModalOpen: isVoiceCallModalOpen, setCallStatus: setVoiceCallStatus } = useVoiceCall();
     const [isCalling, setIsCalling] = useState(false);
     const [callStatus, setCallStatus] = useState('');
     const [callingFriendName, setCallingFriendName] = useState('');
     const [callingFriendImage, setCallingFriendImage] = useState('');
     const [isCallIncoming, setIsCallIncoming] = useState(false);
-
 
     useEffect(() => {
         if (isLoading) return;
@@ -30,24 +31,25 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOp
         }
     }, [isLoggedIn, isLoading, navigate, data?.UserName]);
 
-    const handleStartCall = (friendName: string, friendImage: string) => {
+    const handleStartCall = async (friendName: string, friendImage: string, friendId: string) => {
         console.log('Starting call with friend:', friendName);
         console.log('Friend image:', friendImage);
-        setCallingFriendName(friendName); 
+        console.log('Friend id:', friendId);
+    
+    
+        const callPacket = await RTCStartCallPack(friendName, friendId);
+        startCall(callPacket);
+    
+        setCallingFriendName(friendName);
         setCallingFriendImage(friendImage);
-        setIsCalling(true);
-        setCallStatus('Connecting...');
-    
-        setTimeout(() => {
-            setCallStatus('Chat Connection Started');
-        }, 2000);
-    
         setIsCallModalOpen(false);
+        setIsCalling(true);
+        setCallStatus('Calling...');
     };
+    
 
     return (
         <>
-            <VoiceClient shouldRender={isLoggedIn} />
             <VoiceCallModal
                 isCalling={isCalling}
                 callStatus={callStatus}

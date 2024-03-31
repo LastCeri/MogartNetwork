@@ -22,6 +22,7 @@ interface UserData {
   EmailVerified: boolean;
   Theme: string;
   Language: string;
+  VoiceChatStatus: string;
   ChatData: ChatMessage[];
   voiceDetectionLevel: number;
 }
@@ -52,6 +53,7 @@ const initialUserData: UserData = {
   Email: '',
   Theme: '',
   Language: '',
+  VoiceChatStatus: '',
   EmailVerified: false,
   ChatData: [],
   voiceDetectionLevel: 50, 

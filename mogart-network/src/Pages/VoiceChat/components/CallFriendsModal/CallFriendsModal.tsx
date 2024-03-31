@@ -6,6 +6,7 @@ import { API_URL } from '../../../../MogartBase/Api/Api';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 
 interface Friend {
+    id:string;
     name: string;
     status: string;
     image: string;
@@ -19,7 +20,7 @@ interface User {
 
 interface CallFriendsModalProps {
     isOpen: boolean;
-    onStartCall: (friendName: string, friendImage: string) => void;
+    onStartCall: (friendName: string, friendImage: string,friendid: string) => void;
     setIsOpen: (isOpen: boolean) => void;
 }
 
@@ -76,7 +77,7 @@ const CallFriendsModal: React.FC<CallFriendsModalProps> = ({ isOpen, onStartCall
                             </span>
                             </div>
                         </div>
-                        <button onClick={() => onStartCall(friend.name, friend.image)} className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 focus:outline-none shadow transition duration-200 ease-in-out">
+                        <button onClick={() => onStartCall(friend.name, friend.image,friend.id)} className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 focus:outline-none shadow transition duration-200 ease-in-out">
                             <FontAwesomeIcon icon={faPhone} className="text-lg" />
                         </button>
                         </div>
