@@ -6,6 +6,7 @@ import { faSliders, faThumbsUp, faComment, faShareNodes, faUserSlash, faFolderOp
 import ReactPlayer from 'react-player';
 import { useData } from '../../../../../MogartBase/Context/DataContext';
 import { PostSendComment, PostSendDislike, PostSendLike } from '../../../../../MogartBase/Api/Api';
+import SharePopup from '../../../../../MogartBase/ThemeParts/Popup/SharePopup';
 
 interface ProfileMainContentProps {
   userData: UserData | null;
@@ -168,7 +169,9 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
                 />
               </div>
             )}
+             {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/posts/${post.GlobalId}`} title={post.Author} onClose={handleClosePopup} />}
           </div>
+          
         ))
       )}
     </main>

@@ -4,7 +4,7 @@ import PendingInvitationsModal from './Modals/PendingInvitationsModal';
 import { UserData } from '../../../Profile';
 import PastInvitationsModal from './Modals/PastInvitationsModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faEnvelope, faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faEnvelope, faPlus, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 import CreatedInvitationModal from './Modals/CreatedInvitationModal';
 
 const dummyUserData = {
@@ -60,7 +60,7 @@ const ProfileInvitationsContent: React.FC<ProfileInvitationsContentProps> = ({ u
       <FontAwesomeIcon icon={faPlus} className="mr-2" />  Create Invitation
       </button>
       <button onClick={() => setActiveModal('created')} className="mb-4 px-4 py-2 rounded text-orange-500 border border-orange-500 hover:bg-orange-500 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
-      <FontAwesomeIcon icon={faPlus} className="mr-2" />  Created Invitation
+      <FontAwesomeIcon icon={faCalendarPlus} className="mr-2" />  Created Invitation
       </button>
     </div>
       {contentComponent}

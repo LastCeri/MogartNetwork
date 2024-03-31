@@ -74,7 +74,6 @@ export const PostRejectFriendRequest = (credentials:any) => handleRequest('POST'
 export const PostFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 export const PostRejectMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 
-
 // Create Invations (Event,Groups,Meeting, Webinar, Other )
 
 export const CreateEventInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
@@ -88,6 +87,10 @@ export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartP
 export const fetchActivity = (userId:any) => handleRequest('GET', `GetActivity/${userId}`);
 export const getUserData = (sessionToken:any) => handleRequest('GET', 'getUserData', { headers: { 'Authorization': `Bearer ${sessionToken}` } });
 
+
+// RTC
+export const LoginRTC = (credentials:any) => handleRequest('POST', 'RtcLogin', credentials);
+export const LogOutRTC = (credentials:any) => handleRequest('POST', 'RtcLogout', credentials);
 
 
 export const fetchGroups = async () => {
