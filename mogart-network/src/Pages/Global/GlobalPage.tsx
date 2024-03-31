@@ -5,6 +5,7 @@ import { faCalendarDays, faEye, faFolderOpen, faSearch } from '@fortawesome/free
 import { API_URL } from '../../MogartBase/Api/Api';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 interface GlobalContent {
   Bid: number;
@@ -26,6 +27,7 @@ const GlobalContentComponent: React.FunctionComponent = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const apiUrl = `${API_URL}/GetGlobals`;
@@ -38,8 +40,15 @@ const GlobalContentComponent: React.FunctionComponent = () => {
         const uniqueCategories = Array.from(new Set(data.map(global => global.Gcategory)));
         setCategories(uniqueCategories);
       })
-      .catch((error) => {
-        console.error('Error fetching data from API:', error);
+      .catch(error => {
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('GetGlobals data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, []);
 

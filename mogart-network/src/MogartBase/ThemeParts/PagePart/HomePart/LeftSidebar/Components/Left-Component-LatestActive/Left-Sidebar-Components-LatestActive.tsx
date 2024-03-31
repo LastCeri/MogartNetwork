@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../../../../Api/Api';
 import { useData } from '../../../../../../Context/DataContext';
+import { useNavigate } from 'react-router-dom';
 
 interface Activity {
     Actid: string;
@@ -15,7 +16,8 @@ interface Activity {
 export default function LeftSidebarComponentsLatestActive() {
     const [activities, setActivities] = useState<Activity[]>([]);
     const { data, isLoggedIn } = useData();
-
+    const navigate = useNavigate();
+    
     useEffect(() => {
         if (!isLoggedIn || !data || !data.UserName) {
             console.log('User is not logged in or UserName is null, skipping API call.');
@@ -27,8 +29,15 @@ export default function LeftSidebarComponentsLatestActive() {
                 setActivities(response.data);
             })
             .catch(error => {
-                console.error('There was an error fetching the activities:', error);
-            });
+                if (error.code === "ERR_NETWORK") {
+                  console.error('Network error:', error);
+                  navigate('/NetworkError');
+                } else if (error.response) {
+                  console.error('Activity data fetching failed:', error.response.data);
+                } else {
+                  console.error('Error:', error.message);
+                }
+              });
     }, [data?.UserName, isLoggedIn]);
 
     if (!isLoggedIn) {

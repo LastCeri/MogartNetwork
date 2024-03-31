@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,15 +15,23 @@ interface Tag {
 
 export default function PopularTags() {
   const [popularTags, setPopularTags] = useState<Tag[]>([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const apiUrl = `${API_URL}/GetPopularTags`;
     axios.get<Tag[]>(apiUrl)
       .then((response) => {
         setPopularTags(response.data);
       })
-      .catch((error) => {
-        console.error('Error fetching popular tags from API:', error);
+      .catch(error => {
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('Activity data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, []);
 

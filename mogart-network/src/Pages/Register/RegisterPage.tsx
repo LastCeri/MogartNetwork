@@ -21,7 +21,14 @@ function Register() {
         setSiteData(siteData);
       })
       .catch(error => {
-        console.error('Error fetching site data:', error);
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('MogartSiteData data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, [setSiteData]);
 

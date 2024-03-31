@@ -56,6 +56,17 @@ const ProfileSettingsPage = () => {
 
   };
 
+  const handleCopyWalletAddress = () => {
+ 
+    navigator.clipboard.writeText(WalletAddress)
+      .then(() => {
+        console.log('Wallet address copied to clipboard');
+      })
+      .catch(err => {
+        console.error('Failed to copy wallet address: ', err);
+      });
+  };
+
   const handleProfileImageChange = (e:any) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -296,6 +307,7 @@ const ProfileSettingsPage = () => {
                           className="flex-1 mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
                         />
                         <button
+                        onClick={handleCopyWalletAddress}
                           className="px-5 py-2 border border-transparent text-sm font-medium rounded-md shadow text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150">
                           Copy Address
                         </button>

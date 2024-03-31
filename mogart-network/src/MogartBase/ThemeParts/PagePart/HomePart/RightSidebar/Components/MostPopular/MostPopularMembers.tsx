@@ -8,15 +8,22 @@ import {faArrowDown, faArrowUp, faShieldAlt} from '@fortawesome/free-solid-svg-i
 
 const MostPopularMember = () => {
   const [mostPopularMembers, setMostPopularMembers] = useState<{ Mpid: number; MpAvatar: string; MpUsername: string; MpUserID: string, MpPoints: string ,MpTrend: string }[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     axios.get(`${API_URL}/GetMPM`) 
       .then((response) => {
         const data = response.data;
         setMostPopularMembers(data);
       })
-      .catch((error) => {
-        console.error('An error occurred while fetching data: ', error);
+      .catch(error => {
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('Activity data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, []);
 

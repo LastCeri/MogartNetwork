@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../../Api/Api';
+import { useNavigate } from 'react-router-dom';
 
 interface LatestBlog {
     Bid: number;
@@ -13,12 +14,22 @@ interface LatestBlog {
 
   const BlogDetailsLatest = () => {
     const [blogs, setBlogs] = useState<LatestBlog[]>([]);
-  
+    const navigate = useNavigate();
+    
     useEffect(() => {
       fetch(`${API_URL}/GetBlogsLatest`)
         .then(response => response.json())
         .then(data => setBlogs(data))
-        .catch(error => console.error('Error fetching latest blogs:', error));
+        .catch(error => {
+          if (error.code === "ERR_NETWORK") {
+            console.error('Network error:', error);
+            navigate('/NetworkError');
+          } else if (error.response) {
+            console.error('Activity data fetching failed:', error.response.data);
+          } else {
+            console.error('Error:', error.message);
+          }
+        });
     }, []);
   
     return (

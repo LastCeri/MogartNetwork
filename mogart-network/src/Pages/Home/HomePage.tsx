@@ -9,9 +9,11 @@ import Notification from '../../MogartBase/ThemeParts/Notification/Notification.
 import { API_URL } from '../../MogartBase/Api/Api.tsx';
 import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import { SiteData } from '../../MogartBase/Context/DataContext.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const {siteData, setSiteData, isLoading} = useData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get<SiteData[]>(`${API_URL}/MogartSiteData`)
@@ -24,7 +26,14 @@ function HomePage() {
         }
       })
       .catch(error => {
-        console.error('Error fetching site data:', error);
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('MogartSiteData data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, [setSiteData]);
   

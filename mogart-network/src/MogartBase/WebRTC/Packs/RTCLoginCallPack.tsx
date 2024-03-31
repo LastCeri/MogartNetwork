@@ -4,6 +4,5 @@ export async function RTCLoginPack(userAuthID: string, userData: any) {
       userauthid: userAuthID,
       type: 2
   });
-
   return RTCLoginPacket;
 }

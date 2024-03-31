@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from '../../../../../../Api/Api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faFolderOpen,faCalendarDays } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 interface Blog {
   Bid: number;
@@ -18,15 +19,23 @@ interface Blog {
 
 export default function LeftSidebarComponentsBlogs() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const apiUrl = `${API_URL}/GetBlogs`;
     axios.get<Blog[]>(apiUrl)
       .then((response) => {
         setBlogs(response.data);
       })
-      .catch((error) => {
-        console.error('Error fetching data from API:', error);
+      .catch(error => {
+        if (error.code === "ERR_NETWORK") {
+          console.error('Network error:', error);
+          navigate('/NetworkError');
+        } else if (error.response) {
+          console.error('Activity data fetching failed:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
       });
   }, []);
 

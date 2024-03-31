@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useData } from '../../../../MogartBase/Context/DataContext.tsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhoneSlash, faMicrophone, faMicrophoneSlash, faHeadphones, faHeadphonesAlt } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const UserCallModal = () => {
     const { data, isLoading } = useData();
@@ -9,7 +10,8 @@ const UserCallModal = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isHeadphonesMuted, setIsHeadphonesMuted] = useState(false);
     const audioContextRef = useRef<AudioContext | null>(null);
-  
+    const navigate = useNavigate();
+
     useEffect(() => {
       if (isLoading) {
         console.log("Loading data...");
@@ -52,8 +54,8 @@ const UserCallModal = () => {
           };
           checkSpeaking();
         })
-        .catch((error) => {
-          console.error('Failed to access microphone:', error);
+        .catch(error => {
+            console.error('Error:', error.message);
         });
         
       return () => {
