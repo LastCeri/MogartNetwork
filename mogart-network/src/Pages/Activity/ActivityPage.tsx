@@ -48,7 +48,7 @@ const ActivityPage = () => {
           console.error('Network error:', error);
           navigate('/NetworkError');
         } else if (error.response) {
-          console.error('Chat data fetching failed:', error.response.data);
+          console.error('Activity data fetching failed:', error.response.data);
         } else {
           console.error('Error:', error.message);
         }
