@@ -126,7 +126,9 @@ function Login() {
           updateData(userdata);
           setTimeout(() => navigate('/'), 2500);
         }else if (status === "alreadylogged"){
-          navigate('/');
+          setErrorMessage(message);
+          setTimeout(() => setErrorMessage(""), 2500)
+          setTimeout(() => navigate('/'), 2500)
         }else if (status === "Bad Request") {
           setErrorMessage(message);
           setTimeout(() => setErrorMessage(""), 2500)
