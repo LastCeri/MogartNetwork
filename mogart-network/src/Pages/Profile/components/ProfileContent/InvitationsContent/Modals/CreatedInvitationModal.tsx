@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect } from 'react';
-import { API_URL, CreateEventInvation } from '../../../../../../MogartBase/Api/Api';
+import { API_URL } from '../../../../../../MogartBase/Api/Api';
 import { useData } from '../../../../../../MogartBase/Context/DataContext';
 import axios from 'axios';
 
@@ -28,9 +28,9 @@ const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, 
     if (isLoading) {
       return;
     }
-    const fetchEventRequests = async () => {
+    const fetchInvitations = async () => {
       try {
-        const response = await axios.get<Invitation[]>(`${API_URL}/GetInvations/${data.UserName}/Event`, {
+        const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/All`, {
           headers: {
             'Authorization': `Bearer ${userAuthToken}`,
           },
@@ -47,7 +47,7 @@ const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, 
       }
     };
 
-    fetchEventRequests();
+    fetchInvitations();
   }, [isLoading, API_URL, data.UserName, userAuthToken]);
 
 
@@ -61,7 +61,7 @@ const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, 
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
           {invitations.map((invitation, index) => (
-            <div key={index} className="bg-white rounded-lg overflow-hidden border border-green-300 shadow hover:shadow-lg transition-shadow duration-300 ease-in-out">
+            <div key={index} className="bg-white rounded-lg overflow-hidden border border-orange-500 shadow hover:shadow-lg transition-shadow duration-300 ease-in-out">
               <div className="p-4">
                 <h3 className="text-lg font-semibold">{invitation.InTitle}</h3>
                 <p className="text-sm text-gray-500">Date: {invitation.InalidDate}</p>
