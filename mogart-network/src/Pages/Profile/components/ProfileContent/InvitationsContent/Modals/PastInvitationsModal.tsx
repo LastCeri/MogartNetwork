@@ -1,5 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../../../../MogartBase/Api/Api';
+import { useData } from '../../../../../../MogartBase/Context/DataContext';
+import axios from 'axios';
 
+interface Invitation {
+  InType: string;
+  InTitle?: string;
+  InalidDate?: string;
+  InVisibility?: string;
+  InLimitedUsers?: string;
+  InFees?: string;
+  InWalletAddress?: string;
+}
 interface PastInvitationsModalProps {
   isOpen: boolean; 
   onClose: () => void; 
@@ -10,8 +22,40 @@ interface PastInvitationsModalProps {
   }[]; 
 }
 
-function PastInvitationsModal({ isOpen, onClose, invitations }: PastInvitationsModalProps) {
-  if (!isOpen) return null;
+function PastInvitationsModal({ isOpen, onClose }: PastInvitationsModalProps) {
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const { isLoading, data, userAuthToken } = useData();
+
+  useEffect(() => {
+    if (!isOpen || isLoading) {
+      return;
+    }
+
+    const fetchInvitations = async () => {
+      try {
+        const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/Past`, {
+          headers: {
+            'Authorization': `Bearer ${userAuthToken}`,
+          },
+        });
+
+        if (!response.data || !Array.isArray(response.data)) {
+          console.error('API response is not valid');
+          return;
+        }
+        setInvitations(response.data);
+      } catch (error) {
+        console.error('Failed to fetch event invitations:', error);
+      }
+    };
+
+    fetchInvitations();
+  }, [isOpen, isLoading, API_URL, data.UserName, userAuthToken]);
+
+  if (!isOpen) {
+    return null;
+  }
+
 
   return (
     <div className="overflow-auto" style={{ maxHeight: "80vh" }}> 
@@ -24,9 +68,9 @@ function PastInvitationsModal({ isOpen, onClose, invitations }: PastInvitationsM
           {invitations.map((invitation, index) => (
             <div key={index} className="bg-white rounded-lg overflow-hidden border border-green-300 shadow hover:shadow-lg transition-shadow duration-300 ease-in-out">
               <div className="p-4">
-                <h3 className="text-lg font-semibold">{invitation.Subject}</h3>
-                <p className="text-sm text-gray-500">From: {invitation.SenderName}</p>
-                <p className="text-sm text-gray-400">Date: {invitation.Date}</p>
+                <h3 className="text-lg font-semibold">{invitation.InTitle}</h3>
+                <p className="text-sm text-gray-500">From: {invitation.InType}</p>
+                <p className="text-sm text-gray-400">Date: {invitation.InalidDate}</p>
               </div>
               <div className="bg-gray-100 p-3">
                 <p className="text-xs text-gray-500">This is a past invitation. You can review the details or remove it from your list.</p>
