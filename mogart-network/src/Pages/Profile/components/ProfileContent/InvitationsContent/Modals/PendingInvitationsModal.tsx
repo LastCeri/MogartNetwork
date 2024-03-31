@@ -1,17 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from '../../../../../../MogartBase/Api/Api';
+import { useData } from '../../../../../../MogartBase/Context/DataContext';
+import axios from 'axios';
 
+interface Invitation {
+  InType: string;
+  InTitle?: string;
+  InalidDate?: string;
+  InVisibility?: string;
+  InLimitedUsers?: string;
+  InFees?: string;
+  InWalletAddress?: string;
+}
 
 interface PendingInvitationsModalProps {
-  isOpen: boolean; 
-  onClose: () => void; 
+  isOpen: boolean;
+  onClose: () => void;
   invitations: {
     Subject: string;
     SenderName: string;
-  }[]; 
+  }[];
 }
 
-function PendingInvitationsModal({ isOpen, onClose, invitations }: PendingInvitationsModalProps) {
-  if (!isOpen) return null;
+function PendingInvitationsModal({ isOpen, onClose, invitations: initialInvitations }: PendingInvitationsModalProps) {
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const { isLoading, data, userAuthToken } = useData();
+
+  useEffect(() => {
+    if (!isOpen || isLoading) {
+      return;
+    }
+
+    const fetchInvitations = async () => {
+      try {
+        const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/Pending`, {
+          headers: {
+            'Authorization': `Bearer ${userAuthToken}`,
+          },
+        });
+
+        if (!response.data || !Array.isArray(response.data)) {
+          console.error('API response is not valid');
+          return;
+        }
+
+        setInvitations(response.data);
+      } catch (error) {
+        console.error('Failed to fetch event invitations:', error);
+      }
+    };
+
+    fetchInvitations();
+  }, [isOpen, isLoading, API_URL, data.UserName, userAuthToken]);
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div>
@@ -24,8 +68,8 @@ function PendingInvitationsModal({ isOpen, onClose, invitations }: PendingInvita
           {invitations.map((invitation, index) => (
             <div key={index} className="bg-white border border-purple-300 rounded-lg  shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
               <div className="mb-2">
-                <h3 className="text-lg font-semibold">{invitation.Subject}</h3>
-                <p className="text-sm text-gray-500">From: {invitation.SenderName}</p>
+                <h3 className="text-lg font-semibold">{invitation.InTitle}</h3>
+                <p className="text-sm text-gray-500">From: {invitation.InType}</p>
               </div>
               <div className="flex justify-between items-center">
                 <button className="text-white bg-green-500 hover:bg-green-600 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">
