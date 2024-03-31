@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../../../../../../Api/Api';
+import { useNavigate } from 'react-router-dom';
 
 interface GroupType {
   GrpID: number;
@@ -10,12 +11,21 @@ interface GroupType {
 
   export default function Groups() {
     const [groups, setGroups] = useState<GroupType[]>([]);
-
+    const navigate = useNavigate();
     useEffect(() => {
       fetch(`${API_URL}/GetGroups`)
         .then(response => response.json())
         .then(data => setGroups(data))
-        .catch(error => console.error('Error fetching groups:', error));
+        .catch(error => {
+          if (error.code === "ERR_NETWORK") {
+            console.error('Network error:', error);
+            navigate('/NetworkError');
+          } else if (error.response) {
+            console.error('BlogDetailsLatest data fetching failed:', error.response.data);
+          } else {
+            console.error('Error:', error.message);
+          }
+        });
     }, []);
   
     return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../../../../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +9,7 @@ import {faArrowDown, faArrowUp, faShieldAlt} from '@fortawesome/free-solid-svg-i
 const MostPopularMember = () => {
   const [mostPopularMembers, setMostPopularMembers] = useState<{ Mpid: number; MpAvatar: string; MpUsername: string; MpUserID: string, MpPoints: string ,MpTrend: string }[]>([]);
   const navigate = useNavigate();
+  
   useEffect(() => {
     axios.get(`${API_URL}/GetMPM`) 
       .then((response) => {
@@ -20,7 +21,7 @@ const MostPopularMember = () => {
           console.error('Network error:', error);
           navigate('/NetworkError');
         } else if (error.response) {
-          console.error('Activity data fetching failed:', error.response.data);
+          console.error('MostPopularMember data fetching failed:', error.response.data);
         } else {
           console.error('Error:', error.message);
         }
