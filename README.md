@@ -63,18 +63,19 @@ https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
 * ✅ UI/UX Design Overhaul (Phase 3): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ UI/UX Design Overhaul (Phase 4): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 
-## February 2024 milestones continue ⌛
+## February 2024 milestones completed ✅
 * ✅ UI/UX Design Overhaul (Phase 5): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ UI/UX Design Overhaul (Phase 6): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 * ✅ Blockchain Integration: Initiating messaging correspondence with smart contracts, integrating MerkleTree data, and testing on Testnet and Devnet environments.
 * ✅ Voice Chat Technology Implementation: Developing voice chat features as part of our technology upgrade.
 * ✅ UI/UX Design Overhaul (Phase 7): In progress for enhancing the UI/UX with Tailwind CSS, focusing on accessibility and responsive design.
 
-## March 2024 milestones continue ⌛
-* ⌛ Invitations and invitation keys integration (Groups)
-* ⌛ UI/UX Design Overhaul (Phase 8): Further refinement of the user interface using Tailwind CSS.
-* ⌛ Voice Chat Technology Enhancement: Advancing voice chat operations as part of the ongoing technology upgrade.
-* ⌛ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
+## March 2024 milestones completed ✅
+* ✅ Invitations and invitation keys integration (Groups,friends,events,meetings,webinars and others)
+* ✅ Requests Integration (Message, Follow, Friend, Group, and Event)
+* ✅ UI/UX Design Overhaul (Phase 8): Further refinement of the user interface using Tailwind CSS.
+* ✅ Voice Chat Technology Enhancement: Advancing voice chat operations as part of the ongoing technology upgrade.
+* ✅ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
 
 # 2nd Quarter 2024
 
