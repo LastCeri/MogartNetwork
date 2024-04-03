@@ -17,7 +17,7 @@ export default function LeftSidebarComponentsLatestActive() {
     const [activities, setActivities] = useState<Activity[]>([]);
     const { data, isLoggedIn } = useData();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         if (!isLoggedIn || !data || !data.UserName) {
             console.log('User is not logged in or UserName is null, skipping API call.');
@@ -33,7 +33,7 @@ export default function LeftSidebarComponentsLatestActive() {
                   console.error('Network error:', error);
                   navigate('/NetworkError');
                 } else if (error.response) {
-                  console.error('Activity data fetching failed:', error.response.data);
+                  console.error('LeftSidebarComponentsLatestActive data fetching failed:', error.response.data);
                 } else {
                   console.error('Error:', error.message);
                 }

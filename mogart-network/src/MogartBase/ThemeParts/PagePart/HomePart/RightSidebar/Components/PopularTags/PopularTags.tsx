@@ -16,7 +16,7 @@ interface Tag {
 export default function PopularTags() {
   const [popularTags, setPopularTags] = useState<Tag[]>([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const apiUrl = `${API_URL}/GetPopularTags`;
     axios.get<Tag[]>(apiUrl)
@@ -28,7 +28,7 @@ export default function PopularTags() {
           console.error('Network error:', error);
           navigate('/NetworkError');
         } else if (error.response) {
-          console.error('Activity data fetching failed:', error.response.data);
+          console.error('PopularTags data fetching failed:', error.response.data);
         } else {
           console.error('Error:', error.message);
         }

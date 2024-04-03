@@ -32,7 +32,7 @@ export default function LeftSidebarComponentsBlogs() {
           console.error('Network error:', error);
           navigate('/NetworkError');
         } else if (error.response) {
-          console.error('Activity data fetching failed:', error.response.data);
+          console.error('LeftSidebarComponentsBlogs data fetching failed:', error.response.data);
         } else {
           console.error('Error:', error.message);
         }

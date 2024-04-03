@@ -1,7 +1,7 @@
 import { FriendRequest } from "../../../../Pages/Communication/components/FriendRequests";
 
 export const isValidFriendRequest = (data: any): data is FriendRequest => {
-    return typeof data.ID === 'number' &&
+    return typeof data.ID === 'string' &&
            typeof data.ReqAuthor === 'string' &&
            typeof data.ReqAuthorImage === 'string' &&
            typeof data.ReqContent === 'string' &&
