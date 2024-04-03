@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useData } from '../../../../MogartBase/Context/DataContext';
 
 interface ProfileNavigationProps {
   onSelect: (selectedContent: string) => void;
@@ -6,7 +7,14 @@ interface ProfileNavigationProps {
 
 const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ onSelect }) => {
   const [activeItem, setActiveItem] = useState<string>('Posts');
-  const navItems = ['Posts', 'Activity', 'Friends', 'Photos', 'Groups', 'Invitations'];
+  let navItems = ['Posts', 'Activity', 'Friends', 'Photos', 'Groups'];
+  const { data } = useData();
+
+  const isProfilePage = window.location.pathname === '/Profile' || window.location.pathname.includes(data?.UserName);
+
+  if (isProfilePage) {
+    navItems = [...navItems, 'Invitations'];
+  }
 
   const handleSelect = (item: string) => {
     setActiveItem(item);
