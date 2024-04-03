@@ -18,11 +18,13 @@ interface CreateInvitationModalProps {
     InFees?: string;
     InWalletAddress?: string;
   }
-  
+
 
 const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+
+  const isProfileInvitation = useIsProfileInvitation(data?.UserName);
 
   useEffect(() => {
     if (isLoading) {
@@ -30,18 +32,25 @@ const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, 
     }
     const fetchInvitations = async () => {
       try {
-        const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/All`, {
-          headers: {
-            'Authorization': `Bearer ${userAuthToken}`,
-          },
-        });
 
-        if (!response.data || !Array.isArray(response.data)) {
-          console.error('API response is not valid');
-          return;
-        }
+          if(isLoggedIn && isProfileInvitation)
+          {
+            const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/All`, {
+              headers: {
+                'Authorization': `Bearer ${userAuthToken}`,
+              },
+            });
+    
+            if (!response.data || !Array.isArray(response.data)) {
+              console.error('API response is not valid');
+              return;
+            }
+    
+            setInvitations(response.data);
 
-        setInvitations(response.data);
+          }
+
+
       } catch (error) {
         console.error('Failed to fetch event invitations:', error);
       }
@@ -50,7 +59,9 @@ const CreatedInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, 
     fetchInvitations();
   }, [isLoading, API_URL, data.UserName, userAuthToken]);
 
-
+  function useIsProfileInvitation(userName?: string): boolean {
+    return window.location.pathname === '/Profile' || window.location.pathname.includes(userName || '');
+  }
 
   return (
     <div className="overflow-auto" style={{ maxHeight: "80vh" }}> 
