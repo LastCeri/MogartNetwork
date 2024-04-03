@@ -22,9 +22,15 @@ interface PendingInvitationsModalProps {
   }[];
 }
 
-function PendingInvitationsModal({ isOpen, onClose, invitations: initialInvitations }: PendingInvitationsModalProps) {
+function PendingInvitationsModal({ isOpen, onClose}:any) {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const { isLoading, data, userAuthToken } = useData();
+  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+
+  const isProfileInvitation = useIsProfileInvitation(data?.UserName);
+
+  function useIsProfileInvitation(userName?: string): boolean {
+    return window.location.pathname === '/Profile' || window.location.pathname.includes(userName || '');
+  }
 
   useEffect(() => {
     if (!isOpen || isLoading) {
@@ -33,6 +39,9 @@ function PendingInvitationsModal({ isOpen, onClose, invitations: initialInvitati
 
     const fetchInvitations = async () => {
       try {
+
+        if(isLoggedIn && isProfileInvitation)
+        {
         const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/Pending`, {
           headers: {
             'Authorization': `Bearer ${userAuthToken}`,
@@ -45,6 +54,7 @@ function PendingInvitationsModal({ isOpen, onClose, invitations: initialInvitati
         }
 
         setInvitations(response.data);
+      }
       } catch (error) {
         console.error('Failed to fetch event invitations:', error);
       }
