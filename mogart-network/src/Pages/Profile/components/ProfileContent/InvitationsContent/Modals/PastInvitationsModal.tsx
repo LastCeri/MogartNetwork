@@ -22,10 +22,16 @@ interface PastInvitationsModalProps {
   }[]; 
 }
 
-function PastInvitationsModal({ isOpen, onClose }: PastInvitationsModalProps) {
+function PastInvitationsModal({ isOpen, onClose }:any) {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const { isLoading, data, userAuthToken } = useData();
+  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
+  const isProfileInvitation = useIsProfileInvitation(data?.UserName);
+
+  function useIsProfileInvitation(userName?: string): boolean {
+    return window.location.pathname === '/Profile' || window.location.pathname.includes(userName || '');
+  }
+  
   useEffect(() => {
     if (!isOpen || isLoading) {
       return;
@@ -33,6 +39,10 @@ function PastInvitationsModal({ isOpen, onClose }: PastInvitationsModalProps) {
 
     const fetchInvitations = async () => {
       try {
+
+        if(isLoggedIn && isProfileInvitation)
+        {
+
         const response = await axios.get<Invitation[]>(`${API_URL}/GetInvitations/${data.UserName}/Past`, {
           headers: {
             'Authorization': `Bearer ${userAuthToken}`,
@@ -44,6 +54,7 @@ function PastInvitationsModal({ isOpen, onClose }: PastInvitationsModalProps) {
           return;
         }
         setInvitations(response.data);
+      }
       } catch (error) {
         console.error('Failed to fetch event invitations:', error);
       }
