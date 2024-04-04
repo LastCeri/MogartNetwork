@@ -1,64 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faUser, faStar, faEnvelope, faClock, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt, faUser, faStar, faEnvelope, faClock, faPlus, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { UserData } from '../../../Profile';
 import PendingActivity from './Modals/PendingActivity';
 import PastActivity from './Modals/PastActivity';
 import CreateActivity from './Modals/CreateActivity';
-
-const dummyUserData = {
-  Activity: [
-    { Activity: "Join our team meeting", Name: "Alice", Date: "2023-03-20", Point: "5" },
-    { Activity: "Weekly Sync-up", Name: "Bob", Date: "2023-03-21", Point: "10" },
-    { Activity: "Project Kickoff", Name: "Charlie", Date: "2023-03-22", Point: "15" },
-  ],
-};
+import { useParams, useLocation } from 'react-router-dom';
+import { useData } from '../../../../../MogartBase/Context/DataContext';
 
 interface ProfileActivityContentProps {
     userData: UserData | null;
 }
 
-const ProfileActivityContent: React.FC<ProfileActivityContentProps> = ({ userData }) => {
-  const [activeModal, setActiveModal] = useState('');
-  const invitations = dummyUserData?.Activity || [];
+type ActiveModalType = 'pending' | 'past' | 'create';
 
-  const handleCreateInvitation = (invitation:any) => {
+const ProfileActivityContent: React.FC<ProfileActivityContentProps> = ({ userData }) => {
+  const [activeModal, setActiveModal] = useState<ActiveModalType | ''>('');
+  const { isLoggedIn, data } = useData();
+  const { username: urlUsername } = useParams<{ username?: string }>();
+  const location = useLocation();
+  const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
+
+
+
+
+
+  const isProfileInvitation = useCallback(() => {
+    return location.pathname === '/Profile' || location.pathname.includes(data?.UserName || '');
+  }, [location, data?.UserName]);
+
+  const handleCreateInvitation = useCallback((invitation:any) => {
     console.log(invitation); 
     setActiveModal(''); 
+  }, []);
+
+  const ModalContent: { [key in ActiveModalType]: JSX.Element } = {
+    pending: <PendingActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
+    past: <PastActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
+    create: <CreateActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />
   };
 
-  let contentComponent;
-  switch (activeModal) {
-    case 'pending':
-      contentComponent = <PendingActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />;
-      break;
-      case 'past':
-      contentComponent = <PastActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />;
-      break;
-      case 'create':
-      contentComponent = <CreateActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />;
-      break;
-    default:
-      contentComponent = <PendingActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />;
-  }
+  const ModalButtons = [
+    { key: 'pending', icon: faEnvelope, label: 'Pending Activity', colorClass: 'text-purple-600 border-purple-500 hover:bg-purple-700' },
+    { key: 'past', icon: faClock, label: 'Past Activity', colorClass: 'text-green-600 border-green-600 hover:bg-green-700' },
+    { key: 'create', icon: faPlus, label: 'Create Activity', colorClass: 'text-blue-500 border-blue-500 hover:bg-blue-500' },
+];
 
+return (
+  <main className="flex-1 p-6 overflow-auto">
+    <div className="flex justify-center items-center space-x-4">
+      {isProfileInvitation() ? (
+          ModalButtons.map(({ key, icon, label, colorClass }) => (
+            <button
+              key={key}
+              onClick={() => setActiveModal(key as ActiveModalType)}
+              className={`mb-4 px-4 py-2 rounded ${colorClass} hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg`}
+            >
+              <FontAwesomeIcon icon={icon} className="mr-2" /> {label}
+            </button>
+          ))
+      ) : (
 
-  return (
-    <main className="flex-1 p-6 overflow-auto">
-     <div className="flex justify-center items-center space-x-4">
-     <button onClick={() => setActiveModal('pending')} className="mb-4 px-4 py-2 rounded text-purple-600 border border-purple-500 hover:bg-purple-700 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
-     <FontAwesomeIcon icon={faEnvelope} className="mr-2" /> Pending Activity
-      </button>
-      <button onClick={() => setActiveModal('past')} className="mb-4 px-4 py-2 rounded text-green-600 border border-green-600 hover:bg-green-700 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
-      <FontAwesomeIcon icon={faClock} className="mr-2" /> Past Activity
-      </button>
-      <button onClick={() => setActiveModal('create')} className="mb-4 px-4 py-2 rounded text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg">
-      <FontAwesomeIcon icon={faPlus} className="mr-2" />  Create Activity
-      </button>
+        <div className="text-center py-4">
+        <p className="text-gray-700">{username} currently has no activities.</p>
+      </div>
+
+      )}
     </div>
-      {contentComponent}
-    </main>
-  );
+    {activeModal && ModalContent[activeModal]}
+  </main>
+);
+
+
 };
 
 export default ProfileActivityContent;

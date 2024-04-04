@@ -1,7 +1,7 @@
 import { EventInvitation } from "../../../../Pages/Communication/components/EventInvitation";
 
 export const isValidEventInvitation = (data: any): data is EventInvitation => {
-    return typeof data.ID === 'number' &&
+    return typeof data.ID === 'string' &&
            typeof data.ReqAuthor === 'string' &&
            typeof data.ReqAuthorImage === 'string' &&
            typeof data.ReqContent === 'string' &&

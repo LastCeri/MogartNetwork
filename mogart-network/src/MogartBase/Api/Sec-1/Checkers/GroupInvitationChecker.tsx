@@ -1,7 +1,7 @@
 import { GroupInvitation } from "../../../../Pages/Communication/components/GroupInvitation";
 
 export const isValidGroupRequest = (data: any): data is GroupInvitation => {
-    return typeof data.ID === 'number' &&
+    return typeof data.ID === 'string' &&
     typeof data.ReqAuthor === 'string' &&
     typeof data.ReqAuthorImage === 'string' &&
     typeof data.ReqContent === 'string' &&
