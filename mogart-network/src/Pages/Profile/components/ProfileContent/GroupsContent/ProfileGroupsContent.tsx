@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState,useCallback, useEffect } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { UserData } from '../../../Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useData } from '../../../../../MogartBase/Context/DataContext';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { isValidMyGroups } from '../../../../../MogartBase/Api/Sec-2/Checkers/GroupsChecker';
 import { API_URL } from '../../../../../MogartBase/Api/Api';
@@ -23,27 +22,36 @@ interface ProfileGroupsContentProps {
 }
 
 const ProfileGroupsContent: React.FC<ProfileGroupsContentProps> = ({ userData }) => {
-
   const [myGroups, setMyGroups] = useState<MyGroupInterface[]>([]);
-  const { isLoggedIn, isLoading, data,siteData,userAuthToken } = useData();
+  const { isLoggedIn, data, userAuthToken } = useData();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { username } = useParams<{ username?: string }>();
+
 
   useEffect(() => {
+
+    setMyGroups([]);
     const fetchMyGroups = async () => {
+      let targetUsername = data.UserName;
+
+      if (isLoggedIn && username && location.pathname.includes(username) && username !== data.UserName) {
+        targetUsername = username;
+      } 
       try {
-        const response = await axios.get<MyGroupInterface[]>(`${API_URL}/GetGroups/${data.UserName}`, {
+        const response = await axios.get<MyGroupInterface[]>(`${API_URL}/GetGroups/${targetUsername}`, {
           headers: {
               'Authorization': `Bearer ${userAuthToken}`
           }
-      });  
+        });  
 
-      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => isValidMyGroups(invite))) {
-        console.error('API response is not an array or contains invalid data');
-        return;
-      }
+        if (!response.data || !isValidMyGroups(response.data)) {
+          console.error('API response is not an array or contains invalid data');
+          return;
+        }
 
         setMyGroups(response.data);
-      }catch (error: unknown) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           if (error.code === "ERR_NETWORK") {
             console.error('Network error:', error);
@@ -62,8 +70,7 @@ const ProfileGroupsContent: React.FC<ProfileGroupsContentProps> = ({ userData })
     if (isLoggedIn) {
       fetchMyGroups();
     }
-  }, [isLoggedIn, data.UserName]);
-
+  }, [isLoggedIn, data.UserName, username, navigate, userAuthToken,setMyGroups]);
 
   return (
     <main className="flex-1 p-6 overflow-auto">
