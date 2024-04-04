@@ -5,7 +5,7 @@ import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidGroupRequest } from '../../../MogartBase/Api/Sec-1/Checkers/GroupInvitationChecker';
 
 export interface GroupInvitation {
-  ID: number;
+  ID: string;
   ReqAuthor: string;
   ReqAuthorImage: string;
   ReqContent: string;

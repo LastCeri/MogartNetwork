@@ -1,62 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../../MogartBase/Api/Api';
+import { API_URL, PostAcceptFriendRequest, PostRejectFriendRequest } from '../../../MogartBase/Api/Api';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidFriendRequest } from '../../../MogartBase/Api/Sec-1/Checkers/FriendRequestChecker';
 
 export interface FriendRequest {
-    ID: number;
-    ReqAuthor: string;
-    ReqAuthorImage: string;
-    ReqContent: string;
-    ReqDate: string;
-    ReqResponse: string;
-    ReqStatus: string;
-    ReqTitle: string;
-    ReqType: string;
-  }
-  
+  ID: string;
+  ReqAuthor: string;
+  ReqAuthorImage: string;
+  ReqContent: string;
+  ReqDate: string;
+  ReqResponse: string;
+  ReqStatus: string;
+  ReqTitle: string;
+  ReqType: string;
+}
+
 const FriendRequests = () => {
- const [requests, setRequests] = useState<FriendRequest[]>([]);
- const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
- useEffect(() => {
-  if (isLoading) {  return; }
-  const fetchFriendRequests = async () => {
-    try {
-      const response = await axios.get<FriendRequest[]>(`${API_URL}/GetRequest/${data?.UserName}/Friend`, {
-        headers: {
-            'Authorization': `Bearer ${userAuthToken}`
-        }
-    });  
-
-      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidFriendRequest(invite))) {
-        console.error('API response is not an array or contains invalid data');
-        return;
-      }
-      
-      setRequests(response.data);
-    } catch (error) {
-      console.error('Failed to fetch friend requests:', error);
+  useEffect(() => {
+    if (isLoading || !isLoggedIn) {
+      return;
     }
-  };
+    const fetchFriendRequests = async () => {
+      try {
+        const response = await axios.get<FriendRequest[]>(`${API_URL}/GetRequest/${data?.UserName}/Friend`, {
+          headers: {
+            'Authorization': `Bearer ${userAuthToken}`
+          }
+        });
 
-  if (isLoggedIn) {
+        if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidFriendRequest(invite))) {
+          console.error('API response is not an array or contains invalid data');
+          return;
+        }
+
+        setRequests(response.data);
+      } catch (error) {
+        console.error('Failed to fetch friend requests:', error);
+      }
+    };
+
     fetchFriendRequests();
-  }
-}, [isLoading,isLoggedIn]);
+  }, [isLoading, isLoggedIn, data?.UserName, userAuthToken]);
 
-  const handleAccept = async (requestId:any) => {
+  const handleAccept = async (requestId: string) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/friend-requests/accept`, { requestId });
+      const acceptresponse = await PostAcceptFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x17" });
     } catch (error) {
       console.error('Failed to accept friend request:', error);
     }
   };
 
-  const handleReject = async (requestId:any) => {
+  const handleReject = async (requestId: string) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/friend-requests/reject`, { requestId });
+      const rejectresponse = await PostRejectFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x19" });
     } catch (error) {
       console.error('Failed to reject friend request:', error);
     }
@@ -92,8 +94,6 @@ const FriendRequests = () => {
       )}
     </div>
   );
-  
-  
 };
 
 export default FriendRequests;
