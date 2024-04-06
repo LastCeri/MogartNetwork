@@ -4,15 +4,16 @@ import { faCalendarAlt, faUser, faStar, faEnvelope, faClock, faPlus, IconDefinit
 import { UserData } from '../../../Profile';
 import PendingActivity from './Modals/PendingActivity';
 import PastActivity from './Modals/PastActivity';
-import CreateActivity from './Modals/CreateActivity';
+import CreateActivityModal from './Modals/CreateActivityModal';
 import { useParams, useLocation } from 'react-router-dom';
 import { useData } from '../../../../../MogartBase/Context/DataContext';
+import CreatedActivityModal from './Modals/CreatedActivity';
 
 interface ProfileActivityContentProps {
     userData: UserData | null;
 }
 
-type ActiveModalType = 'pending' | 'past' | 'create';
+type ActiveModalType = 'pending' | 'past' | 'create'| 'created';
 
 const ProfileActivityContent: React.FC<ProfileActivityContentProps> = ({ userData }) => {
   const [activeModal, setActiveModal] = useState<ActiveModalType | ''>('');
@@ -22,27 +23,25 @@ const ProfileActivityContent: React.FC<ProfileActivityContentProps> = ({ userDat
   const username = urlUsername || (isLoggedIn ? (data?.UserName || '') : '');
 
 
-
-
-
   const isProfileInvitation = useCallback(() => {
     return location.pathname === '/Profile' || location.pathname.includes(data?.UserName || '');
   }, [location, data?.UserName]);
 
   const handleCreateInvitation = useCallback((invitation:any) => {
-    console.log(invitation); 
     setActiveModal(''); 
   }, []);
 
   const ModalContent: { [key in ActiveModalType]: JSX.Element } = {
     pending: <PendingActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
     past: <PastActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
-    create: <CreateActivity userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />
+    create: <CreateActivityModal userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
+    created: <CreatedActivityModal userData={userData} isOpen={true} onClose={() => setActiveModal('')} onSubmit={handleCreateInvitation} />,
   };
 
   const ModalButtons = [
     { key: 'pending', icon: faEnvelope, label: 'Pending Activity', colorClass: 'text-purple-600 border-purple-500 hover:bg-purple-700' },
     { key: 'past', icon: faClock, label: 'Past Activity', colorClass: 'text-green-600 border-green-600 hover:bg-green-700' },
+    { key: 'created', icon: faEnvelope, label: 'Created Activity', colorClass: 'text-orange-500 border border-orange-500 hover:bg-orange-500' },
     { key: 'create', icon: faPlus, label: 'Create Activity', colorClass: 'text-blue-500 border-blue-500 hover:bg-blue-500' },
 ];
 
