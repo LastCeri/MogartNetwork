@@ -24,7 +24,7 @@ const ActivityItem: React.FC<{ activity: Activity }> = ({ activity }) => (
 
 const ActivityPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, userAuthID, isLoading } = useData();
+  const { isLoggedIn, userAuthID,userAuthToken, isLoading } = useData();
   const [activities, setActivities] = useState<Activity[]>([]);
   const { username } = useParams();
 
@@ -33,7 +33,11 @@ const ActivityPage = () => {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
-      axios.get(`${API_URL}/${username}/GetActivity`)
+      axios.get(`${API_URL}/${username}/GetActivity/General`, {
+        headers: {
+            'Authorization': `Bearer ${userAuthToken}`
+        }
+    })
       .then(response => {
         const data = response.data;
         if (Array.isArray(data)) {
