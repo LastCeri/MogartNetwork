@@ -242,7 +242,6 @@ const handleChatSelect = async (selectedChatId: string) => {
 
     const handleForwardMessage = () => {
       if (!selectedMessage) return;
-      console.log("Forwarding message:", selectedMessage.messageText);
       setShowContextMenu(false);
     };
 

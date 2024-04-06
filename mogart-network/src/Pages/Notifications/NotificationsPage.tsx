@@ -47,7 +47,6 @@ const NotificationsPage = () => {
           axios.get(`${API_URL}/${username}/GetNotifications`)
             .then(response => {
               if (response.status === 200) {
-                console.log("Notdatalog",response.data);
                 const notificationData: Notification[] = response.data;
                 setNotifications(notificationData);
               } else {

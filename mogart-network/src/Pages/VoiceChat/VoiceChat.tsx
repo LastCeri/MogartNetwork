@@ -32,11 +32,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOp
     }, [isLoggedIn, isLoading, navigate, data?.UserName]);
 
     const handleStartCall = async (friendName: string, friendImage: string, friendId: string) => {
-        console.log('Starting call with friend:', friendName);
-        console.log('Friend image:', friendImage);
-        console.log('Friend id:', friendId);
-    
-    
+  
         const callPacket = await RTCStartCallPack(friendName, friendId);
         startCall(callPacket);
     

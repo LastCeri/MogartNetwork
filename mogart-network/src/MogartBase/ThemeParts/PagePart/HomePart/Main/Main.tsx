@@ -147,7 +147,6 @@ function MainContent() {
         try {
             const response = await createPost(newPost);
             if (response && response.status === "Ok") {
-                console.log('Post successfully created!');
             } else {
                 console.error('Post creation failed, please try again later.');
             }

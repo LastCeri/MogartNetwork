@@ -33,7 +33,6 @@ const GlobalContentComponent: React.FunctionComponent = () => {
     const apiUrl = `${API_URL}/GetGlobals`;
     axios.get<GlobalContent[]>(apiUrl)
       .then((response) => {
-        console.log(response);
         const data = response.data;
         setGlobalContents(data);
         setFilteredGlobalContents(data);

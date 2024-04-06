@@ -40,7 +40,6 @@ const ProfileMainContent: React.FC<ProfileMainContentProps> = ({ userData }) => 
   };
 
   const handleShare = () => {
-    console.log("Share button pressed.");
   };
 
   if (!userData) {

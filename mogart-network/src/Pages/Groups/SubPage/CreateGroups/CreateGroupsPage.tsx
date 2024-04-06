@@ -9,7 +9,6 @@ const CreateGroupPage = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-    console.log('Creating group:', groupLogo, groupName, groupDescription, groupTags);
     setGroupLogo('');
     setGroupName('');
     setGroupDescription('');
