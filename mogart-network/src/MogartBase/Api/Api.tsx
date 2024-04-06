@@ -82,6 +82,11 @@ export const CreateMeetingInvation = (credentials:any) => handleRequest('POST', 
 export const CreateWebinarInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
 export const CreateOtherInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
 
+// Create Activity (Event,Groups,Meeting, Webinar, Other )
+
+export const CreateActivity = (credentials:any) => handleRequest('POST', 'CreateActivity', credentials);
+
+
 // Post and user data related functions
 export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartPost', postData);
 export const fetchActivity = (userId:any) => handleRequest('GET', `GetActivity/${userId}`);
@@ -96,7 +101,6 @@ export const LogOutRTC = (credentials:any) => handleRequest('POST', 'RtcLogout',
 export const fetchGroups = async () => {
   axios.get(`${API_URL}/GetGroups`)
   .then(response => {
-    console.log('Fetched groups:', response.data);
     return response.data;
   })
   .catch(error => {

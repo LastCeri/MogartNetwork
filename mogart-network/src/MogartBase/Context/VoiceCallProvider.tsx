@@ -26,7 +26,7 @@ interface VoiceCallProviderProps {
 }
 
 export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }) => {
-    const rtcPeerConnectionRef = useRef<RTCPeerConnection>(new RTCPeerConnection(config?.iceServerConfig));
+    const rtcPeerConnectionRef = useRef<RTCPeerConnection | null>(null);
     const [isRTCServerOn, setRTCServerOn] = useState(false);
     const [isCallModalOpen, setIsCallModalOpen] = useState(false);
     const [callStatus, setCallStatus] = useState('');
@@ -34,16 +34,17 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     const { data, userAuthID } = useData();
 
     useEffect(() => {
-        rtcPeerConnectionRef.current = new RTCPeerConnection(config?.iceServerConfig);
-        
+        if (!rtcPeerConnectionRef.current) {
+            rtcPeerConnectionRef.current = new RTCPeerConnection(config?.iceServerConfig);
+        }
+
         return () => {
             if (rtcPeerConnectionRef.current) {
                 rtcPeerConnectionRef.current.close();
+                rtcPeerConnectionRef.current = null; 
             }
         };
-    }, []);
-
-
+    }, []); 
 
     const checkRTCServerStatus = useCallback(async () => {
         try {
@@ -60,7 +61,7 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     }, []);
   
     const handleWebSocketMessage = useCallback((message: any) => {
-        if (!isRTCServerOn) return;
+        if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
         const soketmessage = JSON.parse(message.data);
 
         if (webSocket) {
@@ -69,16 +70,18 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     }, [webSocket, userAuthID, data, isRTCServerOn]);
 
     const setupMedia = useCallback(async () => {
-        if (!isRTCServerOn) return;
+        if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
+    
         try {
             const stream = await navigator.mediaDevices.getUserMedia(config.mediaConstraints);
             stream.getTracks().forEach((track) => {
-                rtcPeerConnectionRef.current.addTrack(track, stream);
+                rtcPeerConnectionRef.current?.addTrack(track, stream); 
             });
         } catch (error) {
             console.error("Error accessing media devices.", error);
         }
     }, [isRTCServerOn]);
+    
 
     useEffect(() => {
         checkRTCServerStatus();
@@ -94,6 +97,7 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     }, [webSocket, handleWebSocketMessage]);
 
     useEffect(() => {
+        if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
         rtcPeerConnectionRef.current.onicecandidate = (event) => {
             if (event.candidate) {
                 sendMessage({ type: 'candidate', candidate: event.candidate });
@@ -107,6 +111,7 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
         setupMedia();
 
         return () => {
+            if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
             rtcPeerConnectionRef.current.close();
             rtcPeerConnectionRef.current = new RTCPeerConnection(config.iceServerConfig);
         };
@@ -117,8 +122,11 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     }, [sendMessage]);
 
     const answerCall = useCallback((sdp: RTCSessionDescriptionInit) => {
+        if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
         rtcPeerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
+            if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
             rtcPeerConnectionRef.current.createAnswer().then((answer) => {
+                if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
                 rtcPeerConnectionRef.current.setLocalDescription(answer).then(() => {
                     sendMessage({ type: 'answer', sdp: answer.sdp });
                 });
@@ -127,6 +135,7 @@ export const VoiceCallProvider: React.FC<VoiceCallProviderProps> = ({ children }
     }, [sendMessage]);
 
     const endCall = useCallback(() => {
+        if (!isRTCServerOn || !rtcPeerConnectionRef.current) return;
         rtcPeerConnectionRef.current.close();
         rtcPeerConnectionRef.current = new RTCPeerConnection(config.iceServerConfig); 
     }, []);
