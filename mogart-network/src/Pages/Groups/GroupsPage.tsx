@@ -12,29 +12,44 @@ export type Group = {
   GrpID: number;
   GrpName: string;
   GrpDesc: string;
-  GrpMembersCount: number;
+  GrpMembers: JSON;
   GrpImage: string;
 };
 
-const GroupItem: React.FC<{ group: Group }> = ({ group }) => (
-  <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:scale-105 duration-300">
-    <a href={"/Groups/" + group.GrpName.replace(/\s/g, "")}>
-      <img src={group.GrpImage} alt={group.GrpName} className="w-full h-32 sm:h-48 object-cover" />
+const GroupItem: React.FC<{ group: Group }> = ({ group }) => {
+  let membersCount = "Unknown";
+  try {
+    const parsedMembers = JSON.parse(group.GrpMembers as any);
+    if (Array.isArray(parsedMembers)) {
+      membersCount = parsedMembers.length.toString();
+    } else if (parsedMembers && typeof parsedMembers === 'object' && parsedMembers.count) {
+      membersCount = parsedMembers.count.toString();
+    }
+  } catch (error) {
+    console.error("Error parsing GrpMembers", error);
+  }
+
+  return (
+    <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-all hover:scale-105 duration-300">
+      <a href={"/Groups/" + group.GrpName.replace(/\s/g, "")}>
+        <img src={group.GrpImage} alt={group.GrpName} className="w-full h-32 sm:h-48 object-cover" />
+        <div className="px-6 py-4">
+          <div className="font-bold text-xl mb-2">{group.GrpName}</div>
+          <p className="text-gray-700 text-base">{group.GrpDesc}</p>
+        </div>
+        <div className="px-6 pt-4 pb-2">
+          <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{membersCount} members</span>
+        </div>
+      </a>
       <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{group.GrpName}</div>
-        <p className="text-gray-700 text-base">{group.GrpDesc}</p>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Join Group
+        </button>
       </div>
-      <div className="px-6 pt-4 pb-2">
-        <span className="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 mb-2">{group.GrpMembersCount} members</span>
-      </div>
-    </a>
-    <div className="px-6 py-4">
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Join Group
-      </button>
     </div>
-  </div>
-);
+  );
+};
+
 
 const GroupsPage = () => {
   const [activeTab, setActiveTab] = useState('all');

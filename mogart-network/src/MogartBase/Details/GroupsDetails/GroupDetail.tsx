@@ -8,14 +8,42 @@ import { useData } from '../../../MogartBase/Context/DataContext';
 import {GroupMembers} from './components/GroupMembers/GroupMembers';
 import GroupDiscussions from './components/GroupDiscussions/GroupDiscussions';
 
+interface GroupMemberRaw {
+  MemberID: string;
+  MemberName: string;
+  MemberImage: string;
+}
+
+interface GroupDiscussionRaw {
+  id: string;
+  DiscussionsTitle: string;
+  DiscussionsMember: [];
+  DiscussionsChat: [];
+  DiscussionsDate: string;
+  DiscussionsStatus : string;
+  DiscussionsTags:  [];
+  DiscussionsCategory: string;
+  DiscussionsAuthor: string;
+  DiscussionsAuthorImage : string;
+}
+
 export interface GroupMember {
   id: string;
   name: string;
+  image: string;
 }
 
 export interface GroupDiscussion {
   id: string;
-  content: string;
+  DiscussionsTitle: string;
+  DiscussionsMember: [];
+  DiscussionsChat: [];
+  DiscussionsDate: string;
+  DiscussionsStatus : string;
+  DiscussionsTags:  [];
+  DiscussionsCategory: string;
+  DiscussionsAuthor: string;
+  DiscussionsAuthorImage : string;
 }
 
 interface GroupDetailItem {
@@ -25,6 +53,7 @@ interface GroupDetailItem {
   GroupsImage: string;
   GroupsMembers: GroupMember[];
   GroupDiscussions: GroupDiscussion[];
+  DiscussionsCode: string;
 }
 
 const GroupDetail: React.FC = () => {
@@ -38,33 +67,54 @@ const GroupDetail: React.FC = () => {
     }
 
     const fetchGroupDetail = async () => {
-        try {
-          const response = await axios.get(`${API_URL}/GetGroupDetail/${groupname}`);
-          if (response.data) {
-            const formattedGroupDetail: GroupDetailItem = {
-              id: response.data.GroupID,
-              GroupsName: response.data.GroupsName,
-              GroupsDesc: response.data.GroupDescription,
-              GroupsImage: response.data.GroupsImage,
-              GroupsMembers: response.data.GroupMembers?.map((member: any) => ({
-                  id: member.id,
-                  name: member.name,
-                })) || [],
-              GroupDiscussions: response.data.GroupDiscussions?.map((discussion: any) => ({
-                  id: discussion.id,
-                  content: discussion.content,
-                })) || []
-            };
-      
-            setGroupDetail(formattedGroupDetail);
-          } else {
-            console.error('Error fetching group detail: Invalid response data');
+      try {
+        const response = await axios.get(`${API_URL}/GetGroupDetail/${groupname}`);
+        console.log("response", response);
+        if (response.status === 200 && response.data) {
+          const data = response.data;
+    
+          const parsedMembers = JSON.parse(data.GroupsMembers || '[]');
+          const GroupsMembers: GroupMember[] = parsedMembers.map((member: GroupMemberRaw) => ({
+            id: member.MemberID,
+            name: member.MemberName,
+            image: member.MemberImage,
+          }));
+        
+          let GroupDiscussions: GroupDiscussion[] = [];
+          if (data.Discussions) {
+            const discussionsParsed = JSON.parse(data.Discussions);
+            GroupDiscussions = [{
+              id: discussionsParsed.DiscussionsCode || '',
+              DiscussionsTitle: discussionsParsed.DiscussionsTitle || '',
+              DiscussionsMember: discussionsParsed.DiscussionsMember || [],
+              DiscussionsChat: discussionsParsed.DiscussionsChat || [],
+              DiscussionsDate: discussionsParsed.DiscussionsDate || '',
+              DiscussionsStatus: discussionsParsed.DiscussionsStatus || '',
+              DiscussionsTags: discussionsParsed.DiscussionsTags || [],
+              DiscussionsCategory: discussionsParsed.DiscussionsCategory || '',
+              DiscussionsAuthor: discussionsParsed.DiscussionsAuthor || '',
+              DiscussionsAuthorImage: discussionsParsed.DiscussionsAuthorImage || '',
+            }];
           }
-        } catch (error) {
-          console.error('Error fetching group detail:', error);
+          
+          const formattedGroupDetail: GroupDetailItem = {
+            id: data.DiscussionsCode || '',
+            GroupsName: data.GroupsName,
+            GroupsDesc: data.GroupsDesc,
+            GroupsImage: data.GroupsImage || '',
+            GroupsMembers,
+            DiscussionsCode: data.DiscussionsCode || '',
+            GroupDiscussions,
+          };
+        
+          setGroupDetail(formattedGroupDetail);
+        } else {
+          console.error('Error fetching group detail: Invalid response data');
         }
-      };
-      
+      } catch (error) {
+        console.error('Error fetching group detail:', error);
+      }
+    };
 
     fetchGroupDetail();
   }, [groupname, isLoading]);
