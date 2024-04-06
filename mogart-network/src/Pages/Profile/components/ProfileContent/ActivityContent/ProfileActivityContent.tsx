@@ -47,30 +47,26 @@ const ProfileActivityContent: React.FC<ProfileActivityContentProps> = ({ userDat
 
 return (
   <main className="flex-1 p-6 overflow-auto">
-    <div className="flex justify-center items-center space-x-4">
-      {isProfileInvitation() ? (
-          ModalButtons.map(({ key, icon, label, colorClass }) => (
-            <button
-              key={key}
-              onClick={() => setActiveModal(key as ActiveModalType)}
-              className={`mb-4 px-4 py-2 rounded ${colorClass} hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg`}
-            >
-              <FontAwesomeIcon icon={icon} className="mr-2" /> {label}
-            </button>
-          ))
-      ) : (
+     <div className="flex justify-center items-center space-x-4">
+         {isProfileInvitation() ? (
+         ModalButtons.map(({ key, icon, label, colorClass }) => (
+         <button key={key} onClick={()=> setActiveModal(key as ActiveModalType)}
+             className={`mb-4 px-4 py-2 rounded ${colorClass} hover:text-white transition ease-in-out duration-150 shadow-md hover:shadow-lg`}
+             >
+             <FontAwesomeIcon icon={icon} className="mr-2" /> {label}
+         </button>
+         ))
+         ) : (
 
-        <div className="text-center py-4">
-        <p className="text-gray-700">{username} currently has no activities.</p>
-      </div>
+         <div className="text-center py-4">
+             <p className="text-gray-700">{username} currently has no activities.</p>
+         </div>
 
-      )}
-    </div>
-    {activeModal && ModalContent[activeModal]}
-  </main>
+         )}
+     </div>
+     {activeModal && ModalContent[activeModal]}
+ </main>
 );
-
-
 };
 
 export default ProfileActivityContent;

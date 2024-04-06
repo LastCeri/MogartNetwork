@@ -75,38 +75,38 @@ const PendingActivity: React.FC<ProfileActivityContentProps> = ({ userData, isOp
 
 
     return (
-        <main className="flex-1 p-6 overflow-auto">
-        {activities.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500 text-lg">No pending activities available.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {activities.map((activity, index) => (
-              <div key={index} className="bg-white border border-purple-300 rounded-lg  shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
-                 <div className="p-4">
+      <main className="flex-1 p-6 overflow-auto">
+      {activities.length === 0 ? (
+      <div className="flex items-center justify-center h-full">
+          <p className="text-gray-500 text-lg">No pending activities available.</p>
+      </div>
+      ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {activities.map((activity, index) => (
+          <div key={index} className="bg-white border border-purple-300 rounded-lg  shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out p-4">
+              <div className="p-4">
                   <h3 className="text-lg font-semibold">{activity.ActName}</h3>
                   <p className="text-sm text-gray-500 my-2">
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
-                    {activity.ActName}
+                      <FontAwesomeIcon icon={faUser} className="mr-2" />
+                      {activity.ActName}
                   </p>
                   <p className="text-sm text-gray-500 my-2">
-                    <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
-                    {activity.ActDate}
+                      <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
+                      {activity.ActDate}
                   </p>
                   <p className="text-sm text-gray-500 my-2">
-                    <FontAwesomeIcon icon={faStar} className="mr-2" />
-                    {activity.ActPoints} Points
+                      <FontAwesomeIcon icon={faStar} className="mr-2" />
+                      {activity.ActPoints} Points
                   </p>
-                </div>
-                <div className="bg-gray-100 p-3">
-                <p className="text-xs text-gray-500">{activity.ActContent}</p>
-                </div>
               </div>
-            ))}
+              <div className="bg-gray-100 p-3">
+                  <p className="text-xs text-gray-500">{activity.ActContent}</p>
+              </div>
           </div>
-        )}
-      </main>
+          ))}
+      </div>
+      )}
+  </main>
   );
 };
 

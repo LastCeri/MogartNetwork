@@ -76,31 +76,34 @@ const CreatedActivityModal: React.FC<CreatedActivityModalProps> = ({ userData, i
   
   return (
     <main className="flex-1 p-6 overflow-auto">
-      {activities.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500 text-lg">No created activities available.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-          {activities.map((activity, index) => (
-            <div key={index} className="bg-white rounded-lg overflow-hidden border border-orange-500 shadow hover:shadow-lg transition-shadow duration-300 ease-in-out">
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{activity.ActName}</h3>
-                <p className="text-sm text-gray-500"><FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />{activity.ActDate}</p>
-                <p className="text-sm text-gray-500"><FontAwesomeIcon icon={faGlobe} className="mr-2" />{activity.ActType}</p>
-                <p className="text-sm text-gray-500"><FontAwesomeIcon icon={faEye} className="mr-2" />{activity.ActVisibility}</p>
-              </div>
-              <div className="bg-gray-100 p-3">
-                <p className="text-xs text-gray-500">{activity.ActContent}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      <button onClick={onClose} className="fixed top-0 right-0 m-8 text-gray-600 hover:text-gray-800">
-        <span className="text-2xl">&times;</span>
-      </button>
-    </main>
+     {activities.length === 0 ? (
+     <div className="flex items-center justify-center h-full">
+         <p className="text-gray-500 text-lg">No created activities available.</p>
+     </div>
+     ) : (
+     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
+         {activities.map((activity, index) => (
+         <div key={index} className="bg-white rounded-lg overflow-hidden border border-orange-500 shadow hover:shadow-lg transition-shadow duration-300 ease-in-out">
+             <div className="p-4">
+                 <h3 className="text-lg font-semibold">{activity.ActName}</h3>
+                 <p className="text-sm text-gray-500">
+                     <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />{activity.ActDate}</p>
+                 <p className="text-sm text-gray-500">
+                     <FontAwesomeIcon icon={faGlobe} className="mr-2" />{activity.ActType}</p>
+                 <p className="text-sm text-gray-500">
+                     <FontAwesomeIcon icon={faEye} className="mr-2" />{activity.ActVisibility}</p>
+             </div>
+             <div className="bg-gray-100 p-3">
+                 <p className="text-xs text-gray-500">{activity.ActContent}</p>
+             </div>
+         </div>
+         ))}
+     </div>
+     )}
+     <button onClick={onClose} className="fixed top-0 right-0 m-8 text-gray-600 hover:text-gray-800">
+         <span className="text-2xl">&times;</span>
+     </button>
+ </main>
   );
 };
 

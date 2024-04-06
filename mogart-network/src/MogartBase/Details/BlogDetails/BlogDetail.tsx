@@ -75,71 +75,67 @@ const BlogDetail = () => {
       <div className="flex flex-row justify-center items-start mt-20">
         <main className="w-full max-w-4xl mx-auto p-4">
 
-          {/* Blog header */}
-          <header className="text-center py-6 mb-6 bg-white rounded-lg shadow-lg">
-            <h1 className="text-4xl font-sans mb-2 mt-2">{blogPost.Bname}</h1>
-            <div className="flex justify-center items-center text-gray-600 mt-6">
+            {/* Blog header */}
+            <header className="text-center py-6 mb-6 bg-white rounded-lg shadow-lg">
+                <h1 className="text-4xl font-sans mb-2 mt-2">{blogPost.Bname}</h1>
+                <div className="flex justify-center items-center text-gray-600 mt-6">
 
-              <img src={blogPost.BauthorImage} alt="Author" className="w-20 h-20 rounded-full mr-2" />
-              <div className="inline-flex flex-col">
-                <span className="font-semibold text-lg">{blogPost.Bauthor}</span>
-                <time className="text-sm" dateTime={blogPost.Bdate}>{blogPost.Bdate}</time>
-              </div>
+                    <img src={blogPost.BauthorImage} alt="Author" className="w-20 h-20 rounded-full mr-2" />
+                    <div className="inline-flex flex-col">
+                        <span className="font-semibold text-lg">{blogPost.Bauthor}</span>
+                        <time className="text-sm" dateTime={blogPost.Bdate}>{blogPost.Bdate}</time>
+                    </div>
+                </div>
+
+                <div className="mt-4">
+                    {icons.map((item, index) => (
+                    <button key={index} className={`mb-4 ${index===0 ? 'mb-2' : '' } hover:bg-gray-200 p-2 rounded-full transition duration-300`} onClick={item.alt==='Share' ? handleShareClick : undefined}>
+                        <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
+                    </button>
+                    ))}
+                </div>
+            </header>
+
+            {/* Blog Image */}
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+                <img src={blogPost.Bimage} alt={blogPost.Bname} className="w-5/6 max-h-[400px] h-auto mx-auto" />
             </div>
 
-            <div className="mt-4">
-            {icons.map((item, index) => (
-              <button 
-                key={index} 
-                className={`mb-4 ${index === 0 ? 'mb-2' : ''} hover:bg-gray-200 p-2 rounded-full transition duration-300`} 
-                onClick={item.alt === 'Share' ? handleShareClick : undefined} 
-              >
-                <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
-              </button>
-            ))}
+            {/* Blog Content */}
+            <div className="bg-white shadow-lg rounded-lg p-6 overflow-hidden">
+                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.Bcontent }} />
             </div>
-          </header>
-
-          {/* Blog Image */}
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
-            <img src={blogPost.Bimage} alt={blogPost.Bname} className="w-5/6 max-h-[400px] h-auto mx-auto" />
-          </div>
-
-          {/* Blog Content */}
-          <div className="bg-white shadow-lg rounded-lg p-6 overflow-hidden">
-            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: blogPost.Bcontent }} />
-          </div>
-          <div>
-            <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
-              <FontAwesomeIcon icon={faEye} /> {blogPost.Bviews}
-            </span>
-            <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden" >
-            <Link to={`/Tags/${blogPost.Btags}`}>
-            <FontAwesomeIcon icon={faTags} />
-            {blogPost.Btags &&
-              blogPost.Btags.split(',').map(tag => {
-                const trimmedTag = tag.trim();
-                return (
-                  <Link key={trimmedTag} to={`/Tags/${trimmedTag}`} className="bg-gray-100 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+            <div>
+                <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden">
+                    <FontAwesomeIcon icon={faEye} /> {blogPost.Bviews}
+                </span>
+                <span className="bg-slate-100 shadow-lg rounded-lg p-2 overflow-hidden">
+                    <Link to={`/Tags/${blogPost.Btags}`}>
+                    <FontAwesomeIcon icon={faTags} />
+                    {blogPost.Btags &&
+                    blogPost.Btags.split(',').map(tag => {
+                    const trimmedTag = tag.trim();
+                    return (
+                    <Link key={trimmedTag} to={`/Tags/${trimmedTag}`} className="bg-gray-100 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
                     {trimmedTag}
-                  </Link>
-                );
-              })}
-          </Link>
-            </span>
-            <span className="float-right bg-slate-100 text-blue-700 text-xs font-semibold inline-block px-3 p-2 rounded-full shadow-lg">
-            <Link to={`/Category/${blogPost.Bcategory}`} className="text-blue-500 hover:text-blue-700">
-            <FontAwesomeIcon icon={faFolderOpen} /> {blogPost.Bcategory}
-            </Link>
-            </span>
-          </div>
+                    </Link>
+                    );
+                    })}
+                    </Link>
+                </span>
+                <span className="float-right bg-slate-100 text-blue-700 text-xs font-semibold inline-block px-3 p-2 rounded-full shadow-lg">
+                    <Link to={`/Category/${blogPost.Bcategory}`} className="text-blue-500 hover:text-blue-700">
+                    <FontAwesomeIcon icon={faFolderOpen} /> {blogPost.Bcategory}
+                    </Link>
+                </span>
+            </div>
         </main>
         <aside className="px-4">
-          <BlogDetailsLatest />
-          <div className="mb-8"></div>
-          <BlogDetailsCategories />
+            <BlogDetailsLatest />
+            <div className="mb-8"></div>
+            <BlogDetailsCategories />
         </aside>
-      </div>
+    </div>
       {showSharePopup && <SharePopup url={blogPost.Burl} title={blogPost.Bname} onClose={handleClosePopup} />}
     </>
   );
