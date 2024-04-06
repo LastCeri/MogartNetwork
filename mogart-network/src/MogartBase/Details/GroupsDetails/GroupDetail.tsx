@@ -69,7 +69,7 @@ const GroupDetail: React.FC = () => {
     const fetchGroupDetail = async () => {
       try {
         const response = await axios.get(`${API_URL}/GetGroupDetail/${groupname}`);
-        console.log("response", response);
+
         if (response.status === 200 && response.data) {
           const data = response.data;
     
