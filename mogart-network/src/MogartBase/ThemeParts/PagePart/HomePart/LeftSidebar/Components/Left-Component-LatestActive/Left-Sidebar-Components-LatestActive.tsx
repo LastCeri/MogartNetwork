@@ -3,8 +3,9 @@ import axios from 'axios';
 import { API_URL } from '../../../../../../Api/Api';
 import { useData } from '../../../../../../Context/DataContext';
 import { useNavigate } from 'react-router-dom';
+import { isValidComponentLatestActive } from '../../../../../../Api/Sec-3/Checkers/ComponentsChecker';
 
-interface Activity {
+export interface ComponentActivityinterface {
     Actid: string;
     ActName: string;
     ActContent: string;
@@ -14,7 +15,7 @@ interface Activity {
 }
 
 export default function LeftSidebarComponentsLatestActive() {
-    const [activities, setActivities] = useState<Activity[]>([]);
+    const [activities, setActivities] = useState<ComponentActivityinterface[]>([]);
     const { data, isLoggedIn } = useData();
     const navigate = useNavigate();
 
@@ -24,8 +25,14 @@ export default function LeftSidebarComponentsLatestActive() {
             return;
         }
 
-        axios.get(`${API_URL}/${data.UserName}/GetActivity`)
+        axios.get(`${API_URL}/${data.UserName}/GetActivity/General`)
             .then(response => {
+
+                if (!response.data || !Array.isArray(response.data) || response.data.some(activite => !isValidComponentLatestActive(activite))) {
+                    console.error('API response is not an array or contains invalid data');
+                    return;
+                  }
+                  
                 setActivities(response.data);
             })
             .catch(error => {
