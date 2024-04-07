@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../../MogartBase/Api/Api';
+import { API_URL, PostAcceptFollowRequest, PostRejectFollowRequest } from '../../../MogartBase/Api/Api';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidFriendRequest } from '../../../MogartBase/Api/Sec-1/Checkers/FriendRequestChecker';
 
@@ -47,18 +47,20 @@ const FollowRequests = () => {
 }, [isLoading,isLoggedIn]);
 
   const handleAccept = async (requestId:any) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/friend-requests/accept`, { requestId });
+      const acceptresponse = await PostAcceptFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x17" });
     } catch (error) {
-      console.error('Failed to accept friend request:', error);
+      console.error('Failed to accept AcceptFollowRequest:', error);
     }
   };
 
   const handleReject = async (requestId:any) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/friend-requests/reject`, { requestId });
+      const rejectresponse = await PostRejectFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x19" });
     } catch (error) {
-      console.error('Failed to reject friend request:', error);
+      console.error('Failed to reject RejectFollowRequest:', error);
     }
   };
 
