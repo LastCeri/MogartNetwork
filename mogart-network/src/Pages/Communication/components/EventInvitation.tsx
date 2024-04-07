@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '../../../MogartBase/Api/Api';
+import { API_URL, PostAcceptEventRequest, PostRejectEventRequest } from '../../../MogartBase/Api/Api';
 import axios from 'axios';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidEventInvitation } from '../../../MogartBase/Api/Sec-1/Checkers/EventInvitationChecker';
@@ -49,12 +49,22 @@ const EventInvitations = () => {
   }
 }, [isLoading,isLoggedIn]);
 
-  const handleAccept = (invitationId:any) => {
-    console.log(`Accepted invitation: ${invitationId}`);
+  const handleAccept =  async (invitationId:any) => {
+    if (!data?.UserName) return;
+    try {
+      const acceptresponse = await PostAcceptEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x17" });
+    } catch (error) {
+      console.error('Failed to accept AcceptEventRequest:', error);
+    }
   };
 
-  const handleDecline = (invitationId:any) => {
-    console.log(`Declined invitation: ${invitationId}`);
+  const handleDecline =  async (invitationId:any) => {
+    if (!data?.UserName) return;
+    try {
+      const rejectresponse = await PostRejectEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x19" });
+    } catch (error) {
+      console.error('Failed to reject RejectEventRequest:', error);
+    }
   };
   return (
     <div className="p-4 space-y-4 bg-gray-50 min-h-screen">
