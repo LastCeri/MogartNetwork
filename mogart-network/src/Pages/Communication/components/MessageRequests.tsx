@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useData } from '../../../MogartBase/Context/DataContext';
-import { API_URL } from '../../../MogartBase/Api/Api';
+import { API_URL , PostAcceptMessageRequest, PostRejectMessageRequest } from '../../../MogartBase/Api/Api';
 import { isValidMessageRequest } from '../../../MogartBase/Api/Sec-1/Checkers/MessageRequests';
 
 
@@ -48,12 +48,22 @@ const MessageRequests = () => {
   }
 }, [isLoading,isLoggedIn]);
 
-  const handleAccept = (invitationId:any) => {
-    console.log(`Accepted Message: ${invitationId}`);
+  const handleAccept = async (requestId:any) => {
+    if (!data?.UserName) return;
+    try {
+      const acceptresponse = await PostAcceptMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x17" });
+    } catch (error) {
+      console.error('Failed to accept AcceptMessageRequest:', error);
+    }
   };
 
-  const handleDecline = (invitationId:any) => {
-    console.log(`Declined Message: ${invitationId}`);
+  const handleDecline = async (requestId:any) => {
+    if (!data?.UserName) return;
+    try {
+      const rejectresponse = await PostRejectMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x19" });
+    } catch (error) {
+      console.error('Failed to reject RejectMessageRequest:', error);
+    }
   };
 
   return (
