@@ -62,16 +62,20 @@ export const PostSendFollowRequest = (credentials:any) => handleRequest('POST', 
 export const PostSendFriendRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
 export const PostSendMessageRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
 
-// Accept Requests (Friend, Message)
+// Accept Requests (Friend, Message, Follow, Event)
 
 export const PostAcceptFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostAcceptGroupsRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostAcceptEventRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 export const PostAcceptMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 export const PostAcceptFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 
 // Reject Requests (Friend, Message)
 
 export const PostRejectFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostRejectGroupsRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostRejectFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostRejectEventRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 export const PostRejectMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
 
 // Create Invations (Event,Groups,Meeting, Webinar, Other )
