@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../../MogartBase/Api/Api';
+import { API_URL, PostAcceptGroupsRequest, PostRejectGroupsRequest } from '../../../MogartBase/Api/Api';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidGroupRequest } from '../../../MogartBase/Api/Sec-1/Checkers/GroupInvitationChecker';
 
@@ -55,21 +55,21 @@ const GroupInvitations = () => {
     }
   };
 
-  const handleAccept = async (requestId:any) => {
+  const handleAccept = async (invitationId:any) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/group-requests/accept`, { requestId });
-      fetchGroupRequests();
+      const acceptresponse = await PostAcceptGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x17" });
     } catch (error) {
-      console.error('Failed to accept group request:', error);
+      console.error('Failed to accept AcceptGroupsRequest:', error);
     }
   };
 
-  const handleReject = async (requestId:any) => {
+  const handleReject = async (invitationId:any) => {
+    if (!data?.UserName) return;
     try {
-      await axios.post(`${API_URL}/group-requests/reject`, { requestId });
-      fetchGroupRequests();
+      const rejectresponse = await PostRejectGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x19" });
     } catch (error) {
-      console.error('Failed to reject group request:', error);
+      console.error('Failed to reject RejectGroupsRequest:', error);
     }
   };
 
