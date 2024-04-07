@@ -29,8 +29,8 @@ export interface UserData {
   UsrSocialNetworkAdress: string;
   UsrSocialNetwork: string;
   UsrFriends: Friend[];
-  UsrFollowers: number; 
-  UsrFollowing: number;
+  UsrFollowers: Follower; 
+  UsrFollowing: [];
   UsrScore: number; 
   Posts:PostType[];
   Photos: PhotoType[];
@@ -59,6 +59,16 @@ export interface PhotoType {
 export interface Friend {
   name: string;
   status: string;
+  image: string;
+}
+
+export interface Follower {
+  name: string;
+  image: string;
+}
+
+export interface Followed {
+  name: string;
   image: string;
 }
 

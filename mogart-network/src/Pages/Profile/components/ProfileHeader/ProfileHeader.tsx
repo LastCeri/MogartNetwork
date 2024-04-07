@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
-import { Friend, UserData } from '../../Profile';
+import { Followed, Follower, Friend, UserData } from '../../Profile';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 import { PostSendFollowRequest, PostSendFriendRequest } from '../../../../MogartBase/Api/Api';
 
@@ -18,6 +18,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
     ? JSON.parse(userData?.UsrFriends || '[]')
     : userData?.UsrFriends || [];
   
+  const userFollowers: Follower[] = typeof userData?.UsrFollowers === 'string'
+    ? JSON.parse(userData?.UsrFollowers || '[]')
+    : userData?.UsrFollowers || [];
+  
+  const userFollowed: Followed[] = typeof userData?.UsrFollowing === 'string'
+    ? JSON.parse(userData?.UsrFollowing || '[]')
+    : userData?.UsrFollowing || [];
+
   const isProfilePage = window.location.pathname === '/Profile' || window.location.pathname.includes(data?.UserName);
 
   if (!userData) {
@@ -74,7 +82,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
            <div className="text-white">
               <h2 className="text-4xl font-bold break-words max-w-xl">{userData.UsrDisplayName}</h2>
               <p className="text-md">@{userData.UsrName} - Joined {userData.UsrRegisterDate}</p>
-              <p className="text-md">{userData.UsrFollowers} Followers · {userData.UsrFollowing} Following · {userData.UsrScore} Points</p>
+              <p className="text-md">{userFollowers.length} Followers · {userFollowed.length} Following · {userData.UsrScore} Points</p>
           </div>
           </div>
           {!isProfilePage && !isFriend && (
