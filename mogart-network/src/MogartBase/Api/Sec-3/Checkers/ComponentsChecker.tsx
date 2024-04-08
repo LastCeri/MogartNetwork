@@ -2,7 +2,7 @@ import { ComponentBlogsinterface } from "../../../ThemeParts/PagePart/HomePart/L
 import { ComponentActivityinterface } from "../../../ThemeParts/PagePart/HomePart/LeftSidebar/Components/Left-Component-LatestActive/Left-Sidebar-Components-LatestActive";
 
 export const isValidComponentBlogs = (data: any): data is ComponentBlogsinterface => {
-    return typeof data.Bid === 'number' &&
+    return typeof data.Bid === 'string' &&
            typeof data.Bimage === 'string' &&
            typeof data.Bname === 'string' &&
            typeof data.Burl === 'string' &&

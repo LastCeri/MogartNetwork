@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { isValidComponentBlogs } from '../../../../../../Api/Sec-3/Checkers/ComponentsChecker';
 
 export interface ComponentBlogsinterface {
-  Bid: number;
+  Bid: string;
   Bname: string;
   Bauthor: string;
   BauthorImage: string;
@@ -25,12 +25,9 @@ export default function LeftSidebarComponentsBlogs() {
   const navigate = useNavigate();
   
   useEffect(() => {
-
-    
     const apiUrl = `${API_URL}/GetBlogs`;
     axios.get<ComponentBlogsinterface[]>(apiUrl)
       .then((response) => {
-
         if (!response.data || !Array.isArray(response.data) || response.data.some(blog => !isValidComponentBlogs(blog))) {
           console.error('API response is not an array or contains invalid data');
           return;
@@ -58,7 +55,7 @@ export default function LeftSidebarComponentsBlogs() {
           <ul className="space-y-4">
             {blogs.map((blog) => (
               <li key={blog.Bid} className="hover:bg-gray-100 rounded-md transition duration-200 p-2">
-                <a href={`/Blogs/${blog.Burl}`} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                <a href={`/Blogs/${blog.Bauthor.replace(' ','')}/${blog.Burl}`} className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                   <img className="h-14 w-14 rounded-lg object-cover" src={blog.Bimage} alt="Blog Thumbnail" />
                   <div className="flex-1">
                     <span className="text-ms font-medium">{blog.Bname}</span>

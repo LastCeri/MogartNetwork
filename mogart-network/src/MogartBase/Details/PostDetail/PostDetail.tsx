@@ -17,10 +17,10 @@ interface Post {
   PstContent: string;
   PstAuthorAvatar: string;
   PstDate: string;
-  PstComments: Comment[];
+  PstComments: PostComments[];
 }
 
-interface Comment {
+export interface PostComments {
   comment_id: number;
   author: string;
   content: string;
@@ -34,7 +34,7 @@ const PostDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<PostComments[]>([]);
   const [commentText, setCommentText] = useState('');
   const { siteData, data } = useData();
 

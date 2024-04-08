@@ -165,7 +165,6 @@ const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
       {item.type === 'text' && (
         <>
           <p className="text-lg font-semibold text-gray-800">{item.content}</p>
-          <TagList tags={item.tags} />
         </>
       )}
       <div className="text-xs text-gray-500 mt-4 flex items-center">
@@ -179,17 +178,6 @@ const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
   </div>
 );
 
-interface TagListProps {
-  tags: string[];
-}
-
-const TagList: React.FC<TagListProps> = ({ tags }) => (
-  <div className="mt-6 flex flex-wrap">
-    {tags.map(tag => (
-      <span key={tag} className="px-4 py-2 bg-blue-500 text-white rounded-full text-sm mb-3 mr-3">{tag}</span>
-    ))}
-  </div>
-);
 
 
 export default TaggedContentPage;
