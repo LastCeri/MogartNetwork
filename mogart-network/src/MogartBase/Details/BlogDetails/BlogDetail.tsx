@@ -5,13 +5,14 @@ import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import BlogDetailsCategories from './components/Categories/categories';
 import BlogDetailsLatest from './components/Latest/Latest';
-import { API_URL } from '../../Api/Api';
+import { API_URL, PostSendDislike, PostSendLike } from '../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SharePopup from '../../ThemeParts/Popup/SharePopup';
+import { useData } from '../../Context/DataContext';
 
 interface BlogPost {
-  Bid: number;
+  Bid: string;
   Bname: string;
   Bauthor: string;
   BauthorImage: string;
@@ -36,9 +37,13 @@ const BlogDetail = () => {
   const { blogurl } = useParams();
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
   const [showSharePopup, setShowSharePopup] = useState(false);
+  const { siteData, data,isLoading,isLoggedIn } = useData();
+
+  const SendLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
+  const SendDisLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchBlog = async () => {
       try {
         const response = await axios.get<BlogPost[]>(`${API_URL}/GetBlogs/${blogurl}`);
         if (response.data && response.data.length > 0) {
@@ -50,7 +55,7 @@ const BlogDetail = () => {
     };
 
     if (blogurl) {
-      fetchPost();
+      fetchBlog();
     }
   }, [blogurl]);
 
@@ -88,11 +93,21 @@ const BlogDetail = () => {
                 </div>
 
                 <div className="mt-4">
-                    {icons.map((item, index) => (
-                    <button key={index} className={`mb-4 ${index===0 ? 'mb-2' : '' } hover:bg-gray-200 p-2 rounded-full transition duration-300`} onClick={item.alt==='Share' ? handleShareClick : undefined}>
+                {icons.map((item, index) => (
+                    <button key={index} 
+                            className={`mb-4 ${index === 0 ? 'mb-2' : ''} hover:bg-gray-200 p-2 rounded-full transition duration-300`}
+                            onClick={() => {
+                              if(item.alt === 'Share') {
+                                handleShareClick();
+                              } else if(item.alt === 'Like') {
+                                SendLike(blogPost?.Bid.toString());
+                              } else if(item.alt === 'DisLike') {
+                                SendDisLike(blogPost?.Bid.toString());
+                              }
+                            }}>
                         <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
                     </button>
-                    ))}
+                ))}
                 </div>
             </header>
 
