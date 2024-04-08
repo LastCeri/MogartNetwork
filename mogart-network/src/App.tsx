@@ -27,6 +27,7 @@ import CategoryDetails from './MogartBase/Details/CategoryDetails/CategoryDetail
 import LostPasswordPage from './Pages/LostPassword/LostPasswordPage.tsx';
 import CommunicationPage from './Pages/Communication/CommunicationPage.tsx';
 import ERR_NETWORKPage from './Pages/ErrorPages/Server/ERR_NETWORK.tsx';
+import AuthorDetail from './MogartBase/Details/AuthorDetails/AuthorDetail.tsx';
 
 function App() {
   return (
@@ -55,7 +56,8 @@ function App() {
         <Route path="/Register" element={<RegisterPage />} />
 
         <Route path="/Profile/:username" element={<ProfilePage />} />
-        <Route path="/Blogs/:blogurl" element={<BlogDetail />} />
+        <Route path="/Blogs/:author" element={<AuthorDetail />} />
+        <Route path="/Blogs/:author/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
         <Route path="/Tags/:tagname" element={<TagsDetail />} />
         <Route path="/Category/:catname" element={<CategoryDetails />} />
