@@ -19,7 +19,7 @@ const BlogDetailsCategories: React.FC = () => {
   }, []);
 
   return (
-    <aside className="w-full max-w-md p-8 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
+    <aside className="w-full max-w-md p-8 mr-40 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out">
     <h3 className="font-bold text-2xl mb-8 text-gray-900">Categories</h3>
     <ul className="divide-y divide-gray-200">
       {categories.map((category) => (
