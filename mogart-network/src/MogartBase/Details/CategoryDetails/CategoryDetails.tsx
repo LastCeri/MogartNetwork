@@ -39,7 +39,6 @@ interface ApiResponseItem {
   PostPoints: string;
   PostPostCode: string;
   PostSpace: string;
-  PostUrl: string;
   PostViews: string;
   Category: string;
 }

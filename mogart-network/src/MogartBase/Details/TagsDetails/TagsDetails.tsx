@@ -9,25 +9,25 @@ import { useData } from '../../../MogartBase/Context/DataContext.tsx';
 interface ContentItem {
   id: string;
   type: string;
+  title:string;
   content: string;
-  Category: string;
   tags: string[];
   author: string;
   date: string;
   authorAvatar: string;
   image:string;
+  url:string
 }
 
-interface ApiResponseItem {
+interface ApiResponseItem { 
+  Type: string;
   PostID: string;
   PostAuthorID: string;
   PostName: string;
   PostTitle: string;
   PostAuthor: string;
   PostAuthorAvatar: string;
-  PostCategory: string;
   PostImage:string;
-  PostType: string;
   PostContent: string;
   PostDate: string;
   PostDisLike: string;
@@ -37,9 +37,18 @@ interface ApiResponseItem {
   PostPoints: string;
   PostPostCode: string;
   PostSpace: string;
-  PostUrl: string;
   PostViews: string;
-  Category: string;
+  BlogID: string;
+  BlogName: string;
+  BlogAuthor: string;
+  BlogAuthorAvatar: string;
+  BlogCategory: string;
+  BlogContent: string;
+  BlogDate: string;
+  BlogImage: string;
+  BlogTags: string;
+  BlogUrl: string;
+  BlogViews: string;
 }
 
 const TaggedContentPage: React.FC = () => {
@@ -55,16 +64,34 @@ const TaggedContentPage: React.FC = () => {
     const fetchTagNames = async () => {
       try {
         const response = await axios.get<ApiResponseItem[]>(`${API_URL}/GetTags/${tagname}`);
-        const formattedContent = response.data.map(({ PostID, PostType, PostContent, Category, PostTags, PostAuthor, PostDate, PostAuthorAvatar,PostImage }) => ({
-          id: PostID.toString(),
-          type: PostType,
-          content: PostContent,
-          Category,
-          tags: PostTags ? PostTags.split(',') : [],
-          author: PostAuthor,
-          date: PostDate,
-          authorAvatar: PostAuthorAvatar,
-          image: PostImage
+        const formattedContent = response.data.map(({
+          PostID,
+          BlogID,
+          BlogName, 
+          Type, 
+          PostContent, 
+          BlogContent, 
+          PostTags,
+          BlogTags, 
+          PostAuthor,
+          BlogAuthor, 
+          PostDate,
+          BlogDate, 
+          PostAuthorAvatar,
+          BlogAuthorAvatar,
+          BlogImage,
+          BlogUrl 
+        }) => ({
+          id: PostID || BlogID,
+          type: Type,
+          content: PostContent || BlogContent, 
+          tags: PostTags ? [] : []|| BlogTags ? [] : [],
+          author: PostAuthor|| BlogAuthor,
+          date: PostDate || BlogDate,
+          authorAvatar: PostAuthorAvatar || BlogAuthorAvatar,
+          image: BlogImage,
+          title: BlogName,
+          url:BlogUrl
         }));
         setAllContent(formattedContent);
         setFilteredContent(formattedContent);
@@ -73,11 +100,12 @@ const TaggedContentPage: React.FC = () => {
       }
     };
 
+
     fetchTagNames();
   }, [tagname, isLoading]);
 
   useEffect(() => {
-    const filtered = allContent.filter(item => selectedCategory === null || item.Category.toLowerCase() === selectedCategory.toLowerCase());
+    const filtered = allContent.filter(item => selectedCategory === null || item.type === selectedCategory);
     setFilteredContent(filtered);
   }, [selectedCategory, allContent]);
 
@@ -140,7 +168,7 @@ interface ContentGridProps {
 }
 
 const ContentGrid: React.FC<ContentGridProps> = ({ content }) => (
-  <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+  <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-34 xl:grid-cols-4 gap-6">
     {content.map((item, index) => (
       <ContentItemDisplay key={item.id + index} item={item} />
     ))}
@@ -153,31 +181,36 @@ interface ContentItemDisplayProps {
 
 const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
   <div className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-    {item.type === 'image' && (
-      <>
-        <img src={item.image} alt="Content" className="w-full h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-110" />
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-          <p className="text-white text-lg font-bold">{item.author}</p>
-        </div>
-      </>
-    )}
     <div className="p-6">
-      {item.type === 'text' && (
-        <>
-          <p className="text-lg font-semibold text-gray-800">{item.content}</p>
-        </>
+
+      {item.type === 'Blog' && (
+        <div className="relative overflow-hidden">
+           <a href={`/Blogs/${item.author.replace(' ','')}/${item.url}`}>
+            <img src={item.image} alt="Content" className="w-full h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-110" />
+          </a>
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+            <p className="text-lg font-semibold text-white">{item.title}</p>
+          </div>
+        </div>
       )}
-      <div className="text-xs text-gray-500 mt-4 flex items-center">
-        <img src={item.authorAvatar} alt="Author Avatar" className="w-10 h-10 rounded-full mr-3" />
+      
+      {item.type === 'Post' && (
+        <a href={`/Posts/${item.id}`}>
+        <blockquote className="text-lg font-semibold text-gray-800 border-l-4 border-blue-500 pl-4">
+          {item.content}
+        </blockquote>
+        </a>
+      )}
+
+      <div className="flex items-center mt-4">
+        <img src={item.authorAvatar} alt={`${item.author}'s Avatar`} className="w-10 h-10 rounded-full mr-3" />
         <div>
-          <p className="font-semibold">{item.author}</p>
-          <p>{item.date}</p>
+          <p className="font-semibold text-gray-800">{item.author}</p>
+          <p className="text-xs text-gray-500">{item.date}</p>
         </div>
       </div>
     </div>
   </div>
 );
-
-
 
 export default TaggedContentPage;

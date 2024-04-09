@@ -44,7 +44,6 @@ const PostDetail = () => {
       try {
         const response = await axios.get<Post>(`${API_URL}/GetPosts/${posturl}`);
         setPost(response.data);
-
         if (response.data.PstComments === null) {
           response.data.PstComments = [];
         }

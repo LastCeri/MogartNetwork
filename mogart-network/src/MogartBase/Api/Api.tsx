@@ -142,7 +142,6 @@ export const useFetchMogartPosts = () => {
           Title: post.PstTitle,
           VideoTitle: post.PstTitle,
           VideoDesc: post.PstContent,
-          Url: post.PstUrl,
           Views: post.PstViews,
         }));
         setPosts(mappedPosts);

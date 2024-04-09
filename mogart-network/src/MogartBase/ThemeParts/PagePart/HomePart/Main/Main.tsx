@@ -6,6 +6,7 @@ import { useFetchMogartPosts, createPost, PostSendLike, PostSendDislike, PostSen
 import { useData } from '../../../../Context/DataContext';
 import ReactPlayer from 'react-player'
 import SharePopup from '../../../Popup/SharePopup';
+import { PostComments } from '../../../../Details/PostDetail/PostDetail';
 
 interface PostType {
   Author: string;
@@ -19,9 +20,11 @@ interface PostType {
   VideoDesc?: string;
   ImageUrl?: string;
   VideoUrl?: [];
+  PstComments: PostComments[];
 }
 
-function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, VideoTitle, VideoDesc,ImageUrl,VideoUrl,CommentCount,LikeCount }: PostType): React.JSX.Element {
+function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, VideoTitle, VideoDesc,ImageUrl,VideoUrl,CommentCount,LikeCount,PstComments }: PostType): React.JSX.Element {
+  const [comments, setComments] = useState<PostComments[]>([]);
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [play, setPlay] = useState(false);
@@ -110,23 +113,45 @@ function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, 
 
 
       {showCommentInput && (
-        <div className="pt-2 flex items-center space-x-2">
+        <div className="mt-6 flex items-center space-x-2">
           <input
             type="text"
             value={commentText}
-            onChange={handleCommentChange} 
+            onChange={handleCommentChange}
             placeholder="Type a comment..."
-            className="w-full p-3 text-sm text-gray-500 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out"
+            className="w-full px-4 py-2 text-sm text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
             autoFocus
           />
-          <button 
-            className="p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-150 ease-in-out flex-shrink-0"
-            onClick={() => SendComment(GlobalId, commentText)} 
+          <button
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-150 ease-in-out flex-shrink-0"
+            onClick={() => SendComment(GlobalId, commentText)}
           >
             <FontAwesomeIcon icon={faPaperPlane} />
           </button>
         </div>
-      )}
+        )}
+        <div className="space-y-4 mt-6">
+        {comments.map((comment) => (
+          <div key={comment.comment_id} className="flex">
+            <div className="flex-shrink-0">
+              <img src={comment.profile_image} alt={comment.author} className="h-10 w-10 rounded-full object-cover" />
+            </div>
+            <div className="ml-3">
+              <div className="text-sm text-gray-800">{comment.content}</div>
+              <div className="flex items-center mt-2 space-x-2 text-xs text-gray-500">
+                <button className="flex items-center space-x-1 hover:text-blue-500">
+                  <FontAwesomeIcon icon={faThumbsUp} />
+                  <span>{1}</span>
+                </button>
+                <button className="flex items-center space-x-1 hover:text-green-500">
+                  <FontAwesomeIcon icon={faComment} />
+                  <span>{1}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/posts/${GlobalId}`} title={Author} onClose={handleClosePopup} />}
     </div>
@@ -134,18 +159,16 @@ function Post({ Author, Avatar, GlobalId, Content: PostContent, Date: PostDate, 
 }
 
 function MainContent() {
-  const { isLoggedIn, data, isLoading,siteData } = useData();
+  const { isLoggedIn, data, isLoading,siteData,userAuthID,userAuthToken } = useData();
   const [postContent, setPostContent] = useState('');
   const postsFromApi = useFetchMogartPosts();
   const [posts, setPosts] = useState<PostType[]>([]);
 
   const handlePostButtonClick = async () => {
     if (postContent.trim() !== '') {
-        const newPost = {
-            Content: postContent,
-        };
         try {
-            const response = await createPost(newPost);
+            const response = await createPost({ UserID: userAuthID, UserToken: userAuthToken, Content: postContent});
+            console.log("res",response);
             if (response && response.status === "Ok") {
             } else {
                 console.error('Post creation failed, please try again later.');
@@ -212,6 +235,7 @@ function MainContent() {
             VideoDesc={post.VideoDesc}
             CommentCount={post.CommentCount}
             LikeCount={post.LikeCount}
+            PstComments={post.PstComments}
           />
       ))}
       </div>
