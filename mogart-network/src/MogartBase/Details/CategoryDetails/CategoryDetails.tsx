@@ -8,6 +8,7 @@ import { useData } from '../../../MogartBase/Context/DataContext.tsx';
 
 interface ContentItem {
   ID: string;
+  name:string;
   type: string;
   content: string;
   desc: string;
@@ -17,29 +18,21 @@ interface ContentItem {
   date: string;
   authorAvatar: string;
   image:string;
+  url:string;
 }
 
 interface ApiResponseItem {
-  PostID: string;
-  PostAuthorID: string;
-  PostName: string;
-  PostTitle: string;
-  PostAuthor: string;
-  Desc: string;
-  PostAuthorAvatar: string;
-  PostCategory: string;
-  PostImage:string;
-  PostType: string;
-  PostContent: string;
-  PostDate: string;
-  PostDisLike: string;
-  PostLike: string;
-  PostTags: string;
-  PostMentions: string;
-  PostPoints: string;
-  PostPostCode: string;
-  PostSpace: string;
-  PostViews: string;
+  BlogID: string;
+  BlogName: string;
+  BlogAuthor: string;
+  BlogAuthorAvatar: string;
+  BlogContent: string;
+  BlogDate: string;
+  BlogImage: string;
+  BlogTags: string;
+  BlogUrl: string;
+  BlogDesc:string;
+  BlogViews: string;
   Category: string;
 }
 
@@ -56,18 +49,20 @@ const CategoryDetails: React.FC = () => {
     const fetchCategoryNames = async () => {
       try {
         const response = await axios.get<ApiResponseItem[]>(`${API_URL}/GetDetailCategory/${catname}`);
-        const filteredData = response.data.filter(item => item.PostID || item.PostID);
-        const formattedContent = filteredData.map(({ PostID, PostType,Desc, PostContent, Category, PostTags, PostAuthor, PostDate, PostAuthorAvatar, PostImage }) => ({
-          ID: (PostID).toString(),
-          type: PostType,
-          content: PostContent,
+        const filteredData = response.data.filter(item => item.BlogID);
+        const formattedContent = filteredData.map(({ BlogID, BlogName,Category, BlogDesc, BlogContent, BlogTags, BlogAuthor, BlogDate, BlogAuthorAvatar, BlogImage,BlogUrl }) => ({
+          ID: BlogID,
+          type: Category,
+          content: BlogContent,
           Category,
-          tags: PostTags ? PostTags.split(',') : [],
-          author: PostAuthor,
-          desc:Desc,
-          date: PostDate,
-          authorAvatar: PostAuthorAvatar,
-          image: PostImage
+          tags: BlogTags ? [] : [],
+          author: BlogAuthor,
+          desc:BlogDesc,
+          date: BlogDate,
+          authorAvatar: BlogAuthorAvatar,
+          image: BlogImage,
+          name: BlogName,
+          url: BlogUrl
         }));
         setAllContent(formattedContent);
         setFilteredContent(formattedContent);
@@ -89,7 +84,7 @@ const CategoryDetails: React.FC = () => {
       <Header />
       <Navbar />
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
-      <CategoryButtons categories={['Blog', 'Post']} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
+      <CategoryButtons categories={['Blog']} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
           <main className="flex-1 flex flex-col items-center p-4">
               {filteredContent.length > 0 ? (
                 <ContentGrid content={filteredContent} />
@@ -141,7 +136,7 @@ interface ContentGridProps {
 }
 
 const ContentGrid: React.FC<ContentGridProps> = ({ content }) => (
-  <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+  <div className="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-8">
     {content.map((item, index) => (
       <ContentItemDisplay key={item.ID + index} item={item} />
     ))}
@@ -153,34 +148,16 @@ interface ContentItemDisplayProps {
 }
 
 const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
-  <div className="relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-    {item.type === 'image' && (
-      <>
-        <img src={item.image} alt="Content" className="w-full h-64 object-cover transition-transform duration-500 ease-in-out hover:scale-110" />
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-          <p className="text-white text-lg font-bold truncate">{item.author}</p>
-        </div>
-      </>
-    )}
-
-    {item.type === 'text' && (
-      <div className="p-6">
-        <a href={`/${item.Category.toUpperCase()}S/${item.ID}`}><p className="text-lg font-semibold text-gray-800 leading-tight">{item.content}</p></a>
-        <CatList cats={item.tags} />
+  <a href={`/Blogs/${item.author.replace(' ','')}/${item.url}`}>
+  <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out flex flex-row">
+    <img src={item.image} alt="Content" className="w-1/2 h-auto object-cover transition-transform duration-500 ease-in-out hover:scale-110" />
+    <div className="p-4 flex flex-col justify-between">
+      <div>
+        <h3 className="text-lg font-semibold">{item.name}</h3>
+        <p className="text-sm text-gray-500">{item.desc}</p>
       </div>
-    )}
-
-    {item.type === 'video' && (
-      <>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
-          <p className="text-white text-lg font-bold truncate">{item.author}</p>
-        </div>
-      </>
-    )}
-
-    <div className="p-6">
-      <div className="text-xs text-gray-500 mt-4 flex items-center">
-        <img src={item.authorAvatar} alt="Author Avatar" className="w-10 h-10 rounded-full object-cover mr-3 shadow" />
+      <div className="text-xs text-gray-500 mt-2 flex items-center">
+        <img src={item.authorAvatar} alt="Author Avatar" className="w-8 h-8 rounded-full object-cover mr-2" />
         <div>
           <p className="font-semibold text-gray-700">{item.author}</p>
           <p className="text-gray-400">{item.date}</p>
@@ -188,25 +165,7 @@ const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
       </div>
     </div>
   </div>
-);
-
-interface TagListProps {
-  cats: string[];
-}
-
-const CatList: React.FC<TagListProps> = ({ cats }) => (
-  <div className="mt-6 flex flex-wrap">
-  {cats.map(cat => (
-  <span key={cat} className="inline-block">
-  <a href={`/tags/${cat}`}
-     className="cursor-pointer px-5 py-2.5 leading-none text-black rounded-full text-sm mb-3 mr-3 shadow-md hover:shadow-lg transition duration-200 ease-in-out transform hover:scale-110 flex items-center justify-center">
-     <span className="text-slate-800">#</span>
-    <span className="rounded-full px-2 mr-2"> {cat} </span>
   </a>
-</span>
-))}
-</div>
 );
-
 
 export default CategoryDetails;
