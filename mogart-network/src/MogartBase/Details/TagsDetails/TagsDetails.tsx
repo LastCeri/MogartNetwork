@@ -186,11 +186,11 @@ const ContentItemDisplay: React.FC<ContentItemDisplayProps> = ({ item }) => (
       {item.type === 'Blog' && (
         <div className="relative overflow-hidden">
            <a href={`/Blogs/${item.author.replace(' ','')}/${item.url}`}>
-            <img src={item.image} alt="Content" className="w-full h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-110" />
-          </a>
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-            <p className="text-lg font-semibold text-white">{item.title}</p>
-          </div>
+            <img src={item.image} alt="Content" className="w-full h-48 object-fit transition-transform duration-500 ease-in-out hover:scale-110" />
+           </a>
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+              <p className="text-lg font-semibold text-white">{item.title}</p>
+            </div>
         </div>
       )}
       
