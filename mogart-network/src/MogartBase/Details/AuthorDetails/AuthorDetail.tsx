@@ -134,7 +134,7 @@ const AuthorDetail = () => {
       </div>
     ))}
   </div>
-  {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/Blogs/${blogs[0].Bauthor.replace(' ','')}`} title={blogs[0].Bname} onClose={() => setShowSharePopup(false)} />}
+  {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/Author/${blogs[0].Bauthor.replace(' ','')}`} title={blogs[0].Bname} onClose={() => setShowSharePopup(false)} />}
 </main>
 
     </div>

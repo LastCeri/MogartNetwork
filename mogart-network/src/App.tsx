@@ -56,7 +56,7 @@ function App() {
         <Route path="/Register" element={<RegisterPage />} />
 
         <Route path="/Profile/:username" element={<ProfilePage />} />
-        <Route path="/Blogs/:author" element={<AuthorDetail />} />
+        <Route path="/Author/:author" element={<AuthorDetail />} />
         <Route path="/Blogs/:author/:blogurl" element={<BlogDetail />} />
         <Route path="/Posts/:posturl" element={<PostDetail />} />
         <Route path="/Tags/:tagname" element={<TagsDetail />} />

@@ -169,7 +169,7 @@ const Blog: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <img className="h-8 w-8 rounded-full object-cover" src={blog.BauthorImage} alt="Author" />
-                    <span className="ml-2 text-sm font-medium text-gray-900"><a href={`/Blogs/${blog.Bauthor.replace(' ','')}`} >{blog.Bauthor} </a></span>
+                    <span className="ml-2 text-sm font-medium text-gray-900"><a href={`/Author/${blog.Bauthor.replace(' ','')}`} >{blog.Bauthor} </a></span>
                     <span className="ml-2 text-sm font-medium text-gray-900"><FontAwesomeIcon icon={faEye} className="mr-1" />{blog.Bviews}</span>
                   </div>
                   <a href={`/Blogs/${blog.Bauthor.replace(' ','')}/${blog.Burl}`} 
