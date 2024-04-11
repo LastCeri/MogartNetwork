@@ -29,7 +29,7 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
     const [showSharePopup, setShowSharePopup] = useState(false);
     const [showActionsPopup, setShowActionsPopup] = useState(false);
     const [play, setPlay] = useState(false);
-    const { siteData, data, isLoading } = useData();
+    const { siteData, data, isLoading,userAuthToken } = useData();
     const [commentText, setCommentText] = useState("");
     const [isLiked, setIsLiked] = useState(false);
     const navigate = useNavigate(); 
@@ -70,9 +70,9 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
       setPlay(true);
     };
   
-    const SendLike = async (globalId: string) => { await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
-    const SendDisLike = async (globalId: string) => {  await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"}); };
-    const SendComment = async (globalId: string, commentcontent: string) => {await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"}); };
+    const SendLike = async (globalId: string) => { await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"},userAuthToken); };
+    const SendDisLike = async (globalId: string) => {  await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"PostContent"},userAuthToken);};
+    const SendComment = async (globalId: string, commentcontent: string) => {await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"},userAuthToken); };
   
     const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setCommentText(event.target.value);

@@ -47,13 +47,13 @@ const PostDetail = () => {
   const [commentText, setCommentText] = useState('');
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const { isLoading,siteData, data } = useData();
+  const { isLoading,siteData, data,userAuthToken } = useData();
   const navigate = useNavigate();
 
 
-  const SendComment = async (globalId: string, commentcontent: string) => { const response = await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"});};
+  const SendComment = async (globalId: string, commentcontent: string) => { const response = await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"},userAuthToken)};
   const SendLike = async (globalId: string) => {
-    const response = await PostSendLike({ UserID: data.UserName, ContentID: globalId, ContentType: "PostContent" });
+    const response = await PostSendLike({ UserID: data.UserName, ContentID: globalId, ContentType: "PostContent"},userAuthToken);
     if (response.status === 'Ok') {
       setIsLiked(true);
     } else {

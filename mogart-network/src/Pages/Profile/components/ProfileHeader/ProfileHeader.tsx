@@ -3,6 +3,7 @@ import ProfileNavigation from '../ProfileNavigation/ProfileNavigation';
 import { Followed, Follower, Friend, UserData } from '../../Profile';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 import { PostSendFollowRequest, PostSendFriendRequest } from '../../../../MogartBase/Api/Api';
+import SendPopup from '../../../../MogartBase/ThemeParts/Popup/SendsPopup';
 
 
 interface ProfileHeaderProps {
@@ -11,7 +12,7 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => {
-  const { data } = useData();
+  const { data,userAuthToken } = useData();
   const [popup, setPopup] = useState({ visible: false, message: '' });
 
   const userFriends: Friend[] = typeof userData?.UsrFriends === 'string'
@@ -41,13 +42,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
   
 
   const SendFriendRequest = async (UserName: string) => {
-    const response = await PostSendFriendRequest({ UserID: data.UserName, UserName: UserName, Type: "Friend" });
+    const response = await PostSendFriendRequest({ UserID: data.UserName, UserName: UserName, Type: "Friend" },userAuthToken);
     setPopup({ visible: true, message: 'Friend request sent' });
     setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
   };
 
   const SendFollowRequest = async (UserName: string) => {
-    const response = await PostSendFollowRequest({ UserID: data.UserName, UserName: UserName, Type: "Follow" });
+    const response = await PostSendFollowRequest({ UserID: data.UserName, UserName: UserName, Type: "Follow" },userAuthToken);
     setPopup({ visible: true, message: 'Follow request sent' });
     setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
   };
@@ -93,17 +94,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ userData , onSelect}) => 
           )}
         </div>
         
-        {popup.visible && (
-            <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-60">
-              <div className="bg-white rounded-xl shadow-2xl border border-gray-300 transform transition duration-300 ease-out scale-95 hover:scale-105 max-w-md mx-auto overflow-hidden animate-bounce">
-                <div className="px-8 py-6 text-center">
-                  <div className="mb-4 p-2 rounded-full bg-green-100 inline-flex items-center justify-center">
-                    <svg className="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  </div>
-                  <p className="text-lg text-gray-800 font-medium">{popup.message}</p>
-                </div>
-              </div>
-            </div>
+          {popup.visible && (
+            <SendPopup message={popup.message} onClose={popup.visible}  />
           )}
 
         <ProfileNavigation onSelect={onSelect} />

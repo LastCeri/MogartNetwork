@@ -14,7 +14,7 @@ function MainContent() {
   const handlePostButtonClick = async () => {
     if (postContent.trim() !== '') {
         try {
-            const response = await createPost({ UserID: userAuthID, UserToken: userAuthToken, Content: postContent});
+            const response = await createPost({ UserID: userAuthID, UserToken: userAuthToken, Content: postContent},userAuthToken);
             if (response && response.status === "Ok") {
             } else {
                 console.error('Post creation failed, please try again later.');

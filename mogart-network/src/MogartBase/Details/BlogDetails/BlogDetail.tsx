@@ -5,11 +5,12 @@ import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import BlogDetailsCategories from './components/Categories/categories';
 import BlogDetailsLatest from './components/Latest/Latest';
-import { API_URL, PostSendDislike, PostSendLike } from '../../Api/Api';
+import { API_URL, PostSendDislike, PostSendFollowRequest, PostSendLike } from '../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SharePopup from '../../ThemeParts/Popup/SharePopup';
 import { useData } from '../../Context/DataContext';
+import SendPopup from '../../ThemeParts/Popup/SendsPopup';
 
 interface BlogPost {
   Bid: string;
@@ -38,12 +39,18 @@ const BlogDetail = () => {
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
   const [tags, setTags] = useState<[]>([]);
   const [showSharePopup, setShowSharePopup] = useState(false);
-  const { siteData, data,isLoading,isLoggedIn } = useData();
+  const { siteData, data,isLoading,isLoggedIn,userAuthToken } = useData();
+  const [popup, setPopup] = useState({ visible: false, message: '' });
   const navigate = useNavigate();
 
-  const SendLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
-  const SendDisLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
-
+  const SendLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"},userAuthToken); };
+  const SendDisLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"},userAuthToken); };
+  
+  const SendFollowRequest = async (UserName: string) => {
+    const response = await PostSendFollowRequest({ UserID: data.UserName, UserName: UserName, Type: "Follow"},userAuthToken);
+    setPopup({ visible: true, message: 'Follow request sent' });
+    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
+  };
   useEffect(() => {
     if (isLoading || !blogurl) return;
     if(siteData.SiteStatus != "1") navigate('/');
@@ -107,9 +114,11 @@ const BlogDetail = () => {
                               if(item.alt === 'Share') {
                                 handleShareClick();
                               } else if(item.alt === 'Like') {
-                                SendLike(blogPost?.Bid.toString());
+                                SendLike(blogPost?.Bid);
                               } else if(item.alt === 'DisLike') {
-                                SendDisLike(blogPost?.Bid.toString());
+                                SendDisLike(blogPost?.Bid);
+                              } else if (item.alt === 'Follow'){
+                                SendFollowRequest(blogPost?.Bauthor);
                               }
                             }}>
                         <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
@@ -158,7 +167,10 @@ const BlogDetail = () => {
             <BlogDetailsCategories />
         </aside>
     </div>
-      {showSharePopup && <SharePopup url={blogPost.Burl} title={blogPost.Bname} onClose={handleClosePopup} />}
+          {popup.visible && (
+            <SendPopup message={popup.message} onClose={popup.visible}  />
+          )}
+      {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/Blogs/${blogPost.Bauthor.replace(' ','')}/${blogPost.Burl}`} title={blogPost.Bname} onClose={handleClosePopup} />}
     </>
   );
 };

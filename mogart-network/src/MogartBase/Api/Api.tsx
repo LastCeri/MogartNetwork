@@ -25,8 +25,9 @@ export const useCsrfToken = () => {
 };
 
 // Generic request handler
-const handleRequest = async (method:any, endpoint:any, data = {}) => {
+const handleRequest = async (method:any, endpoint:any, data = {}, authtoken:string) => {
   try {
+    console.log("buraya gelen token",authtoken);
     const response = await axios({
       method,
       url: `${API_URL}/${endpoint}`,
@@ -34,6 +35,7 @@ const handleRequest = async (method:any, endpoint:any, data = {}) => {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authtoken}`
       },
     });
 
@@ -45,62 +47,61 @@ const handleRequest = async (method:any, endpoint:any, data = {}) => {
 };
 
 // Authentication related functions
-export const login = (credentials:any) => handleRequest('POST', 'LoginUser', credentials);
-export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData);
-export const logout = (userData:any) => handleRequest('POST', 'LogoutUser', userData);
+export const login = (credentials:any) => handleRequest('POST', 'LoginUser', credentials,"");
+export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData,"");
+export const logout = (userData:any) => handleRequest('POST', 'LogoutUser', userData,"");
 
 
 // Action (Like, Dislike, Comment) functions
 
-export const PostSendLike = (credentials:any) => handleRequest('POST', 'Like', credentials);
-export const PostSendDislike = (credentials:any) => handleRequest('POST', 'Dislike', credentials);
-export const PostSendComment = (credentials:any) => handleRequest('POST', 'Comment', credentials);
+export const PostSendLike = (credentials:any, AuthToken:string) => handleRequest('POST', 'Like', credentials, AuthToken);
+export const PostSendDislike = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Dislike', credentials,AuthToken);
+export const PostSendComment = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Comment', credentials,AuthToken);
 
 // Send Requests (Follow, Friend, Message)
 
-export const PostSendFollowRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
-export const PostSendFriendRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
-export const PostSendMessageRequest = (credentials:any) => handleRequest('POST', 'SendRequest', credentials);
+export const PostSendFollowRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'SendRequest', credentials,AuthToken);
+export const PostSendFriendRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'SendRequest', credentials,AuthToken);
+export const PostSendMessageRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'SendRequest', credentials,AuthToken);
 
 // Accept Requests (Friend, Message, Follow, Event)
 
-export const PostAcceptFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostAcceptGroupsRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostAcceptEventRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostAcceptMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostAcceptFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostAcceptFriendRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostAcceptGroupsRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostAcceptEventRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostAcceptMessageRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostAcceptFollowRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
 
 // Reject Requests (Friend, Message)
 
-export const PostRejectFriendRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostRejectGroupsRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostRejectFollowRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostRejectEventRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
-export const PostRejectMessageRequest = (credentials:any) => handleRequest('POST', 'Requests', credentials);
+export const PostRejectFriendRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostRejectGroupsRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostRejectFollowRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostRejectEventRequest = (credentials:any, AuthToken:string)  => handleRequest('POST', 'Requests', credentials,AuthToken);
+export const PostRejectMessageRequest = (credentials:any, AuthToken:string) => handleRequest('POST', 'Requests', credentials,AuthToken);
 
 // Create Invations (Event,Groups,Meeting, Webinar, Other )
 
-export const CreateEventInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
-export const CreateGroupsInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
-export const CreateMeetingInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
-export const CreateWebinarInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
-export const CreateOtherInvation = (credentials:any) => handleRequest('POST', 'CreateInvation', credentials);
+export const CreateEventInvation = (credentials:any, AuthToken:string)  => handleRequest('POST', 'CreateInvation', credentials,AuthToken);
+export const CreateGroupsInvation = (credentials:any, AuthToken:string) => handleRequest('POST', 'CreateInvation', credentials,AuthToken);
+export const CreateMeetingInvation = (credentials:any, AuthToken:string)  => handleRequest('POST', 'CreateInvation', credentials,AuthToken);
+export const CreateWebinarInvation = (credentials:any, AuthToken:string)  => handleRequest('POST', 'CreateInvation', credentials,AuthToken);
+export const CreateOtherInvation = (credentials:any, AuthToken:string)  => handleRequest('POST', 'CreateInvation', credentials,AuthToken);
 
 // Create Activity (Event,Groups,Meeting, Webinar, Other )
 
-export const CreateActivity = (credentials:any) => handleRequest('POST', 'CreateActivity', credentials);
+export const CreateActivity = (credentials:any, AuthToken:string)  => handleRequest('POST', 'CreateActivity', credentials,AuthToken);
 
 
 // Post and user data related functions
-export const createPost = (postData:any) => handleRequest('POST', 'CreateMogartPost', postData);
-export const fetchActivity = (userId:any) => handleRequest('GET', `GetActivity/${userId}`);
-export const getUserData = (sessionToken:any) => handleRequest('GET', 'getUserData', { headers: { 'Authorization': `Bearer ${sessionToken}` } });
+export const createPost = (postData:any, AuthToken:string)  => handleRequest('POST', 'CreateMogartPost', postData, AuthToken);
+export const fetchActivity = (userId:any, AuthToken:string)  => handleRequest('GET', `GetActivity/${userId}`,"",AuthToken);
+export const getUserData = (sessionToken:any, AuthToken:string)  => handleRequest('GET', 'getUserData', { headers: { 'Authorization': `Bearer ${sessionToken}` }},AuthToken);
 
 
 // RTC
-export const LoginRTC = (credentials:any) => handleRequest('POST', 'RtcLogin', credentials);
-export const LogOutRTC = (credentials:any) => handleRequest('POST', 'RtcLogout', credentials);
-
+export const LoginRTC = (credentials:any, AuthToken:string) => handleRequest('POST', 'RtcLogin', credentials,AuthToken);
+export const LogOutRTC = (credentials:any, AuthToken:string) => handleRequest('POST', 'RtcLogout', credentials,AuthToken);
 
 export const fetchGroups = async () => {
   axios.get(`${API_URL}/GetGroups`)
@@ -111,47 +112,4 @@ export const fetchGroups = async () => {
     console.error('Error fetching groups:', error);
     return [];
   });
-};
-
-
-// Custom hook for fetching posts with automatic mapping
-export const useFetchMogartPosts = () => {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const { data } = await axios.get(`${API_URL}/GetMogartPosts`);
-        const mappedPosts = data.map((post:any) => ({
-          GlobalId: post.Pstid,
-          Author: post.PstAuthor,
-          Avatar: post.PstAuthorAvatar,
-          Content: post.PstContent,
-          VideoUrl: post.PstVideos,
-          ImageUrl: post.PstImages,
-          CommentCount: post.PstCommentCount,
-          LikeCount: post.PstLikeCount,
-          Date: post.PstDate,
-          DisLike: post.PstDisLike,
-          Like: post.PstLike,
-          Mentions: post.PstMentions,
-          Name: post.PstName,
-          Points: post.PstPoints,
-          PostCode: post.PstPostCode,
-          Space: post.PstSpace,
-          Title: post.PstTitle,
-          VideoTitle: post.PstTitle,
-          VideoDesc: post.PstContent,
-          Views: post.PstViews,
-        }));
-        setPosts(mappedPosts);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  return posts;
 };

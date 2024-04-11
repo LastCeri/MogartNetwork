@@ -34,11 +34,11 @@ const AuthorDetail = () => {
   const { author } = useParams();
   const [blogs, setBlogPost] = useState<BlogPost[]>([]);
   const [showSharePopup, setShowSharePopup] = useState(false);
-  const { siteData, data, isLoading, isLoggedIn } = useData();
+  const { siteData, data, isLoading, isLoggedIn,userAuthToken } = useData();
   const navigate = useNavigate();
   
-  const SendLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendLike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" }); };
-  const SendDisLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendDislike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" }); };
+  const SendLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendLike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" },userAuthToken); };
+  const SendDisLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendDislike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" },userAuthToken); };
 
   useEffect(() => {
     if (isLoading || !author) return;
