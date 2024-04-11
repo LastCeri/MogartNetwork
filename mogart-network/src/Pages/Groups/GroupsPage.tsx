@@ -58,6 +58,8 @@ const GroupsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     const fetchAndSetGroups = async () => {
       if (activeTab === 'all') {
         try {

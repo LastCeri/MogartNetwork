@@ -33,13 +33,12 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
 
 const NotificationsPage = () => {
     const navigate = useNavigate();
-    const { isLoggedIn, isLoading,data } = useData();
+    const { isLoggedIn, isLoading,data,siteData } = useData();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const { username } = useParams();
     useEffect(() => {
-        if (isLoading) {
-          return;
-        }
+      if (isLoading) return;
+      if(siteData.SiteStatus != "1") navigate('/');
       
         if (!isLoggedIn) {
           navigate('/login');

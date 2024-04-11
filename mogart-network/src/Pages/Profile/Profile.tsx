@@ -110,6 +110,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
 
     const fetchUserData = async () => {
       try {

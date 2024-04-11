@@ -4,6 +4,7 @@ import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { API_URL } from '../../MogartBase/Api/Api';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
 
 interface SearchResultItem {
   ScID: string;
@@ -14,6 +15,7 @@ interface SearchResultItem {
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { isLoggedIn, isLoading,siteData} = useData();
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const navigate = useNavigate();
 
@@ -22,6 +24,8 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     axios.get(`${API_URL}/GetSearch`)
       .then(response => {
         if (response.status === 200) {

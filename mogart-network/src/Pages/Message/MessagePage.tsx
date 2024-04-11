@@ -35,7 +35,7 @@ interface ChatMessage {
 const MessagePage = () => {
   const navigate = useNavigate();
   const [hasMore, setHasMore] = useState(true);
-  const { isLoggedIn, isLoading, data,userAuthToken } = useData();
+  const { isLoggedIn, isLoading, data,userAuthToken,siteData } = useData();
   const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessageDetail[]>([]);
@@ -82,6 +82,7 @@ const MessagePage = () => {
 
   useEffect(() => {
     if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     if (!isLoggedIn) {
       navigate('/login');
       return;

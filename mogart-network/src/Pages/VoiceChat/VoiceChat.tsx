@@ -16,7 +16,7 @@ interface VoiceChatProps {
 
 const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOpen }) => {
     const navigate = useNavigate();
-    const { isLoggedIn, isLoading, data } = useData();
+    const { isLoggedIn, isLoading, data,siteData } = useData();
     const { startCall, isCallModalOpen: isVoiceCallModalOpen, setCallStatus: setVoiceCallStatus } = useVoiceCall();
     const [isCalling, setIsCalling] = useState(false);
     const [callStatus, setCallStatus] = useState('');
@@ -26,6 +26,7 @@ const VoiceChat: React.FC<VoiceChatProps> = ({ isCallModalOpen, setIsCallModalOp
 
     useEffect(() => {
         if (isLoading) return;
+        if(siteData.SiteStatus != "1") navigate('/');
         if (!isLoggedIn) {
             navigate('/login');
         }

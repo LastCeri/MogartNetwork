@@ -24,12 +24,13 @@ const ActivityItem: React.FC<{ activity: Activity }> = ({ activity }) => (
 
 const ActivityPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, userAuthID,userAuthToken, isLoading } = useData();
+  const { isLoggedIn, userAuthID,userAuthToken, isLoading,siteData } = useData();
   const [activities, setActivities] = useState<Activity[]>([]);
   const { username } = useParams();
 
   useEffect(() => {  
     if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     if (!isLoggedIn) {
       navigate('/login');
     } else {

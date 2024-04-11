@@ -6,6 +6,7 @@ import { API_URL } from '../../MogartBase/Api/Api';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
 
 interface Blog {
   Bid: number;
@@ -21,6 +22,7 @@ interface Blog {
 }
 
 const Blog: React.FC = () => {
+  const { isLoading,siteData } = useData();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -33,6 +35,8 @@ const Blog: React.FC = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     const apiUrl = `${API_URL}/GetBlogs`;
     axios.get<Blog[]>(apiUrl)
       .then((response) => {

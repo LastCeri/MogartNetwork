@@ -12,11 +12,12 @@ import FollowRequests from './components/FollowRequests';
 
 const CommunicationPage = () => {
   const [activeModule, setActiveModule] = useState('friendRequests');
-  const { isLoggedIn, isLoading} = useData();
+  const { isLoggedIn, isLoading,siteData} = useData();
   const navigate = useNavigate();
 
   useEffect(() => {  
     if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     if (!isLoggedIn) {
       navigate('/login');
     }

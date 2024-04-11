@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { faThumbsUp, faEye, faThumbsDown, faMessage, faTags, faFolderOpen, faUserPlus, faShare } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
@@ -38,11 +38,16 @@ const BlogDetail = () => {
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const { siteData, data,isLoading,isLoggedIn } = useData();
+  const navigate = useNavigate();
 
   const SendLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendLike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
   const SendDisLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
 
   useEffect(() => {
+    if (!blogurl) return;
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
+    
     const fetchBlog = async () => {
       try {
         const response = await axios.get<BlogPost[]>(`${API_URL}/GetBlogs/${blogurl}`);

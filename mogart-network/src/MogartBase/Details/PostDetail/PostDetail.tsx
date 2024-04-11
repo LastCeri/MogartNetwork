@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
@@ -39,9 +39,10 @@ export interface PostComments {
 }
 
 const PostDetail = () => {
+  const { isLoading,siteData } = useData();
+  const navigate = useNavigate();
   const { posturl } = useParams<{ posturl: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [comments, setComments] = useState<PostComments[]>([]);
@@ -67,8 +68,10 @@ const PostDetail = () => {
   };
 
   useEffect(() => {
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
+
     const fetchPost = async () => {
-      setIsLoading(true);
       try {
         const response = await axios.get<Post>(`${API_URL}/GetPosts/${posturl}`);
         const postData = response.data;
@@ -87,11 +90,9 @@ const PostDetail = () => {
   
         setPost({...postData, PstLike: likesArray}); 
         setComments(postData.PstComments || []);
-        setIsLoading(false);
       } catch (error) {
         console.error('Post fetch error:', error);
         setError('Failed to fetch post');
-        setIsLoading(false);
       }
     };
   

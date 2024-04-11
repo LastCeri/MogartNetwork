@@ -5,7 +5,6 @@ import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar.tsx';
 import MainContent from '../../MogartBase/ThemeParts/PagePart/HomePart/Main/Main.tsx';
 import LeftSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/LeftSidebar/LeftSidebar.tsx'; 
 import RightSidebar from '../../MogartBase/ThemeParts/PagePart/HomePart/RightSidebar/RightSidebar.tsx';
-import Notification from '../../MogartBase/ThemeParts/Notification/Notification.tsx';
 import { API_URL } from '../../MogartBase/Api/Api.tsx';
 import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import { SiteData } from '../../MogartBase/Context/DataContext.tsx';

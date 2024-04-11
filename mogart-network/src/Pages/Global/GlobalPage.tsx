@@ -6,6 +6,7 @@ import { API_URL } from '../../MogartBase/Api/Api';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../../MogartBase/Context/DataContext';
 
 interface GlobalContent {
   Bid: number;
@@ -22,6 +23,7 @@ interface GlobalContent {
 }
 
 const GlobalContentComponent: React.FunctionComponent = () => {
+  const { isLoggedIn, isLoading,siteData} = useData();
   const [globalContents, setGlobalContents] = useState<GlobalContent[]>([]);
   const [filteredGlobalContents, setFilteredGlobalContents] = useState<GlobalContent[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -30,6 +32,8 @@ const GlobalContentComponent: React.FunctionComponent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
     const apiUrl = `${API_URL}/GetGlobals`;
     axios.get<GlobalContent[]>(apiUrl)
       .then((response) => {

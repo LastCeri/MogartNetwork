@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
@@ -59,15 +59,19 @@ interface GroupDetailItem {
 const GroupDetail: React.FC = () => {
   const { groupname } = useParams<{ groupname: string }>();
   const [groupDetail, setGroupDetail] = useState<GroupDetailItem | null>(null);
-  const { isLoading } = useData();
+  const { isLoading,siteData } = useData();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoading || !groupname) {
+    if (!groupname) {
       return;
     }
+    if (isLoading) return;
+    if(siteData.SiteStatus != "1") navigate('/');
 
     const fetchGroupDetail = async () => {
       try {
+        
         const response = await axios.get(`${API_URL}/GetGroupDetail/${groupname}`);
 
         if (response.status === 200 && response.data) {
