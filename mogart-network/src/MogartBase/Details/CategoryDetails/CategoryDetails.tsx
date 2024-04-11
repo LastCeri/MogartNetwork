@@ -45,9 +45,7 @@ const CategoryDetails: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!catname) return;
-
-    if (isLoading) return;
+    if (isLoading || !catname) return;
     if(siteData.SiteStatus != "1") navigate('/');
     
     const fetchCategoryNames = async () => {
@@ -75,7 +73,9 @@ const CategoryDetails: React.FC = () => {
       }
     };
     
-    fetchCategoryNames();
+    if(catname){
+      fetchCategoryNames();
+    }
   }, [catname, isLoading]);
 
   useEffect(() => {

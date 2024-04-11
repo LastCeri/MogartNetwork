@@ -36,6 +36,7 @@ const icons = [
 const BlogDetail = () => {
   const { blogurl } = useParams();
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
+  const [tags, setTags] = useState<[]>([]);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const { siteData, data,isLoading,isLoggedIn } = useData();
   const navigate = useNavigate();
@@ -44,8 +45,7 @@ const BlogDetail = () => {
   const SendDisLike = async (globalId: string) => { if(!isLoading && !isLoggedIn){return;} await PostSendDislike({UserID:data.UserName, ContentID:globalId, ContentType:"BlogContent"}); };
 
   useEffect(() => {
-    if (!blogurl) return;
-    if (isLoading) return;
+    if (isLoading || !blogurl) return;
     if(siteData.SiteStatus != "1") navigate('/');
     
     const fetchBlog = async () => {
@@ -53,6 +53,8 @@ const BlogDetail = () => {
         const response = await axios.get<BlogPost[]>(`${API_URL}/GetBlogs/${blogurl}`);
         if (response.data && response.data.length > 0) {
           setBlogPost(response.data[0]);
+          const parsedtags = JSON.parse(response.data[0].Btags);
+          setTags(parsedtags);
         }
       } catch (error) {
         console.error('Error fetching blog post:', error);
@@ -62,7 +64,7 @@ const BlogDetail = () => {
     if (blogurl) {
       fetchBlog();
     }
-  }, [blogurl]);
+  }, [blogurl,isLoading]);
 
   if (!blogPost) {
     return <div className="flex justify-center items-center h-screen">
@@ -92,7 +94,7 @@ const BlogDetail = () => {
 
                     <img src={blogPost.BauthorImage} alt="Author" className="w-20 h-20 rounded-full mr-2" />
                     <div className="inline-flex flex-col">
-                        <span className="font-semibold text-lg">{blogPost.Bauthor}</span>
+                    <a href={`/Author/${blogPost.Bauthor.replace(' ','')}`} ><span className="font-semibold text-lg">{blogPost.Bauthor}</span></a>
                         <time className="text-sm" dateTime={blogPost.Bdate}>{blogPost.Bdate}</time>
                     </div>
                 </div>
@@ -133,8 +135,8 @@ const BlogDetail = () => {
                     <Link to={`/Tags/${blogPost.Btags}`}>
                     <FontAwesomeIcon icon={faTags} />
                     {blogPost.Btags &&
-                    blogPost.Btags.split(',').map(tag => {
-                    const trimmedTag = tag.trim();
+                    tags.map(tag => {
+                    const trimmedTag = tag;
                     return (
                     <Link key={trimmedTag} to={`/Tags/${trimmedTag}`} className="bg-gray-100 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
                     {trimmedTag}

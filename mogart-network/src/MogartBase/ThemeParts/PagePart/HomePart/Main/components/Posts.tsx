@@ -27,6 +27,7 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
     const [comments, setComments] = useState<PostComments[]>(Comments);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [showSharePopup, setShowSharePopup] = useState(false);
+    const [showActionsPopup, setShowActionsPopup] = useState(false);
     const [play, setPlay] = useState(false);
     const { siteData, data, isLoading } = useData();
     const [commentText, setCommentText] = useState("");
@@ -36,23 +37,18 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
   
     useEffect(() => {
   
-      if (isLoading) {
-        console.log('Still loading.');
-        return;
-      }
+      if (isLoading) return;
     
       if (typeof Comments === 'string') {
         try {
           const parsedComments = JSON.parse(Comments);
           setComments(parsedComments);
-          console.log('Parsed Comments:', parsedComments);
         } catch (error) {
           console.error("Failed to parse comments:", error);
           setComments([]);
         }
       } else if (Array.isArray(Comments)) {
         setComments(Comments);
-        console.log("Comments set directly from array:", Comments);
       } else {
         console.error('Unexpected Comments prop type:', typeof Comments);
         setComments([]);
@@ -61,7 +57,6 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
       try {
         const userLiked = Likes.some(like => like.userName === data.UserName);
         setIsLiked(userLiked);
-        console.log('isLiked:', userLiked);
       } catch (error) {
         console.error("Failed to update isLiked state:", error);
         setIsLiked(false); 
@@ -83,6 +78,18 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
       setCommentText(event.target.value);
     };
   
+    const handleactionClick = () => {
+      console.log("Aksiyon geldi");
+      if(!showActionsPopup)
+        {
+          setShowActionsPopup(true);
+        }
+        else{
+          setShowActionsPopup(false);
+        }
+      
+    };
+    
     const handleShareClick = () => {
       setShowSharePopup(true);
     };
@@ -97,19 +104,48 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
   
     return (
       <div className="bg-white rounded-lg shadow-lg mb-8 p-4 text-gray-700 hover:shadow-xl transition-shadow duration-300">
-        <div className="flex items-center justify-between mb-3">
-          <Link to={`/posts/${GlobalId}`}>  
-          <div className="flex items-center no-underline text-gray-700">
-            <img className="h-8 w-8 rounded-full mr-2 object-cover" src={Avatar || siteData?.SiteDefaultProfileImageURL} alt={`${Author}'s avatar`} />
-              <div>
-                <div className="font-medium">{Author}</div>
-                <div className="text-xs text-gray-500">{Date}</div>
+        <div className="relative">
+          <div className="flex items-center justify-between mb-3">
+            <Link to={`/posts/${GlobalId}`}>  
+              <div className="flex items-center no-underline text-gray-700">
+                <img className="h-8 w-8 rounded-full mr-2 object-cover" src={Avatar || siteData?.SiteDefaultProfileImageURL} alt={`${Author}'s avatar`} />
+                <div>
+                  <div className="font-medium">{Author}</div>
+                  <div className="text-xs text-gray-500">{Date}</div>
+                </div>
               </div>
+            </Link>
+            <button 
+              type="button" 
+              className="flex items-center text-gray-600 hover:text-blue-700 transition-colors duration-200 ease-in-out"
+              onClick={handleactionClick}
+            >
+              <FontAwesomeIcon icon={faSliders} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+            </button>
           </div>
-          </Link>
-          <FontAwesomeIcon icon={faSliders} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+
+          {showActionsPopup && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+              <button
+                onClick={() => {
+                  console.log("Gönderi kaydedildi");
+                }}
+                className="block w-full py-2 px-4 text-left text-gray-800 hover:bg-gray-200"
+              >
+                Kaydet
+              </button>
+              <button
+                onClick={() => {
+                  console.log("Gönderiye şikayet edildi");
+                }}
+                className="block w-full py-2 px-4 text-left text-gray-800 hover:bg-gray-200"
+              >
+                Şikayet Et
+              </button>
+            </div>
+          )}
         </div>
-       
+
         <p className="mb-3">{Content}</p>
   
         {ImageUrl && !VideoUrl && (
@@ -176,7 +212,8 @@ const Posts = React.memo(({ Author, Avatar, GlobalId, Content, Date, CommentCoun
                 </button>
               </div>
             )}
-  
+
+
         {showSharePopup && <SharePopup url={`https://mogart-network.vercel.app/posts/${GlobalId}`} title={Author} onClose={handleClosePopup} />}
       </div>
     );

@@ -39,17 +39,16 @@ export interface PostComments {
 }
 
 const PostDetail = () => {
-  const { isLoading,siteData } = useData();
-  const navigate = useNavigate();
   const { posturl } = useParams<{ posturl: string }>();
   const [post, setPost] = useState<Post | null>(null);
   const [error, setError] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [comments, setComments] = useState<PostComments[]>([]);
   const [commentText, setCommentText] = useState('');
-  const {data } = useData();
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const { isLoading,siteData, data } = useData();
+  const navigate = useNavigate();
 
 
   const SendComment = async (globalId: string, commentcontent: string) => { const response = await PostSendComment({UserID:data.UserName, ContentID:globalId, Content:commentcontent, ContentType:"PostContent"});};
@@ -62,13 +61,17 @@ const PostDetail = () => {
     }
   };
   
+  const handleCloseComment = () => {
+    if(!showCommentInput){setShowCommentInput(true)}else{setShowCommentInput(false)}
+  };
+
   
   const handleClosePopup = () => {
     setShowSharePopup(false);
   };
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !posturl) return;
     if(siteData.SiteStatus != "1") navigate('/');
 
     const fetchPost = async () => {
@@ -95,9 +98,11 @@ const PostDetail = () => {
         setError('Failed to fetch post');
       }
     };
-  
-    fetchPost();
-  }, [posturl, data.UserName]);
+
+    if(posturl){
+      fetchPost();
+    }
+  }, [posturl, data.UserName, isLoading]);
 
   if (isLoading) return  <div className="flex justify-center items-center h-screen">
   <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
@@ -145,7 +150,7 @@ const PostDetail = () => {
                 <span className={isLiked ? 'text-blue-600' : 'text-gray-500'}>{post.PstLike.length}</span>
               </button>
 
-              <button onClick={() => setShowCommentInput(true)} className="flex items-center space-x-1 hover:text-green-600">
+              <button onClick={handleCloseComment} className="flex items-center space-x-1 hover:text-green-600">
                 <FontAwesomeIcon icon={faComment} /><span>Comment</span>
               </button>
               <button onClick={() => setShowSharePopup(true)} className="flex items-center space-x-1 hover:text-red-600">

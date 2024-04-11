@@ -63,10 +63,7 @@ const GroupDetail: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!groupname) {
-      return;
-    }
-    if (isLoading) return;
+    if (isLoading || !groupname) return;
     if(siteData.SiteStatus != "1") navigate('/');
 
     const fetchGroupDetail = async () => {
@@ -120,7 +117,9 @@ const GroupDetail: React.FC = () => {
       }
     };
 
-    fetchGroupDetail();
+    if(groupname){
+      fetchGroupDetail();
+    }
   }, [groupname, isLoading]);
 
   if (isLoading || !groupDetail) {

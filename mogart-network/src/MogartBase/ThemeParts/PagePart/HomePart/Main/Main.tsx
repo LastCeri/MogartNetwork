@@ -15,7 +15,6 @@ function MainContent() {
     if (postContent.trim() !== '') {
         try {
             const response = await createPost({ UserID: userAuthID, UserToken: userAuthToken, Content: postContent});
-            console.log("res",response);
             if (response && response.status === "Ok") {
             } else {
                 console.error('Post creation failed, please try again later.');

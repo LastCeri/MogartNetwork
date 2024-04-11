@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { faThumbsUp, faEye, faThumbsDown, faMessage, faTags, faFolderOpen, faUserPlus, faShare, faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
@@ -35,11 +35,15 @@ const AuthorDetail = () => {
   const [blogs, setBlogPost] = useState<BlogPost[]>([]);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const { siteData, data, isLoading, isLoggedIn } = useData();
-
+  const navigate = useNavigate();
+  
   const SendLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendLike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" }); };
   const SendDisLike = async (globalId: string) => { if (!isLoading && !isLoggedIn) { return; } await PostSendDislike({ UserID: data.UserName, ContentID: globalId, ContentType: "BlogContent" }); };
 
   useEffect(() => {
+    if (isLoading || !author) return;
+    if(siteData.SiteStatus != "1") navigate('/');
+    
     const fetchAuthor = async () => {
       try {
         const response = await axios.get<BlogPost[]>(`${API_URL}/GetAuthor/${author}`);
@@ -54,7 +58,7 @@ const AuthorDetail = () => {
     if (author) {
       fetchAuthor();
     }
-  }, [author]);
+  }, [author, isLoading]);
 
   if (!blogs.length) { 
     return <div className="flex justify-center items-center h-screen">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
@@ -56,11 +56,13 @@ const TaggedContentPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [allContent, setAllContent] = useState<ContentItem[]>([]);
   const [filteredContent, setFilteredContent] = useState<ContentItem[]>([]);
-  const { isLoading } = useData();
+  const { isLoading,siteData } = useData();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoading || !tagname) return;
-    
+    if(siteData.SiteStatus != "1") navigate('/');
+
     const fetchTagNames = async () => {
       try {
         const response = await axios.get<ApiResponseItem[]>(`${API_URL}/GetTags/${tagname}`);
@@ -100,8 +102,9 @@ const TaggedContentPage: React.FC = () => {
       }
     };
 
-
-    fetchTagNames();
+    if(tagname){
+      fetchTagNames();
+    }
   }, [tagname, isLoading]);
 
   useEffect(() => {
