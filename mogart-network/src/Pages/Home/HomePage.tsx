@@ -11,11 +11,56 @@ import { useData } from '../../MogartBase/Context/DataContext.tsx';
 import { SiteData } from '../../MogartBase/Context/DataContext.tsx';
 import { useNavigate } from 'react-router-dom';
 
+
+
+function Countdown({ targetDate }: { targetDate: string }) {
+  
+  const calculateTimeLeft = () => {
+    const difference = +new Date(targetDate) - +new Date();
+    let timeLeft = {
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    };
+  
+    if (difference > 0) {
+      timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60)
+      };
+    }
+  
+    return timeLeft;
+  }; 
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  });
+
+  return (
+    <div className="text-2xl font-bold">
+      {timeLeft.days} Days {timeLeft.hours} Hours {timeLeft.minutes} Minutes {timeLeft.seconds} Seconds
+    </div>
+  );
+}
+
+
+
 function HomePage() {
   const {siteData, setSiteData, isLoading} = useData();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isLoading) return;
     axios.get<SiteData[]>(`${API_URL}/MogartSiteData`)
       .then(response => {
         if (Array.isArray(response.data) && response.data.length > 0) {
@@ -45,7 +90,7 @@ function HomePage() {
         <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
       </div>
     );
-  }
+  } 
 
   return (
     <div className="flex flex-col">
@@ -73,6 +118,7 @@ function HomePage() {
         <h1 className="text-4xl text-slate-800 font-bold text-center shadow-lg">
           {siteData ? siteData.SiteStatusText : 'Site is under maintenance'}
         </h1>
+        <div>{siteData ? <Countdown targetDate={siteData.SiteCountDown} /> : 'Site is under maintenance'}</div>
       </div>
       
       )}

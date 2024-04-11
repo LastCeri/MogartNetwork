@@ -33,6 +33,7 @@ export interface SiteData {
   SiteLogo: string;
   SiteStatus: string;
   SiteStatusText: string;
+  SiteCountDown: string;
   SiteLoginBackgroundURL:string;
   SiteRegisterBackgroundURL:string;
   SiteDefaultProfileImageURL:string;
@@ -65,10 +66,12 @@ const initialSiteData: SiteData = {
   SiteLogo:'',
   SiteStatus:'',
   SiteStatusText: '',
+  SiteCountDown:'',
   SiteLoginBackgroundURL:'',
   SiteRegisterBackgroundURL:'',
   SiteDefaultProfileImageURL:'',
   SiteDefaultProfileBackgroundImageURL:'',
+
 };
 
 const DataContext = createContext<{
