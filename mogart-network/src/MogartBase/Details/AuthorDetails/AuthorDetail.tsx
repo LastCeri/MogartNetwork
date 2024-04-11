@@ -43,7 +43,6 @@ const AuthorDetail = () => {
     const fetchAuthor = async () => {
       try {
         const response = await axios.get<BlogPost[]>(`${API_URL}/GetAuthor/${author}`);
-        console.log("response", response);
         if (response.data && response.data.length > 0) {
           setBlogPost(response.data); 
         }

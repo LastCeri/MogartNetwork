@@ -33,7 +33,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
 
 const NotificationsPage = () => {
     const navigate = useNavigate();
-    const { isLoggedIn, isLoading,data,siteData } = useData();
+    const { isLoggedIn, isLoading,data,siteData,userAuthToken } = useData();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const { username } = useParams();
     useEffect(() => {
@@ -43,7 +43,11 @@ const NotificationsPage = () => {
         if (!isLoggedIn) {
           navigate('/login');
         } else {
-          axios.get(`${API_URL}/${username}/GetNotifications`)
+          axios.get(`${API_URL}/${username}/GetNotifications`, {
+            headers: {
+                'Authorization': `Bearer ${userAuthToken}`
+            }
+        })
             .then(response => {
               if (response.status === 200) {
                 const notificationData: Notification[] = response.data;

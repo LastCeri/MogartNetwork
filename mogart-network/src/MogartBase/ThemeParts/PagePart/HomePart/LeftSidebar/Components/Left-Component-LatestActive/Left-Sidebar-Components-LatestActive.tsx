@@ -16,7 +16,7 @@ export interface ComponentActivityinterface {
 
 export default function LeftSidebarComponentsLatestActive() {
     const [activities, setActivities] = useState<ComponentActivityinterface[]>([]);
-    const { data, isLoggedIn } = useData();
+    const { data, isLoggedIn,userAuthToken } = useData();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,7 +25,11 @@ export default function LeftSidebarComponentsLatestActive() {
             return;
         }
 
-        axios.get(`${API_URL}/${data.UserName}/GetActivity/General`)
+        axios.get(`${API_URL}/${data.UserName}/GetActivity/General`, {
+            headers: {
+                'Authorization': `Bearer ${userAuthToken}`
+            }
+        })
             .then(response => {
 
                 if (!response.data || !Array.isArray(response.data) || response.data.some(activite => !isValidComponentLatestActive(activite))) {
