@@ -10,8 +10,9 @@ import { API_URL } from '../../MogartBase/Api/Api';
 import ChatUserList from './components/ChatUserList/ChatUserList';
 import VoiceChat from '../VoiceChat/VoiceChat';
 import axios from 'axios';
+import { isValidChatData, isValidChatDetailData } from '../../MogartBase/Api/Sec-2/Checkers/ChatDataChecker';
 
-interface ChatMessageDetail {
+export interface ChatMessageDetail {
   MessageID: string;
   Sender: string;
   messageText: string;
@@ -21,7 +22,7 @@ interface ChatMessageDetail {
   messageTimeStamp: string;
 }
 
-interface ChatMessage {
+export interface ChatMessage {
   MessageID: string;
   MessageAuthor: string;
   MessageAuthorImage: string;
@@ -94,7 +95,14 @@ const MessagePage = () => {
           headers: {
               'Authorization': `Bearer ${userAuthToken}`
           }
-      });  
+      });
+      
+        
+      if (!response.data || !Array.isArray(response.data) || response.data.some(chatdata => !isValidChatData(chatdata))) {
+        console.error('API response is not an array or contains invalid data');
+        return;
+      }
+
         setChatData(response.data);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -140,8 +148,11 @@ const MessagePage = () => {
     try {
       const response = await axios.post(`${API_URL}/ChatData/${data?.UserName}/SendMessage`, {
         chatId: selectedChatId,
-        content: messageContent
-      });
+        content: messageContent,
+        headers: {
+            'Authorization': `Bearer ${userAuthToken}`
+        }
+    });  
       const newMessage = response.data;
       setMessages(prevMessages => [...prevMessages, newMessage]);
     } catch (error) {
@@ -157,10 +168,25 @@ const MessagePage = () => {
 const handleChatSelect = async (selectedChatId: string) => {
     setSelectedChatId(selectedChatId);
     try {
-      const response = await axios.get<ChatMessage[]>(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`);
+      const response = await axios.get<ChatMessage[]>(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`, {
+        headers: {
+            'Authorization': `Bearer ${userAuthToken}`
+        }
+    });  
       const firstMessage = response.data[0];
+
+      if (!response.data[0] || !Array.isArray(response.data) || response.data.some(chatdata => !isValidChatData(chatdata))) {
+        console.error('API response is not an array or contains isValidChatData');
+        return;
+      }
+
       if (firstMessage && firstMessage.MessageContent) {
         const parsedContent = JSON.parse(firstMessage.MessageContent) as ChatMessageDetail[];
+
+        if (!parsedContent || parsedContent.some(chatdetaildata => !isValidChatDetailData(chatdetaildata))) {
+          console.error('API response is not an array or contains isValidChatDetailData');
+          return;
+        }
         setMessages(parsedContent);
       } else {
         console.error("MessageContent is undefined or not in expected format");
