@@ -20,6 +20,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
+    "emoji-picker-react": "^4.9.2",
     "firebase": "^10.5.2",
     "nth-check": "2.0.1",
     "o1js": "^0.15.4",

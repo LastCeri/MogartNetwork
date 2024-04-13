@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentAlt, faPhone, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCommentAlt, faPhone, faCheckCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { API_URL } from '../../MogartBase/Api/Api';
 import ChatUserList from './components/ChatUserList/ChatUserList';
 import VoiceChat from '../VoiceChat/VoiceChat';
-import axios from 'axios';
 import { isValidChatData, isValidChatDetailData } from '../../MogartBase/Api/Sec-2/Checkers/ChatDataChecker';
+import EmojiPicker ,{Emoji, Theme, EmojiStyle }from 'emoji-picker-react';
+import axios from 'axios';
 
 export interface ChatMessageDetail {
   MessageID: string;
@@ -47,6 +48,8 @@ const MessagePage = () => {
   const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
   const [longPressTimeoutId, setLongPressTimeoutId] = useState<number | null>(null);
   const [longPress, setLongPress] = useState(false);
+  const [currentDisplayCount, setCurrentDisplayCount] = useState(2); 
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
     if (longPress) {
@@ -78,6 +81,22 @@ const MessagePage = () => {
         setShowContextMenu(true); 
         setLongPress(false);
       }
+    }
+  };
+
+  const onEmojiClick = (emojiData:any, event:any) => {
+    console.log('Emoji object:', emojiData);
+    console.log('Emoji:', emojiData.emoji); 
+    setMessageContent(prevContent => prevContent + emojiData.emoji);
+    setShowEmojiPicker(false);
+  
+};
+
+  const fetchMoreData = () => {
+    if (currentDisplayCount >= messages.length) {
+      setHasMore(false);
+    } else {
+      setCurrentDisplayCount(currentDisplayCount + 10);
     }
   };
 
@@ -121,23 +140,6 @@ const MessagePage = () => {
     };
     fetchChatData();
   }, [isLoggedIn, isLoading, navigate, data?.UserName]);
-
-
-  const fetchMoreData = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}`);
-      const newMessages = response.data;
-
-      if (newMessages.length === 0 || newMessages.length < 0) {
-        setHasMore(false); 
-        return;
-      }
-
-      setChatData(prevMessages => [...prevMessages, ...newMessages]);
-    } catch (error) {
-      console.error('Fetching more messages failed:', error);
-    }
-  };
 
   const SendMessage = async (selectedChatId: any, messageContent: string) => {
     if (!selectedChatId || !messageContent) {
@@ -256,6 +258,11 @@ const handleChatSelect = async (selectedChatId: string) => {
       e.preventDefault();
     };
     
+    useEffect(() => {
+      if (messages.length <= currentDisplayCount) {
+        setHasMore(false);
+      }
+    }, [messages, currentDisplayCount]);
 
     if (!showContextMenu || !selectedMessageId) return null;
     const selectedMessage = messages.find(message => message.MessageID === selectedMessageId);
@@ -273,7 +280,7 @@ const handleChatSelect = async (selectedChatId: string) => {
     };
 
     return (
-      <div className="absolute z-20 bg-white rounded-md shadow-xl overflow-hidden" id="contextMenu" style={{ left: `${position.x}px`, top: `${position.y}px`, cursor: isDragging ? 'grabbing' : 'grab' }} 
+      <div className="absolute z-20 bg-white rounded-md shadow-xl" id="contextMenu" style={{ left: `${position.x}px`, top: `${position.y}px`, cursor: isDragging ? 'grabbing' : 'grab' }} 
       onMouseDown={onMouseDown}>
         
         <h1 className="text-xl font-semibold text-gray-900 bg-gray-100 px-6 py-3">Smart Bar</h1>
@@ -299,47 +306,56 @@ const handleChatSelect = async (selectedChatId: string) => {
       <div className="flex flex-col pl-16 pt-16 bg-gray-100 h-screen min-h-screen">
         <div className="flex flex-grow">
           <div className="flex w-full h-full">
-            <div className="w-1/3 overflow-y-auto border-r border-gray-300 bg-white">
-                <div className="p-5 flex justify-between items-center bg-white shadow-sm border-b border-gray-200">
-                  <h2 className="text-xl font-bold text-gray-800">Chats</h2>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => setIsCallModalOpen(true)}
-                      className="flex items-center justify-center bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full px-4 py-2 hover:from-green-500 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 shadow transition duration-200 ease-in-out transform hover:scale-105"
-                    >
-                      <FontAwesomeIcon icon={faPhone} className="text-lg mr-2" />
-                      <span>Call</span>
-                    </button>
-                    <button
-                      onClick={() => {}}
-                      className="flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-full px-4 py-2 hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow transition duration-200 ease-in-out transform hover:scale-105"
-                    >
-                      <FontAwesomeIcon icon={faCommentAlt} className="text-lg mr-2" />
-                      <span>New Chat</span>
-                    </button>
-                  </div>
-                </div>
-                  <VoiceChat isCallModalOpen={isCallModalOpen} setIsCallModalOpen={setIsCallModalOpen} />
-                  <ChatUserList chatData={chatData} onChatSelect={handleChatSelect} />
-                </div>
-                <div className="w-2/3 bg-white overflow-hidden shadow-lg rounded-lg flex flex-col h-screem">
-                <InfiniteScroll
-                     dataLength={chatData.length}
-                     next={fetchMoreData}
-                     hasMore={hasMore}
-                    loader={hasMore ? <h4 className=' text-center text-lg text-purple-600 font-semibold ml-4'>Loading...</h4> : null}
-                    endMessage={
-                      <p style={{ textAlign: 'center' }}>
-                        <b>Yay! All Message Read.</b>
-                      </p>
-                    }
-                    scrollableTarget="scrollableDiv"
+            <div className="w-1/3 border-r border-gray-300 bg-white">
+              <div className="p-5 flex justify-between items-center bg-white shadow-sm border-b border-gray-200">
+                <h2 className="text-xl font-bold text-gray-800">Chats</h2>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setIsCallModalOpen(true)}
+                    className="flex items-center justify-center bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full px-4 py-2 hover:from-green-500 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 shadow transition duration-200 ease-in-out transform hover:scale-105"
                   >
-                  <div className="flex-1 overflow-y-auto p-4 bg-white" id="scrollableDiv">
-                  {messages.map((message, index) => {
+                    <FontAwesomeIcon icon={faPhone} className="text-lg mr-2" />
+                    <span>Call</span>
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className="flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-full px-4 py-2 hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow transition duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <FontAwesomeIcon icon={faCommentAlt} className="text-lg mr-2" />
+                    <span>New Chat</span>
+                  </button>
+                </div>
+              </div>
+              <VoiceChat isCallModalOpen={isCallModalOpen} setIsCallModalOpen={setIsCallModalOpen} />
+              <ChatUserList chatData={chatData} onChatSelect={handleChatSelect} />
+            </div>
+  
+            <div className="w-2/3 bg-white shadow-lg rounded-lg flex flex-col">
+              <div className="flex h-14 px-4 py-2 bg-slate-100 border-t border-gray-300">
+
+              </div>
+              {messages.length > 0 && (
+                <InfiniteScroll
+                  dataLength={currentDisplayCount}
+                  next={fetchMoreData}
+                  hasMore={hasMore}
+                  loader={<h4 className='text-center text-lg text-purple-600 font-semibold ml-4'>Loading...</h4>}
+                  endMessage={
+                    <p style={{textAlign: 'center', backgroundColor: 'ButtonFace', fontSize: '9px'}}>
+                      <b>Yay! Your conversation ended here.</b>
+                    </p>
+                  }
+                  scrollableTarget="scrollableDiv"
+                >
+                  <div
+                    id="scrollableDiv"
+                    className="flex-1 p-4 bg-white overflow-y-auto"
+                    style={{ maxHeight: '600px' }}
+                  >
+                    {messages.map((message, index) => {
                       const isUserMessage = message.Sender === data?.UserName;
                       const isSelected = selectedMessages.includes(message.MessageID);
-                      const messageClasses = `relative z-10 max-w-2xl w-full p-4 rounded-lg shadow ${
+                      const messageClasses = `relative max-w-2xl w-full p-4 rounded-lg shadow ${
                         isUserMessage ? 'bg-blue-500 text-white' : 'bg-white text-gray-800 border border-gray-300'
                       } ${isSelected ? (isUserMessage ? 'border-r-4 border-green-700' : 'border-l-4 border-green-500') : ''}`;
                       const iconPosition = isUserMessage ? '-top-3 -right-3' : '-top-3 -left-3';
@@ -348,7 +364,7 @@ const handleChatSelect = async (selectedChatId: string) => {
                           key={index}
                           onMouseDown={() => handleMouseDown(message.MessageID)}
                           onMouseUp={handleMouseUp}
-                          onMouseLeave={handleMouseUp} 
+                          onMouseLeave={handleMouseUp}
                           className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'} my-2`}
                         >
                           <div
@@ -366,28 +382,50 @@ const handleChatSelect = async (selectedChatId: string) => {
                         </div>
                       );
                     })}
-                    </div>
-                  </InfiniteScroll>
-                  
-                  <div className="flex-none border-t border-gray-200 p-4 flex items-center">
-                    <input
-                      type="text"
-                      value={messageContent}
-                      onChange={(e) => setMessageContent(e.target.value)}
-                      className="flex-1 rounded-full border-gray-300 p-2 mr-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Type a message..."
-                    />
-                    <button
-                      className="bg-blue-500 text-white rounded-full px-6 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md hover:shadow-lg transition duration-150 ease-in-out"
-                      onClick={() => SendMessage(selectedChatId, messageContent)}
-                    >
-                      Send
-                    </button>
-                    <ContextMenu/>
                   </div>
+                </InfiniteScroll>
+              )}
+            {messages.length > 0 && (
+              <div className="flex px-4 py-2 bg-slate-100 border-t border-gray-300">
+                {showEmojiPicker && (
+                  <div className="absolute inset-y-auto bottom-64 px-4 mb-4 z-20">
+                    <EmojiPicker
+                      onEmojiClick={onEmojiClick}
+                      theme={Theme.LIGHT}
+                      emojiStyle={EmojiStyle.APPLE}
+                      searchPlaceholder="Search..."
+                      className="max-h-96 overflow-y-auto w-full"
+                    />
+                  </div>
+                )}
+                <div className="flex items-center w-full">
+                 <textarea
+                    value={messageContent}
+                    onChange={(e) => setMessageContent(e.target.value)}
+                    className="flex-1 rounded-full border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-hidden"
+                    placeholder="Type a message..."
+                    rows={1}
+                    style={{ minHeight: '40px' }} 
+                  />
+
+                  <button
+                    className="bg-white text-gray-500 rounded-full px-6 py-2 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md hover:shadow-lg transition duration-150 ease-in-out ml-2"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  >
+                    😊
+                  </button>
+                  <button
+                    className="bg-white text-blue-500 rounded-full px-6 py-2 hover:bg-slate-100 hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md hover:shadow-lg transition duration-150 ease-in-out ml-2"
+                    onClick={() => SendMessage(selectedChatId, messageContent)}
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} className="h-5 w-5" /> Send
+                  </button>
                 </div>
+              </div>
+              )}
             </div>
           </div>
+        </div>
       </div>
     </>
   );
