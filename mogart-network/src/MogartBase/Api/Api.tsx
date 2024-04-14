@@ -27,7 +27,6 @@ export const useCsrfToken = () => {
 // Generic request handler
 const handleRequest = async (method:any, endpoint:any, data = {}, authtoken:string) => {
   try {
-    console.log("buraya gelen token",authtoken);
     const response = await axios({
       method,
       url: `${API_URL}/${endpoint}`,

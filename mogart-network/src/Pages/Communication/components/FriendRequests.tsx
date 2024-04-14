@@ -49,7 +49,7 @@ const FriendRequests = () => {
   const handleAccept = async (requestId: string) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x17" });
+      const acceptresponse = await PostAcceptFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x17" },userAuthToken);
     } catch (error) {
       console.error('Failed to accept AcceptFriendRequest:', error);
     }
@@ -58,7 +58,7 @@ const FriendRequests = () => {
   const handleReject = async (requestId: string) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x19" });
+      const rejectresponse = await PostRejectFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x19" },userAuthToken);
     } catch (error) {
       console.error('Failed to reject RejectFriendRequest:', error);
     }

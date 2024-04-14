@@ -58,7 +58,7 @@ const GroupInvitations = () => {
   const handleAccept = async (invitationId:any) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x17" });
+      const acceptresponse = await PostAcceptGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x17" },userAuthToken);
     } catch (error) {
       console.error('Failed to accept AcceptGroupsRequest:', error);
     }
@@ -67,7 +67,7 @@ const GroupInvitations = () => {
   const handleReject = async (invitationId:any) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x19" });
+      const rejectresponse = await PostRejectGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x19" },userAuthToken);
     } catch (error) {
       console.error('Failed to reject RejectGroupsRequest:', error);
     }

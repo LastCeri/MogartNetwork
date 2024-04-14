@@ -51,7 +51,7 @@ const MessageRequests = () => {
   const handleAccept = async (requestId:any) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x17" });
+      const acceptresponse = await PostAcceptMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x17" },userAuthToken);
     } catch (error) {
       console.error('Failed to accept AcceptMessageRequest:', error);
     }
@@ -60,7 +60,7 @@ const MessageRequests = () => {
   const handleDecline = async (requestId:any) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x19" });
+      const rejectresponse = await PostRejectMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x19" },userAuthToken);
     } catch (error) {
       console.error('Failed to reject RejectMessageRequest:', error);
     }

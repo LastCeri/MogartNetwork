@@ -52,7 +52,7 @@ const EventInvitations = () => {
   const handleAccept =  async (invitationId:any) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x17" });
+      const acceptresponse = await PostAcceptEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x17" },userAuthToken);
     } catch (error) {
       console.error('Failed to accept AcceptEventRequest:', error);
     }
@@ -61,7 +61,7 @@ const EventInvitations = () => {
   const handleDecline =  async (invitationId:any) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x19" });
+      const rejectresponse = await PostRejectEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x19" },userAuthToken);
     } catch (error) {
       console.error('Failed to reject RejectEventRequest:', error);
     }

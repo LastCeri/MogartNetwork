@@ -49,7 +49,7 @@ const FollowRequests = () => {
   const handleAccept = async (requestId:any) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x17" });
+      const acceptresponse = await PostAcceptFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x17" },userAuthToken);
     } catch (error) {
       console.error('Failed to accept AcceptFollowRequest:', error);
     }
@@ -58,7 +58,7 @@ const FollowRequests = () => {
   const handleReject = async (requestId:any) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x19" });
+      const rejectresponse = await PostRejectFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x19" },userAuthToken);
     } catch (error) {
       console.error('Failed to reject RejectFollowRequest:', error);
     }
