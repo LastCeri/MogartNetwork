@@ -12,6 +12,7 @@ import VoiceChat from '../VoiceChat/VoiceChat';
 import { isValidChatData, isValidChatDetailData } from '../../MogartBase/Api/Sec-2/Checkers/ChatDataChecker';
 import EmojiPicker ,{Emoji, Theme, EmojiStyle }from 'emoji-picker-react';
 import axios from 'axios';
+import NewChat from './components/NewChat/NewChat';
 
 export interface ChatMessageDetail {
   MessageID: string;
@@ -35,22 +36,27 @@ export interface ChatMessage {
 }
 
 const MessagePage = () => {
-  const navigate = useNavigate();
-  const [hasMore, setHasMore] = useState(true);
   const { isLoggedIn, isLoading, data,userAuthToken,siteData } = useData();
   const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessageDetail[]>([]);
+
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
-  const [messageContent, setMessageContent] = useState('');
-  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [isNewChatModal, setNewChatModalOpen] = useState(false);
+
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
+
   const [longPressTimeoutId, setLongPressTimeoutId] = useState<number | null>(null);
   const [longPress, setLongPress] = useState(false);
-  const [currentDisplayCount, setCurrentDisplayCount] = useState(2); 
+  const [hasMore, setHasMore] = useState(true);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [currentDisplayCount, setCurrentDisplayCount] = useState(10); 
+  const [messageContent, setMessageContent] = useState('');
+  const [showContextMenu, setShowContextMenu] = useState(false);
 
+
+  const navigate = useNavigate();
   useEffect(() => {
     if (longPress) {
       setShowContextMenu(true);
@@ -76,7 +82,7 @@ const MessagePage = () => {
     if (longPressTimeoutId !== null) {
       clearTimeout(longPressTimeoutId);
       setLongPressTimeoutId(null);
-  
+
       if (longPress) {
         setShowContextMenu(true); 
         setLongPress(false);
@@ -84,13 +90,14 @@ const MessagePage = () => {
     }
   };
 
+  const handleToggleModal = () => {
+      setNewChatModalOpen(!isNewChatModal);
+  };
+
   const onEmojiClick = (emojiData:any, event:any) => {
-    console.log('Emoji object:', emojiData);
-    console.log('Emoji:', emojiData.emoji); 
     setMessageContent(prevContent => prevContent + emojiData.emoji);
     setShowEmojiPicker(false);
-  
-};
+  };
 
   const fetchMoreData = () => {
     if (currentDisplayCount >= messages.length) {
@@ -167,14 +174,14 @@ const MessagePage = () => {
     <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
   </div>;
 
-const handleChatSelect = async (selectedChatId: string) => {
+  const handleChatSelect = async (selectedChatId: string) => {
     setSelectedChatId(selectedChatId);
     try {
       const response = await axios.get<ChatMessage[]>(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`, {
         headers: {
             'Authorization': `Bearer ${userAuthToken}`
-        }
-    });  
+              }
+        });  
       const firstMessage = response.data[0];
 
       if (!response.data[0] || !Array.isArray(response.data) || response.data.some(chatdata => !isValidChatData(chatdata))) {
@@ -200,10 +207,9 @@ const handleChatSelect = async (selectedChatId: string) => {
   
   const handleMessageSelect = async (selectedChatId: any) => {
     setSelectedMessages(selectedChatId);
-   
   };
-  const ContextMenu = () => {
 
+  const ContextMenu = () => {
     interface Position {
       x: number;
       y: number;
@@ -318,7 +324,7 @@ const handleChatSelect = async (selectedChatId: string) => {
                     <span>Call</span>
                   </button>
                   <button
-                    onClick={() => {}}
+                    onClick={() => handleToggleModal()}
                     className="flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-full px-4 py-2 hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow transition duration-200 ease-in-out transform hover:scale-105"
                   >
                     <FontAwesomeIcon icon={faCommentAlt} className="text-lg mr-2" />
@@ -326,12 +332,14 @@ const handleChatSelect = async (selectedChatId: string) => {
                   </button>
                 </div>
               </div>
+
+              <NewChat isOpen={isNewChatModal} setIsOpen={setNewChatModalOpen} />
               <VoiceChat isCallModalOpen={isCallModalOpen} setIsCallModalOpen={setIsCallModalOpen} />
               <ChatUserList chatData={chatData} onChatSelect={handleChatSelect} />
             </div>
   
             <div className="w-2/3 bg-white shadow-lg rounded-lg flex flex-col">
-              <div className="flex h-14 px-4 py-2 bg-slate-100 border-t border-gray-300">
+              <div className="flex h-20 px-4 py-2 bg-white border-t border-gray-300 shadow-lg">
 
               </div>
               {messages.length > 0 && (
