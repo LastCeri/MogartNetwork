@@ -29,7 +29,6 @@ export interface ChatMessage {
   MessageAuthor: string;
   MessageAuthorImage: string;
   MessageAuthorTo: string;
-  MessageContent: string; 
   MessageDate: string;
   MessageLastAction: string;
   MessageActions: string;
@@ -148,6 +147,49 @@ const MessagePage = () => {
     fetchChatData();
   }, [isLoggedIn, isLoading, navigate, data?.UserName]);
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedChatId) return; 
+      try {
+        const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`, {
+          headers: {
+            'Authorization': `Bearer ${userAuthToken}`
+          }
+        });
+        if (!response.data || !Array.isArray(response.data)) {
+          console.error('API response is invalid or not an array');
+          return;
+        }
+        
+        const validMessages = response.data.filter(chatDetailData => !isValidChatDetailData(chatDetailData));
+        if (!validMessages.length) {
+          console.error('No valid messages received');
+          return;
+        }
+
+        const chatData = response.data[0].Messages;
+        
+        try {
+          const parsedContent = JSON.parse(chatData) as ChatMessageDetail[];
+          if (!Array.isArray(parsedContent) || parsedContent.some(chatDetailData => !isValidChatDetailData(chatDetailData))) {
+            console.error('API response is not an array or contains invalid chat detail data');
+            return;
+          }
+          setMessages(parsedContent);
+        } catch (error) {
+          console.error('Parsing chat data failed:', error);
+        }
+        
+      } catch (error) {
+        console.error('Fetching messages failed:', error);
+      }
+    };
+  
+    fetchMessages();
+  }, [selectedChatId, data?.UserName, userAuthToken]);
+   
+
+
   const SendMessage = async (selectedChatId: any, messageContent: string) => {
     if (!selectedChatId || !messageContent) {
       console.error('Selected chat or message content is missing.');
@@ -174,37 +216,11 @@ const MessagePage = () => {
     <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>
   </div>;
 
-  const handleChatSelect = async (selectedChatId: string) => {
-    setSelectedChatId(selectedChatId);
-    try {
-      const response = await axios.get<ChatMessage[]>(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`, {
-        headers: {
-            'Authorization': `Bearer ${userAuthToken}`
-              }
-        });  
-      const firstMessage = response.data[0];
-
-      if (!response.data[0] || !Array.isArray(response.data) || response.data.some(chatdata => !isValidChatData(chatdata))) {
-        console.error('API response is not an array or contains isValidChatData');
-        return;
-      }
-
-      if (firstMessage && firstMessage.MessageContent) {
-        const parsedContent = JSON.parse(firstMessage.MessageContent) as ChatMessageDetail[];
-
-        if (!parsedContent || parsedContent.some(chatdetaildata => !isValidChatDetailData(chatdetaildata))) {
-          console.error('API response is not an array or contains isValidChatDetailData');
-          return;
-        }
-        setMessages(parsedContent);
-      } else {
-        console.error("MessageContent is undefined or not in expected format");
-      }
-    } catch (error) {
-      console.error('Fetching messages failed:', error);
-    }
+  const handleChatSelect = async (chatId: string) => {
+    if (chatId === selectedChatId) return;
+    setSelectedChatId(chatId);
   };
-  
+
   const handleMessageSelect = async (selectedChatId: any) => {
     setSelectedMessages(selectedChatId);
   };
