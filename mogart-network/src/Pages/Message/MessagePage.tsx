@@ -6,13 +6,17 @@ import { faCommentAlt, faPhone, faCheckCircle, faPaperPlane } from '@fortawesome
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-import { API_URL } from '../../MogartBase/Api/Api';
+import { API_URL, PostUnclockChatData } from '../../MogartBase/Api/Api';
 import ChatUserList from './components/ChatUserList/ChatUserList';
 import VoiceChat from '../VoiceChat/VoiceChat';
 import { isValidChatData, isValidChatDetailData } from '../../MogartBase/Api/Sec-2/Checkers/ChatDataChecker';
 import EmojiPicker ,{Emoji, Theme, EmojiStyle }from 'emoji-picker-react';
 import axios from 'axios';
 import NewChat from './components/NewChat/NewChat';
+import { AuthenticationToken, Constants } from '../../MogartBase/MogartZKBase/ZkMogart/Messager';
+import { checkMinaProvider, requestAccounts } from '../../MogartBase/WalletProc/Wallet';
+import UnlockPopup from './components/AccessChat/AccessChat';
+import { CircuitString, Field, PublicKey } from 'o1js';
 
 export interface ChatMessageDetail {
   MessageID: string;
@@ -35,10 +39,11 @@ export interface ChatMessage {
 }
 
 const MessagePage = () => {
-  const { isLoggedIn, isLoading, data,userAuthToken,siteData } = useData();
+  const { isLoggedIn, isLoading, data,userAuthToken,userAuthID,siteData } = useData();
   const [chatData, setChatData] = useState<ChatMessage[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessageDetail[]>([]);
+  const [isLockPopupVisible, setIsLock] = useState(true);
 
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [isNewChatModal, setNewChatModalOpen] = useState(false);
@@ -54,6 +59,10 @@ const MessagePage = () => {
   const [messageContent, setMessageContent] = useState('');
   const [showContextMenu, setShowContextMenu] = useState(false);
 
+
+  const [SendMessageContent, setPost] = useState('');
+  const [MessageGlobalID, setMessageChatID] = useState('');
+  const [MessageSignaturedData, setSignedData] = useState(null as any);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -89,6 +98,46 @@ const MessagePage = () => {
     }
   };
 
+  const handleUnlock = async (): Promise<void> => {
+    try {
+        const walletAddresses = await requestAccounts();
+        if (walletAddresses && walletAddresses.length > 0) {
+            const publicKey = walletAddresses[0];
+            const AUTHTOKEN = userAuthToken;
+            const timestamp = new Date().getTime();
+
+            const content = `PublicKey: ${publicKey}\nAUTHTOKEN: ${AUTHTOKEN}\nTimestamp: ${timestamp}`;
+
+            const signedData = await window.mina?.signMessage({ message: content }).catch((err: any) => {
+                throw err; 
+            });
+
+            if (signedData && 'signature' in signedData) {
+               const unlockresponse = await PostUnclockChatData({signedData},userAuthToken);
+                console.log("Signed Message Data:", unlockresponse);
+                setIsLock(false);
+            } else {
+                console.error("Failed to obtain signed data.");
+            }
+        } else {
+            console.error("Failed to retrieve wallet addresses");
+        }
+    } catch (error: any) {
+        console.error("Error in handleUnlock: ", error);
+        if (error.code === 1001) {
+            console.error("User disconnected, please connect first.");
+        } else if (error.code === 1002) {
+            console.error("User rejected the request.");
+        } else if (error.code === 23001) {
+            console.error("Origin mismatch, check origin safety.");
+        }
+    }
+};
+
+  const handleClose = (): void => {
+    setIsLock(false); 
+    navigate('/');
+  };
   const handleToggleModal = () => {
       setNewChatModalOpen(!isNewChatModal);
   };
@@ -107,6 +156,7 @@ const MessagePage = () => {
   };
 
   useEffect(() => {
+    if (isLockPopupVisible) return;
     if (isLoading) return;
     if(siteData.SiteStatus != "1") navigate('/');
     if (!isLoggedIn) {
@@ -145,10 +195,11 @@ const MessagePage = () => {
       }
     };
     fetchChatData();
-  }, [isLoggedIn, isLoading, navigate, data?.UserName]);
+  }, [isLoggedIn, isLoading, navigate, data?.UserName,userAuthToken,isLockPopupVisible]);
 
   useEffect(() => {
     const fetchMessages = async () => {
+      if (isLockPopupVisible) return;
       if (!selectedChatId) return; 
       try {
         const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}/Messages/${selectedChatId}`, {
@@ -184,31 +235,12 @@ const MessagePage = () => {
         console.error('Fetching messages failed:', error);
       }
     };
-  
-    fetchMessages();
-  }, [selectedChatId, data?.UserName, userAuthToken]);
+    if(selectedChatId){
+      fetchMessages();
+    }
+  }, [selectedChatId, data?.UserName, userAuthToken,isLockPopupVisible]);
    
-
-
-  const SendMessage = async (selectedChatId: any, messageContent: string) => {
-    if (!selectedChatId || !messageContent) {
-      console.error('Selected chat or message content is missing.');
-      return;
-    }
-
-    try {
-      const response = await axios.post(`${API_URL}/ChatData/${data?.UserName}/SendMessage`, {
-        chatId: selectedChatId,
-        content: messageContent,
-        headers: {
-            'Authorization': `Bearer ${userAuthToken}`
-        }
-    });  
-      const newMessage = response.data;
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-    } catch (error) {
-      console.error('Sending message failed:', error);
-    }
+  const SendMessage = async (selectedChatId:any, messageContent:any) => {
   };
 
   if (isLoading) return <div className="flex justify-center items-center h-screen">
@@ -251,9 +283,7 @@ const MessagePage = () => {
         setPosition({ x: newX, y: newY });
     };
     
-    
-
-        const handleMouseUp = () => {
+    const handleMouseUp = () => {
             setIsDragging(false);
         };
 
@@ -323,6 +353,7 @@ const MessagePage = () => {
   };
   return (
     <>
+      <UnlockPopup onRequestAccounts={handleUnlock} isVisible={isLockPopupVisible} onClose={handleClose} />
       <Header />
       <Navbar />
       <div className="flex flex-col pl-16 pt-16 bg-gray-100 h-screen min-h-screen">
@@ -356,7 +387,6 @@ const MessagePage = () => {
   
             <div className="w-2/3 bg-white shadow-lg rounded-lg flex flex-col">
               <div className="flex h-20 px-4 py-2 bg-white border-t border-gray-300 shadow-lg">
-
               </div>
               {messages.length > 0 && (
                 <InfiniteScroll
