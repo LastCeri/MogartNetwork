@@ -50,6 +50,8 @@ export const login = (credentials:any) => handleRequest('POST', 'LoginUser', cre
 export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData,"");
 export const logout = (userData:any) => handleRequest('POST', 'LogoutUser', userData,"");
 
+// Chat functions
+export const PostUnclockChatData = (credentials:any, AuthToken:string) => handleRequest('POST', 'ChatUnlock', credentials, AuthToken);
 
 // Action (Like, Dislike, Comment) functions
 

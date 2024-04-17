@@ -5,7 +5,7 @@ import Header from '../../ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../ThemeParts/MainPart/Navbar/Navbar';
 import BlogDetailsCategories from './components/Categories/categories';
 import BlogDetailsLatest from './components/Latest/Latest';
-import { API_URL, PostSendDislike, PostSendFollowRequest, PostSendLike } from '../../Api/Api';
+import { API_URL, PostSendDislike, PostSendFollowRequest, PostSendLike, PostSendMessageRequest } from '../../Api/Api';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SharePopup from '../../ThemeParts/Popup/SharePopup';
@@ -51,6 +51,12 @@ const BlogDetail = () => {
     setPopup({ visible: true, message: 'Follow request sent' });
     setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
   };
+  const SendMessageRequest = async (UserName: string) => {
+    const response = await PostSendMessageRequest({ UserID: data.UserName, UserName: UserName, Type: "Message"},userAuthToken);
+    setPopup({ visible: true, message: 'Message request sent' });
+    setTimeout(() => setPopup({ visible: false, message: '' }), 3000);
+  };
+
   useEffect(() => {
     if (isLoading || !blogurl) return;
     if(siteData.SiteStatus != "1") navigate('/');
@@ -119,6 +125,8 @@ const BlogDetail = () => {
                                 SendDisLike(blogPost?.Bid);
                               } else if (item.alt === 'Follow'){
                                 SendFollowRequest(blogPost?.Bauthor);
+                              } else if (item.alt === 'Message'){
+                                SendMessageRequest(blogPost?.Bauthor);
                               }
                             }}>
                         <FontAwesomeIcon icon={item.icon} className="h-4 w-8" style={item.style} /> {item.alt}
