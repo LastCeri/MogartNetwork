@@ -7,7 +7,7 @@ import { logout } from '../../../Api/Api';
 import Notification, { MessageType } from '../../Notification/Notification';
 
 export default function Navbar() {
-  const { isLoggedIn,isLoading, data,userAuthID } = useData();
+  const { isLoggedIn,isLoading, data,userAuthID,userAuthToken} = useData();
   const [notification, setNotification] = useState({ show: false, type: MessageType.Info, message: '' });
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ export default function Navbar() {
     }
   
     try {
-      const response = await logout({ userid: userAuthID, email: data?.Email, walletaddress: data?.WalletAddress });
+      const response = await logout({ userid: userAuthID, email: data?.Email, walletaddress: data?.WalletAddress },userAuthToken);
   
       if (response.success === false) {
         showNotification(MessageType.Error, response.message);
