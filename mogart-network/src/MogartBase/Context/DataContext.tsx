@@ -82,10 +82,12 @@ const DataContext = createContext<{
   isLoggedIn: boolean;
   userAuthToken: string;
   userAuthID: string;
+  notes: string[];
   isLoading: boolean;
   voiceDetectionLevel: number;
   updateData: (newData: UserData) => void;
   setChatData: (newChatData: ChatMessage[]) => void;
+  setNotes: (notes: string[]) => void;
   setSiteData: (newSiteData: SiteData) => void;
   setCsrfToken: (token: string) => void;
   setLoginStatus: (status: boolean) => void;
@@ -96,6 +98,8 @@ const DataContext = createContext<{
   data: initialUserData,
   siteData: initialSiteData,
   chatData: [],
+  notes: [],
+
   csrfToken: '',
   isLoggedIn: false,
   userAuthToken: '',
@@ -105,6 +109,7 @@ const DataContext = createContext<{
   updateData: () => {},
   setChatData: () => {},
   setSiteData: () => {},
+  setNotes: () => {},
   setCsrfToken: () => {},
   setLoginStatus: () => {},
   setUserAuthToken: () => {},
@@ -122,6 +127,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [userAuthID, setUserAuthID] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [voiceDetectionLevel, setVoiceDetectionLevel] = useState(50);
+  const [notes, setNotes] = useState<string[]>([]);
 
   useEffect(() => {
     const savedData = localStorage.getItem('data');
@@ -131,6 +137,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const savedUserAuthToken = localStorage.getItem('userAuthToken');
     const savedUserAuthID = localStorage.getItem('userAuthID');
     const savedVoiceDetectionLevel = localStorage.getItem('voiceDetectionLevel');
+    const savedNotes = localStorage.getItem('savedNotes');
 
     if (savedData) {
         setData(JSON.parse(savedData));
@@ -152,6 +159,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
     if (savedVoiceDetectionLevel) {
       setVoiceDetectionLevel(parseInt(savedVoiceDetectionLevel, 10));
+    }
+    if (savedNotes) {
+      setNotes(JSON.parse(savedNotes));
     }
 
     setIsLoading(false);
@@ -220,6 +230,15 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       console.error('setVoiceDetectionLevelHandler error:', error);
     }
   };
+
+  const SetNotesDataHandler = (newNotes: string[]) => {
+    try {
+        setNotes(newNotes);
+        localStorage.setItem('savedNotes', JSON.stringify(newNotes));
+    } catch (error) {
+      console.error('SetNotesDataHandler error:', error);
+    }
+  };
   
 
   return (
@@ -233,14 +252,16 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       userAuthID,
       isLoading,
       voiceDetectionLevel,
-      updateData:updateData,
-      setChatData:setChatData,
-      setSiteData:SetSiteData,
+      notes,
+      updateData: updateData,
+      setChatData: setChatData,
+      setSiteData: SetSiteData,
       setCsrfToken: setCsrfTokenHandler,
       setLoginStatus: setLoginStatus,
       setUserAuthToken: setUserAuthTokenHandler,
       setUserAuthID: setUserAuthIDHandler,
       setVoiceDetectionLevel: setVoiceDetectionLevelHandler,
+      setNotes: SetNotesDataHandler, 
     }}>
       {children}
     </DataContext.Provider>
