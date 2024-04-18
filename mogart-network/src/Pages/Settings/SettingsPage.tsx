@@ -314,13 +314,6 @@ const ProfileSettingsPage = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="mb-6">
-                      <label className="block text-md font-semibold text-gray-800 mb-2">Change Wallet</label>
-                      <button
-                        className="mt-2 px-5 py-2 border border-transparent text-sm font-medium rounded-md shadow text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-150">
-                        Connect to a Different Wallet
-                      </button>
-                    </div>
                   </div>
                 </TabPanel>
             </Tabs>

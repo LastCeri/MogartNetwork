@@ -48,7 +48,7 @@ const handleRequest = async (method:any, endpoint:any, data = {}, authtoken:stri
 // Authentication related functions
 export const login = (credentials:any) => handleRequest('POST', 'LoginUser', credentials,"");
 export const register = (userData:any) => handleRequest('POST', 'RegisterUser', userData,"");
-export const logout = (userData:any,AuthToken:string) => handleRequest('POST', 'LogoutUser', userData,"");
+export const logout = (userData:any,AuthToken:string) => handleRequest('POST', 'LogoutUser', userData,AuthToken);
 
 // Chat functions
 export const PostUnclockChatData = (credentials:any, AuthToken:string) => handleRequest('POST', 'ChatUnlock', credentials, AuthToken);

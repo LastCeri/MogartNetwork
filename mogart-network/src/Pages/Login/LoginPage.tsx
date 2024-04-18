@@ -45,7 +45,18 @@ function Login() {
   }, [setSiteData]);
 
   const handleRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRememberMe(event.target.checked);
+    const isChecked = event.target.checked;
+    setRememberMe(isChecked);
+    if (isChecked) {
+      const emailInput = formRef.current?.elements.namedItem('email') as HTMLInputElement;
+      if (emailInput && emailInput.value) {
+        localStorage.setItem('rememberuserEmail', emailInput.value);
+        localStorage.setItem('rememberMe', 'true');
+      }
+    } else {
+      localStorage.removeItem('rememberuserEmail');
+      localStorage.removeItem('rememberMe');
+    }
   };
 
   const handleWalletLogin = async (event: React.FormEvent) => {
