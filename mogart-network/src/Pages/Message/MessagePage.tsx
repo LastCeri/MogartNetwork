@@ -195,7 +195,7 @@ const MessagePage = () => {
       }
     };
     fetchChatData();
-  }, [isLoggedIn, isLoading, navigate, data?.UserName,userAuthToken,isLockPopupVisible]);
+  }, [isLoggedIn, isLoading, navigate, data?.UserName,userAuthToken,isLockPopupVisible,isNewChatModal]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -238,7 +238,7 @@ const MessagePage = () => {
     if(selectedChatId){
       fetchMessages();
     }
-  }, [selectedChatId, data?.UserName, userAuthToken,isLockPopupVisible]);
+  }, [selectedChatId, data?.UserName, userAuthToken,isLockPopupVisible,isNewChatModal]);
    
   const SendMessage = async (selectedChatId:any, messageContent:any) => {
   };
@@ -388,12 +388,12 @@ const MessagePage = () => {
             <div className="w-2/3 bg-white shadow-lg rounded-lg flex flex-col">
               <div className="flex h-20 px-4 py-2 bg-white border-t border-gray-300 shadow-lg">
               </div>
-              {messages.length > 0 && (
+              {selectedChatId && (
                 <InfiniteScroll
                   dataLength={currentDisplayCount}
                   next={fetchMoreData}
                   hasMore={hasMore}
-                  loader={<h4 className='text-center text-lg text-purple-600 font-semibold ml-4'>Loading...</h4>}
+                  loader={messages.length > 0 && (<h4 className='text-center text-lg text-purple-600 font-semibold ml-4'>Loading...</h4>)}
                   endMessage={
                     <p style={{textAlign: 'center', backgroundColor: 'ButtonFace', fontSize: '9px'}}>
                       <b>Yay! Your conversation ended here.</b>
@@ -439,7 +439,7 @@ const MessagePage = () => {
                   </div>
                 </InfiniteScroll>
               )}
-            {messages.length > 0 && (
+            {selectedChatId && (
               <div className="flex px-4 py-2 bg-slate-100 border-t border-gray-300">
                 {showEmojiPicker && (
                   <div className="absolute inset-y-auto bottom-64 px-4 mb-4 z-20">

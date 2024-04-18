@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { API_URL } from '../../../../MogartBase/Api/Api';
+import { API_URL, PostStartChat } from '../../../../MogartBase/Api/Api';
 import { useData } from '../../../../MogartBase/Context/DataContext';
 
 interface Friend {
@@ -21,8 +21,12 @@ const NewChat: React.FC<NewChatModalProps> = ({ isOpen, setIsOpen}) => {
     const { isLoggedIn, isLoading, data,userAuthToken } = useData();
     const [friendsList, setFriendsList] = useState<Friend[]>([]);
     const [hasFriends, setHasFriends] = useState(true);
-
-
+    
+    const handleStartChat = async (friendid: any) => {
+        const response = await PostStartChat({friendid,method:'startchat'},userAuthToken);
+        setIsOpen(false)
+      };
+    
     useEffect(() => {
         const fetchFriends = async () => {
             if (!isLoggedIn || isLoading) return;
@@ -70,7 +74,7 @@ const NewChat: React.FC<NewChatModalProps> = ({ isOpen, setIsOpen}) => {
                                             </span>
                                         </div>
                                     </div>
-                                    <button className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-md px-5 py-2 focus:outline-none shadow transition duration-300 ease-in-out">
+                                    <button onClick={()=> handleStartChat(friend.id)} className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-md px-5 py-2 focus:outline-none shadow transition duration-300 ease-in-out">
                                         <FontAwesomeIcon icon={faPaperPlane} className="text-lg" />
                                     </button>
                                 </div>
