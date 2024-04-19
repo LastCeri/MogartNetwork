@@ -3,7 +3,7 @@ import { Link,useNavigate } from 'react-router-dom';
 import { faHome, faSearch, faBell, faEnvelope, faCog, faPowerOff, faPeopleGroup, faMugHot, faMessage,faBlog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useData } from '../../../../MogartBase/Context/DataContext';
-import { logout } from '../../../Api/Api';
+import { Postlogout } from '../../../Api/Api';
 import Notification, { MessageType } from '../../Notification/Notification';
 
 export default function Navbar() {
@@ -44,18 +44,20 @@ export default function Navbar() {
     }
   
     try {
-      const response = await logout({ userid: userAuthID, email: data?.Email, walletaddress: data?.WalletAddress },userAuthToken);
+      const response = await Postlogout({ userid: userAuthID, email: data?.Email, walletaddress: data?.WalletAddress }, userAuthToken);
   
-      if (response.success === false) {
-        showNotification(MessageType.Error, response.message);
-      } else {
+      if (response.success === true) {
+        localStorage.clear();
         showNotification(MessageType.Success, "Logout successful");
         navigate("/login");
+      } else {
+        showNotification(MessageType.Error, response.message);
       }
     } catch (error) {
       showNotification(MessageType.Error, "Logout error.");
     }
   };
+
 
   return (
     <div className="fixed inset-y-0 w-16 bg-white flex flex-col items-center py-4 shadow-lg z-10">

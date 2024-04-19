@@ -97,12 +97,12 @@ const BlogDetail = () => {
     <>
       <Header />
       <Navbar />
-      <div className="flex flex-row justify-center items-start mt-20">
-        <main className="w-full max-w-4xl mx-auto p-4">
+      <div className="flex flex-col lg:flex-row justify-center items-start mt-5 lg:mt-20">
+        <main className="w-full lg:max-w-4xl mx-auto p-4">
 
             {/* Blog header */}
-            <header className="text-center py-6 mb-6 bg-white rounded-lg shadow-lg">
-                <h1 className="text-4xl font-sans mb-2 mt-2">{blogPost.Bname}</h1>
+            <header className="text-center py-3 lg:py-6 mb-4 lg:mb-6 bg-white rounded-lg shadow-lg">
+             <h1 className="text-2xl lg:text-4xl font-sans mb-2">{blogPost.Bname}</h1>
                 <div className="flex justify-center items-center text-gray-600 mt-6">
 
                     <img src={blogPost.BauthorImage} alt="Author" className="w-20 h-20 rounded-full mr-2" />
@@ -169,7 +169,7 @@ const BlogDetail = () => {
                 </span>
             </div>
         </main>
-        <aside className="px-4">
+        <aside className="w-full lg:w-1/4 p-4">
             <BlogDetailsLatest />
             <div className="mb-8"></div>
             <BlogDetailsCategories />

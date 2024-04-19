@@ -31,44 +31,42 @@ const Blog: React.FC = () => {
   const [authors, setAuthors] = useState<string[]>([]);
   const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (isLoading) return;
-    if(siteData.SiteStatus != "1") navigate('/');
-    const apiUrl = `${API_URL}/GetBlogs`;
-    axios.get<Blog[]>(apiUrl)
-      .then((response) => {
+    if (siteData && siteData.SiteStatus !== "1") {
+      navigate('/');
+      return; 
+    }
+
+    const fetchBlogs = async () => {
+      try {
+        const apiUrl = `${API_URL}/GetBlogs`;
+        const response = await axios.get(apiUrl);
         const data = response.data;
         setBlogs(data);
-        setFilteredBlogs(data);
-        const uniqueCategories = Array.from(new Set(data.map(blog => blog.Bcategory)));
-        setCategories(uniqueCategories);
-        const uniqueAuthors = Array.from(new Set(data.map(blog => blog.Bauthor)));
-        setAuthors(uniqueAuthors);
-      })
-      .catch(error => {
-        if (error.code === "ERR_NETWORK") {
-          console.error('Network error:', error);
-          navigate('/NetworkError');
-        } else if (error.response) {
-          console.error('Blogs data fetching failed:', error.response.data);
-        } else {
-          console.error('Error:', error.message);
-        }
-      });
-  }, []);
+        updateFilters(data);
+      } catch (error) {
+        handleErrors(error);
+      }
+    };
+  
+    fetchBlogs();
+  }, [isLoading, siteData, navigate]); 
+  
 
   useEffect(() => {
-    if (selectedCategory) {
-      setFilteredBlogs(blogs.filter(blog => blog.Bcategory === selectedCategory));
-    } else {
-      setFilteredBlogs(blogs);
-    }
-  }, [selectedCategory, blogs]);
+    filterBlogs();
+  }, [selectedCategory, selectedAuthor, searchTerm, blogs]);
 
-  useEffect(() => {
+  const updateFilters = (data: Blog[]) => {
+    setFilteredBlogs(data);
+    setCategories([...new Set(data.map(blog => blog.Bcategory as string))]);
+    setAuthors([...new Set(data.map(blog => blog.Bauthor as string))]);
+  };
+  
+  const filterBlogs = () => {
     let tempBlogs = blogs;
     if (selectedCategory) {
       tempBlogs = tempBlogs.filter(blog => blog.Bcategory === selectedCategory);
@@ -80,10 +78,21 @@ const Blog: React.FC = () => {
       tempBlogs = tempBlogs.filter(blog => blog.Bname.toLowerCase().includes(searchTerm.toLowerCase()));
     }
     setFilteredBlogs(tempBlogs);
-  }, [selectedCategory, selectedAuthor, searchTerm, blogs]);
+  };
 
-  const handleCategoryChange = (category: string) => {
+  const handleCategoryChange = (category:any) => {
     setSelectedCategory(category === selectedCategory ? null : category);
+  };
+
+  const handleErrors = (error:any) => {
+    if (error.code === "ERR_NETWORK") {
+      console.error('Network error:', error);
+      navigate('/NetworkError');
+    } else if (error.response) {
+      console.error('Blogs data fetching failed:', error.response.data);
+    } else {
+      console.error('Error:', error.message);
+    }
   };
 
   return (
