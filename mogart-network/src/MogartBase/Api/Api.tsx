@@ -2,6 +2,20 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
+export interface ApiGlobalResponseService {
+  EncTarget: string;
+  MgrtService:string;
+  MgrtCMS: string;
+  MgrtCOM: string;
+}
+
+export interface ApiResponseError {
+  ErrorCode: string;
+  ErrorStatus:string;
+  ErrorMessage: string;
+  Serverislive: string;
+}
+
 // Central API URL configuration
 export const API_URL = "https://mogartnetwork.deswu.co" ||  "http://localhost:3040" ;
 

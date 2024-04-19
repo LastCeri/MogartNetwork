@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL, PostAcceptGroupsRequest, PostRejectGroupsRequest } from '../../../MogartBase/Api/Api';
+import { API_URL, ApiResponseError, PostAcceptGroupsRequest, PostRejectGroupsRequest } from '../../../MogartBase/Api/Api';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidGroupRequest } from '../../../MogartBase/Api/Sec-1/Checkers/GroupInvitationChecker';
 
@@ -21,39 +21,45 @@ const GroupInvitations = () => {
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
  useEffect(() => {
-  if (isLoading) {  return; }
-  const fetchFriendRequests = async () => {
+  if (isLoading || !isLoggedIn)  return;
+
+  const fetchGroupRequests = async () => {
     try {
-      const response = await axios.get<GroupInvitation[]>(`${API_URL}/GetRequest/${data?.UserName}/Group`, {
+      setRequests([]);
+      const response = await axios.get<GroupInvitation[] | ApiResponseError>(`${API_URL}/GetRequest/${data?.UserName}/Group`, {
         headers: {
             'Authorization': `Bearer ${userAuthToken}`
         }
-    });  
+      });  
 
-      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidGroupRequest(invite))) {
+    if (Array.isArray(response.data)) {
+      response.data.forEach(item => {
+        if ('IsNull' in item && item.IsNull) {
+          setRequests([]);
+          return;
+        } else if ('ErrorMessage' in item && 'ErrorCode' in item) {
+          console.error(`Server error: ${item.ErrorMessage} (Code: ${item.ErrorCode})`);
+          setRequests([]);
+          return;
+        } else if (isValidGroupRequest(item)) {
+          setRequests(prev => {
+            const exists = prev.some(request => request.ID === item.ID);
+            return exists ? prev : [...prev, item];
+          });
+        }
+      });
+      } else {
         console.error('API response is not an array or contains invalid data');
-        return;
+        setRequests([]);
       }
-      
-      setRequests(response.data);
     } catch (error) {
       console.error('Failed to fetch friend requests:', error);
     }
   };
 
-  if (isLoggedIn) {
-    fetchFriendRequests();
-  }
+  if (!isLoading || isLoggedIn) fetchGroupRequests();
 }, [isLoading,isLoggedIn]);
 
-  const fetchGroupRequests = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/group-requests`);
-      setRequests(response.data);
-    } catch (error) {
-      console.error('Failed to fetch group requests:', error);
-    }
-  };
 
   const handleAccept = async (invitationId:any) => {
     if (!data?.UserName) return;

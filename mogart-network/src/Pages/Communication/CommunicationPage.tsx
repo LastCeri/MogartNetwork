@@ -10,6 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import FollowRequests from './components/FollowRequests';
 
 
+export interface RequestsNull{
+  RequestsAuthor: string;
+  Requests:string;
+  IsNull: boolean;
+}
+
 const CommunicationPage = () => {
   const [activeModule, setActiveModule] = useState('friendRequests');
   const { isLoggedIn, isLoading,siteData} = useData();

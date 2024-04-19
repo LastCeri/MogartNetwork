@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useData } from '../../../MogartBase/Context/DataContext';
-import { API_URL , PostAcceptMessageRequest, PostRejectMessageRequest } from '../../../MogartBase/Api/Api';
+import { API_URL , ApiResponseError, PostAcceptMessageRequest, PostRejectMessageRequest } from '../../../MogartBase/Api/Api';
 import { isValidMessageRequest } from '../../../MogartBase/Api/Sec-1/Checkers/MessageRequests';
 
 
@@ -23,29 +23,43 @@ const MessageRequests = () => {
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
  useEffect(() => {
-  if (isLoading) {  return; }
-  const fetchFriendRequests = async () => {
+  if (isLoading || !isLoggedIn)  return;
+
+  const fetchMessageRequests = async () => {
     try {
-      const response = await axios.get<MessageRequests[]>(`${API_URL}/GetRequest/${data?.UserName}/Message`, {
+      setRequests([]);
+      const response = await axios.get<MessageRequests[] | ApiResponseError>(`${API_URL}/GetRequest/${data?.UserName}/Message`, {
         headers: {
             'Authorization': `Bearer ${userAuthToken}`
         }
-    });  
+      });  
 
-      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidMessageRequest(invite))) {
+    if (Array.isArray(response.data)) {
+      response.data.forEach(item => {
+        if ('IsNull' in item && item.IsNull) {
+          setRequests([]);
+          return;
+        } else if ('ErrorMessage' in item && 'ErrorCode' in item) {
+          console.error(`Server error: ${item.ErrorMessage} (Code: ${item.ErrorCode})`);
+          setRequests([]);
+          return;
+        } else if (isValidMessageRequest(item)) {
+          setRequests(prev => {
+            const exists = prev.some(request => request.ID === item.ID);
+            return exists ? prev : [...prev, item];
+          });
+        }
+      });
+      } else {
         console.error('API response is not an array or contains invalid data');
-        return;
+        setRequests([]);
       }
-      
-      setRequests(response.data);
     } catch (error) {
       console.error('Failed to fetch friend requests:', error);
     }
   };
 
-  if (isLoggedIn) {
-    fetchFriendRequests();
-  }
+  if (!isLoading || isLoggedIn) fetchMessageRequests();
 }, [isLoading,isLoggedIn]);
 
   const handleAccept = async (requestId:any) => {
