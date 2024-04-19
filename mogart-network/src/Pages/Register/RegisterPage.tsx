@@ -1,6 +1,6 @@
 import React, { useEffect, useRef,useState } from 'react';
 import { SiteData, useData } from '../../MogartBase/Context/DataContext';
-import { API_URL, register } from '../../MogartBase/Api/Api';
+import { API_URL, PostRegister } from '../../MogartBase/Api/Api';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { checkMinaProvider, requestAccounts } from '../../MogartBase/WalletProc/Wallet';
@@ -43,19 +43,21 @@ function Register() {
       if (!providerResponse) {
         throw new Error('Mina provider not found. Please ensure the wallet extension is installed.');
       }
-      console.log("Provider found, proceeding with WalletRegister...");
       const walletAddress = await requestAccounts();
   
       if (!walletAddress) {
         throw new Error('Failed to retrieve wallet address. Please check your wallet extension.');
       }
   
-      const registrationResponse = await register({walletAddress});
+      const registrationResponse = await PostRegister({walletAddress});
       const { message, status} = registrationResponse;
         
+
       if (!status) {
         throw new Error(registrationResponse.message || 'Registration failed with an unspecified error.');
       }
+
+
       if (status === "Success") {
         setRegistrationSuccess(true);
       }else if (status === "Conflict"){
@@ -79,7 +81,7 @@ function Register() {
     event.preventDefault();
     setErrorMessage('');
     setRegistrationSuccess(false);
-
+  
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       if (!formData.has('email') || !formData.has('username') || !formData.has('password') || !formData.has('passwordConfirm')) {
@@ -91,16 +93,31 @@ function Register() {
       const password = formData.get('password') as string;
       const passwordConfirm = formData.get('passwordConfirm') as string;
 
+      
+      if (!/^[a-zA-Z0-9_.-]*$/.test(username)) {
+        setErrorMessage("Username can only contain letters, numbers, dots, hyphens, and underscores.");
+        return;
+      }
+
+      if (username.length < 5) {
+        setErrorMessage("Username must be at least 5 characters long");
+        return;
+      }
+
+      if (password.length < 8) {
+        setErrorMessage("Password must be at least 8 characters long");
+        return;
+      }
+  
       if (password !== passwordConfirm) {
         setErrorMessage("Passwords do not match");
         return;
       }
-      
+  
       try {
-        const response = await register({ email, username, password, walletAddress: "" });
+        const response = await PostRegister({ email, username, password, walletAddress: "" });
         if (response.status === "Success") {
           setRegistrationSuccess(true);
-
           setTimeout(() => navigate('/login'), 3000);
         } else {
           setErrorMessage(response.message || 'Registration failed with an unspecified error.');
@@ -108,21 +125,20 @@ function Register() {
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           if (error.code === "ERR_NETWORK") {
-            console.error('Network error:', error);
+            setErrorMessage('Network error:'+ error);
             navigate('/NetworkError');
           } else if (error.response) {
-            console.error('Register failed:', error.response.data);
+            setErrorMessage('Register failed:'+ error.response.data);
           } else {
-            console.error('Error:', error.message);
+            setErrorMessage('Error:'+error.message);
           }
         } else {
-          console.error('An unexpected error occurred', error);
+          setErrorMessage('An unexpected error occurred'+ error);
         }
       }
     }
   };
   
-
   return (
     <div className="flex h-screen bg-gray-200">
 

@@ -1,6 +1,6 @@
 import React, { useState,useEffect, useRef } from 'react';
 import { SiteData, useData } from '../../MogartBase/Context/DataContext';
-import { API_URL, login } from '../../MogartBase/Api/Api';
+import { API_URL, Postlogin } from '../../MogartBase/Api/Api';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { checkMinaProvider, requestAccounts } from '../../MogartBase/WalletProc/Wallet';
@@ -69,7 +69,7 @@ function Login() {
         if(!walletAddress)
         {  throw new Error('Failed to retrieve wallet address. Please check your wallet extension.');}     
         
-        const response = await login({walletAddress});
+        const response = await Postlogin({walletAddress});
         const { message, status, token, userId, userdata } = response;
         
         if (status === "Ok") {
@@ -133,7 +133,7 @@ function Login() {
         return;
       }
       try {
-        const response = await login({email, password});
+        const response = await Postlogin({email, password});
         const { message, status, token, userId, userdata } = response;
 
         if (status === "Ok") {
