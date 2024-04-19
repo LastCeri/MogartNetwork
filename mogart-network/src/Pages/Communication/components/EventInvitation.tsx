@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL, PostAcceptEventRequest, PostRejectEventRequest } from '../../../MogartBase/Api/Api';
+import { API_URL, ApiResponseError, PostAcceptEventRequest, PostRejectEventRequest } from '../../../MogartBase/Api/Api';
 import axios from 'axios';
 import { useData } from '../../../MogartBase/Context/DataContext';
 import { isValidEventInvitation } from '../../../MogartBase/Api/Sec-1/Checkers/EventInvitationChecker';
+import { RequestsNull } from '../CommunicationPage';
 
 
 export interface EventInvitation {
@@ -23,30 +24,43 @@ const EventInvitations = () => {
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
  useEffect(() => {
-  if (isLoading) {  return; }
+  if (isLoading || !isLoggedIn)  return;
+
   const fetchEventRequests = async () => {
     try {
-      const response = await axios.get<EventInvitation[]>(`${API_URL}/GetRequest/${data.UserName}/Event`, {
+      setInvitations([]);
+      const response = await axios.get<EventInvitation[] | ApiResponseError | RequestsNull>(`${API_URL}/GetRequest/${data.UserName}/Event`, {
         headers: {
             'Authorization': `Bearer ${userAuthToken}`
         }
-    });  
- 
-    
-      if (!response.data || !Array.isArray(response.data) || response.data.some(invite => !isValidEventInvitation(invite))) {
+      });  
+
+    if (Array.isArray(response.data)) {
+      response.data.forEach(item => {
+        if ('IsNull' in item && item.IsNull) {
+          setInvitations([]);
+          return;
+        } else if ('ErrorMessage' in item && 'ErrorCode' in item) {
+          console.error(`Server error: ${item.ErrorMessage} (Code: ${item.ErrorCode})`);
+          setInvitations([]);
+          return;
+        } else if (isValidEventInvitation(item)) {
+          setInvitations(prev => {
+            const exists = prev.some(invation => invation.ID === item.ID);
+            return exists ? prev : [...prev, item];
+          });
+        }
+      });
+      } else {
         console.error('API response is not an array or contains invalid data');
-        return;
+        setInvitations([]);
       }
-      
-      setInvitations(response.data);
     } catch (error) {
       console.error('Failed to fetch friend requests:', error);
     }
   };
 
-  if (isLoggedIn) {
-    fetchEventRequests();
-  }
+  if (!isLoading || isLoggedIn) fetchEventRequests();
 }, [isLoading,isLoggedIn]);
 
   const handleAccept =  async (invitationId:any) => {
