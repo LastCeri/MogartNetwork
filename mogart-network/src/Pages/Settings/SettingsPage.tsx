@@ -5,6 +5,8 @@ import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import { PostEmailVerify } from '../../MogartBase/Api/Api';
+import { EmailVerificationModal } from './components/EmailVerification/EmailVerificationModal';
 
 const languageOptions = [
   { value: 'en', label: 'English' },
@@ -18,7 +20,7 @@ const themeOptions = [
 
 const ProfileSettingsPage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, data, siteData, isLoading } = useData();
+  const { isLoggedIn, data, siteData, isLoading,userAuthToken } = useData();
   const [profileImage, setProfileImage] = useState('');
   const [visibleUsername, setVisibleUsername] = useState('');
   const [WalletAddress, setWalletAddress] = useState('');
@@ -32,6 +34,10 @@ const ProfileSettingsPage = () => {
   const [appNotifications, setAppNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [twoFactorAuthentication, setTwoFactorAuthentication] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [verificationCodeSent, setVerificationCodeSent] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
 
   useEffect(() => {
@@ -52,10 +58,83 @@ const ProfileSettingsPage = () => {
     }
   }, [isLoggedIn, navigate, isLoading, data]);
 
+  useEffect(() => {
+    const now = new Date().getTime();
+    const savedTimestamp = localStorage.getItem('countdownTimestamp');
+    const savedCountdown = localStorage.getItem('countdownValue');
+    if (savedTimestamp && savedCountdown) {
+      const timePassed = now - parseInt(savedTimestamp);
+      const remainingTime = Math.max(120 - Math.floor(timePassed / 1000), 0);
+      if (remainingTime > 0) {
+        setCountdown(remainingTime);
+        setIsButtonDisabled(true);
+      } else {
+        localStorage.removeItem('countdownTimestamp');
+        localStorage.removeItem('countdownValue');
+      }
+    }
+  }, []);
+
+  
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined; 
+    if (isButtonDisabled && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((currentCountdown) => {
+          if (currentCountdown > 1) {
+            return currentCountdown - 1;
+          } else {
+            clearInterval(interval);
+            setIsButtonDisabled(false);
+            localStorage.removeItem('countdownTimestamp');
+            localStorage.removeItem('countdownValue');
+            return 0;
+          }
+        });
+      }, 1000);
+    }
+
+    return () => interval && clearInterval(interval);
+  }, [isButtonDisabled, countdown]);
+
   const handleFormSubmit = (e:any) => {
     e.preventDefault();
 
   };
+  
+  const handleCloseModal = () => {
+    setEmailModalOpen(false);
+  };
+
+  const handleVerifyEmailCode = (code:any) => {
+    console.log('Verification code submitted:', code);
+    // Call an API to verify the code
+    handleCloseModal();
+  };
+
+  const handleSendVerifyEmailRequest = () => {
+    if (isButtonDisabled) return;
+
+    setIsButtonDisabled(true);
+    setCountdown(120); 
+    localStorage.setItem('countdownTimestamp', new Date().getTime().toString());
+    localStorage.setItem('countdownValue', '120');
+
+    PostEmailVerify({ Verify: "email" }, userAuthToken)
+      .then(() => {
+        setVerificationCodeSent(true);
+        setEmailModalOpen(true);
+        console.log('Verification email sent.');
+      })
+      .catch(err => {
+        console.error('Error sending verification email:', err);
+        setIsButtonDisabled(false);
+        setCountdown(0);
+        localStorage.removeItem('countdownTimestamp');
+        localStorage.removeItem('countdownValue');
+      });
+  };
+
 
   const handleCopyWalletAddress = () => {
  
@@ -89,7 +168,7 @@ const ProfileSettingsPage = () => {
     e.preventDefault();
     console.log('Notification Settings Saved:', { appNotifications, emailNotifications });
   };
-  
+
   const handleSecuritySettingsSubmit = (e:any) => {
     e.preventDefault();
     console.log('Security Settings Saved:', { twoFactorAuthentication });
@@ -268,18 +347,25 @@ const ProfileSettingsPage = () => {
                     <div className="mb-6">
                       <label className="block text-md font-semibold text-gray-800 mb-2">Email Verification</label>
                       <div className="mt-2">
-                        {emailVerified ? (
-                          <span className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-full text-green-800 bg-green-100">
-                            Your email is verified
-                            <svg className="ml-2 -mr-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                          </span>
-                        ) : (
-                          <button
-                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
-                          >
-                            Verify Email
-                          </button>
-                        )}
+                      <div className="mt-2">
+                            {emailVerified ? (
+                              <span className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-full text-green-800 bg-green-100">
+                                Your email is verified
+                                <svg className="ml-2 -mr-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
+                              </span>
+                            ) : (
+                              <div>
+                               <button
+                                  onClick={handleSendVerifyEmailRequest}
+                                  disabled={isButtonDisabled}
+                                  className={`px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                  {isButtonDisabled ? `Please wait... ${countdown}s` : 'Verify Email'}
+                                </button>
+                                {verificationCodeSent && <span className="text-green-600 ml-3">Verify Code Sent</span>}
+                              </div>
+                            )}
+                          </div>
                       </div>
                     </div>
                     <form onSubmit={handleSecuritySettingsSubmit}>
@@ -317,6 +403,7 @@ const ProfileSettingsPage = () => {
                   </div>
                 </TabPanel>
             </Tabs>
+            <EmailVerificationModal isOpen={emailModalOpen} onClose={handleCloseModal} onSubmit={handleVerifyEmailCode} />
           </div>
         </main>
       </div>
