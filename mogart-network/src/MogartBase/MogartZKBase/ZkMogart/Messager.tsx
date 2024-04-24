@@ -3,11 +3,11 @@ import {
   PublicKey,
   Signature,
   Poseidon,
-  ZkProgram,
   CircuitString,
   MerkleMapWitness,
   Struct,
 } from 'o1js';
+import { ZkProgram } from 'o1js/dist/node/lib/proof_system';
 
 export class Constants {
   static fieldToFlagMessagesAccessCommand = Field(11011011);
@@ -76,7 +76,7 @@ export class AuthenticationToken implements IHashable {
   }
 }
 
-class TransitionState extends Struct({
+export class TransitionState extends Struct({
   initialAllMessagesCounter: Field,
   latestAllMessagesCounter: Field,
   initialUsersMessagesCounters: Field,
