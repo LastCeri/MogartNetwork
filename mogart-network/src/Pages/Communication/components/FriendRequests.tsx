@@ -18,6 +18,8 @@ export interface FriendRequest {
 
 const FriendRequests = () => {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [acceptingId, setAcceptingId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
   const { isLoggedIn, isLoading, data, userAuthToken } = useData();
 
   useEffect(() => {
@@ -64,20 +66,36 @@ const FriendRequests = () => {
   const handleAccept = async (requestId: string) => {
     if (!data?.UserName) return;
     try {
-      const acceptresponse = await PostAcceptFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x17" },userAuthToken);
+      const responseAccept = await PostAcceptFriendRequest({ UserName: data.UserName, RequestId: requestId, type: "Friend", codex: "0x17" }, userAuthToken);
+      if (responseAccept[0].status && responseAccept[0].send) {
+        setAcceptingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setAcceptingId(null);
+        }, 1000); 
+      }
     } catch (error) {
-      console.error('Failed to accept AcceptFriendRequest:', error);
+      console.error('Failed to accept friend request:', error);
     }
   };
-
+  
   const handleReject = async (requestId: string) => {
     if (!data?.UserName) return;
     try {
-      const rejectresponse = await PostRejectFriendRequest({ UserName: data.UserName, RequestId:requestId, type:"Friend", codex:"0x19" },userAuthToken);
+
+      const responseReject = await PostRejectFriendRequest({ UserName: data.UserName, RequestId: requestId, type: "Friend", codex: "0x19" }, userAuthToken);
+      if (responseReject[0].status && responseReject[0].send) {
+        setRejectingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setRejectingId(null);
+        }, 1000);
+      }
     } catch (error) {
-      console.error('Failed to reject RejectFriendRequest:', error);
+      console.error('Failed to reject friend request:', error);
     }
   };
+
 
   return (
     <div className="p-4 bg-gray-50 items-center min-h-screen">
@@ -85,7 +103,7 @@ const FriendRequests = () => {
       {requests.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
           {requests.map((request) => (
-            <div key={request.ID} className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-sm hover:shadow-xl transition-shadow duration-300 ease-in-out">
+            <div key={request.ID} className={`bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-sm hover:shadow-xl transition duration-300 ease-in-out ${acceptingId === request.ID ? 'fade-out-bounce' : rejectingId === request.ID ? 'fade-out-reject' : ''}`}>
               <img src={request.ReqAuthorImage} alt="Profile" className="w-full h-56 object-cover" />
               <div className="p-5">
                 <h3 className="text-xl font-bold text-gray-900">{request.ReqAuthor}</h3>
@@ -109,6 +127,7 @@ const FriendRequests = () => {
       )}
     </div>
   );
+  
 };
 
 export default FriendRequests;

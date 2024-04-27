@@ -21,6 +21,8 @@ export interface MessageRequests {
 const MessageRequests = () => {
  const [messages, setRequests] = useState<MessageRequests[]>([]);
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+ const [acceptingId, setAcceptingId] = useState<number | null>(null);
+ const [rejectingId, setRejectingId] = useState<number | null>(null);
 
  useEffect(() => {
   if (isLoading || !isLoggedIn)  return;
@@ -66,6 +68,13 @@ const MessageRequests = () => {
     if (!data?.UserName) return;
     try {
       const acceptresponse = await PostAcceptMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x17" },userAuthToken);
+      if (acceptresponse[0].status && acceptresponse[0].send) {
+        setAcceptingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setAcceptingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to accept AcceptMessageRequest:', error);
     }
@@ -75,6 +84,13 @@ const MessageRequests = () => {
     if (!data?.UserName) return;
     try {
       const rejectresponse = await PostRejectMessageRequest({ UserName: data.UserName, RequestId:requestId, type:"Message", codex:"0x19" },userAuthToken);
+      if (rejectresponse[0].status && rejectresponse[0].send) {
+        setRejectingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setRejectingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to reject RejectMessageRequest:', error);
     }
@@ -85,7 +101,7 @@ const MessageRequests = () => {
       <h2 className="text-2xl font-semibold text-center">Message Requests</h2>
       {messages.length > 0 ? (
         messages.map((message) => (
-          <div key={message.ID} className="flex flex-col md:flex-row items-center md:items-start bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out p-4">
+          <div key={message.ID} className={`flex flex-col md:flex-row items-center md:items-start bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 ease-in-out p-4 ${acceptingId === message.ID ? 'fade-out-bounce' : rejectingId === message.ID ? 'fade-out-reject' : ''}`}>
             <img src={message.ReqAuthorImage} alt="Profile" className="w-20 h-20 rounded-full object-cover mr-4 mb-4 md:mb-0"/>
             <div className="flex-1">
               <h3 className="text-xl font-bold">{message.ReqAuthor}</h3>

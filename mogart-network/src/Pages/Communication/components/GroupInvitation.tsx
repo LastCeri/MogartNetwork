@@ -19,6 +19,8 @@ export interface GroupInvitation {
 const GroupInvitations = () => {
  const [requests, setRequests] = useState<GroupInvitation[]>([]);
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+ const [acceptingId, setAcceptingId] = useState<string | null>(null);
+ const [rejectingId, setRejectingId] = useState<string | null>(null);
 
  useEffect(() => {
   if (isLoading || !isLoggedIn)  return;
@@ -65,6 +67,13 @@ const GroupInvitations = () => {
     if (!data?.UserName) return;
     try {
       const acceptresponse = await PostAcceptGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x17" },userAuthToken);
+      if (acceptresponse[0].status && acceptresponse[0].send) {
+        setAcceptingId(invitationId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== invitationId));
+          setAcceptingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to accept AcceptGroupsRequest:', error);
     }
@@ -74,6 +83,13 @@ const GroupInvitations = () => {
     if (!data?.UserName) return;
     try {
       const rejectresponse = await PostRejectGroupsRequest({ UserName: data.UserName, RequestId:invitationId, type:"Group", codex:"0x19" },userAuthToken);
+      if (rejectresponse[0].status && rejectresponse[0].send) {
+        setRejectingId(invitationId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== invitationId));
+          setRejectingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to reject RejectGroupsRequest:', error);
     }
@@ -86,7 +102,7 @@ const GroupInvitations = () => {
         <div className="w-full max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {requests.map((request) => (
-              <div key={request.ID} className="bg-white rounded-lg shadow hover:shadow-xl transition-shadow duration-300 ease-in-out p-4 flex flex-col">
+              <div key={request.ID} className={`bg-white rounded-lg shadow hover:shadow-xl transition duration-300 ease-in-out p-4 flex flex-col ${acceptingId === request.ID ? 'fade-out-bounce' : rejectingId === request.ID ? 'fade-out-reject' : ''}`}>
                 <img src={request.ReqAuthorImage} alt="Profile" className="w-24 h-24 rounded-full object-cover mx-auto mb-4"/>
                 <div className="text-center">
                   <h3 className="text-md font-bold text-gray-900">{request.ReqAuthor}</h3>

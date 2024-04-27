@@ -19,6 +19,8 @@ export interface FollowRequest {
 const FollowRequests = () => {
  const [requests, setRequests] = useState<FollowRequest[]>([]);
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+ const [acceptingId, setAcceptingId] = useState<number | null>(null);
+ const [rejectingId, setRejectingId] = useState<number | null>(null);
 
  useEffect(() => {
   if (isLoading || !isLoggedIn)  return;
@@ -64,6 +66,13 @@ const FollowRequests = () => {
     if (!data?.UserName) return;
     try {
       const acceptresponse = await PostAcceptFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x17" },userAuthToken);
+      if (acceptresponse[0].status && acceptresponse[0].send) {
+        setAcceptingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setAcceptingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to accept AcceptFollowRequest:', error);
     }
@@ -73,6 +82,13 @@ const FollowRequests = () => {
     if (!data?.UserName) return;
     try {
       const rejectresponse = await PostRejectFollowRequest({ UserName: data.UserName, RequestId:requestId, type:"Follow", codex:"0x19" },userAuthToken);
+      if (rejectresponse[0].status && rejectresponse[0].send) {
+        setRejectingId(requestId);
+        setTimeout(() => {
+          setRequests(prev => prev.filter(request => request.ID !== requestId));
+          setRejectingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to reject RejectFollowRequest:', error);
     }
@@ -84,7 +100,7 @@ const FollowRequests = () => {
       {requests.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
           {requests.map((request) => (
-            <div key={request.ID} className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-sm hover:shadow-xl transition-shadow duration-300 ease-in-out">
+              <div key={request.ID} className={`bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-sm hover:shadow-xl transition duration-300 ease-in-out ${acceptingId === request.ID ? 'fade-out-bounce' : rejectingId === request.ID ? 'fade-out-reject' : ''}`}>
               <img src={request.ReqAuthorImage} alt="Profile" className="w-full h-56 object-cover" />
               <div className="p-5">
                 <h3 className="text-xl font-bold text-gray-900">{request.ReqAuthor}</h3>
@@ -92,7 +108,7 @@ const FollowRequests = () => {
                 <h4 className="text-md text-gray-700 font-semibold">{request.ReqTitle}</h4>
                 <p className="text-gray-600 mb-4">{request.ReqContent}</p>
                 <div className="flex justify-center gap-4">
-                  <button onClick={() => handleAccept(request.ID)} className="px-5 py-2 bg-gradient-to-r from-green-400 to-green-500 text-white rounded hover:from-green-500 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-lg transition duration-300 ease-in-out">
+                <button onClick={() => handleAccept(request.ID)} className="px-5 py-2 bg-gradient-to-r from-green-400 to-green-500 text-white rounded hover:from-green-500 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 shadow-lg transition duration-300 ease-in-out">
                     Accept
                   </button>
                   <button onClick={() => handleReject(request.ID)} className="px-5 py-2 bg-gradient-to-r from-red-400 to-red-500 text-white rounded hover:from-red-500 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 shadow-lg transition duration-300 ease-in-out">
