@@ -71,6 +71,7 @@ export const PostEmailVerify = (credentials:any,AuthToken:string) => handleReque
 // Chat functions
 export const PostUnclockChatData = (credentials:any, AuthToken:string) => handleRequest('POST', 'ChatUnlock', credentials, AuthToken);
 export const PostStartChat = (credentials:any, AuthToken:string) => handleRequest('POST', 'Chats', credentials, AuthToken);
+export const PostSendMessage = (credentials:any, AuthToken:string) => handleRequest('POST', 'SendMessage', credentials, AuthToken);
 
 // Action (Like, Dislike, Comment) functions
 export const PostSendLike = (credentials:any, AuthToken:string) => handleRequest('POST', 'Like', credentials, AuthToken);

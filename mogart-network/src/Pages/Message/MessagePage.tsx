@@ -6,7 +6,7 @@ import { faCommentAlt, faPhone, faCheckCircle, faPaperPlane } from '@fortawesome
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../MogartBase/ThemeParts/MainPart/Header/HeaderPart';
 import Navbar from '../../MogartBase/ThemeParts/MainPart/Navbar/Navbar';
-import { API_URL, PostUnclockChatData } from '../../MogartBase/Api/Api';
+import { API_URL, PostSendMessage, PostUnclockChatData } from '../../MogartBase/Api/Api';
 import ChatUserList from './components/ChatUserList/ChatUserList';
 import VoiceChat from '../VoiceChat/VoiceChat';
 import { isValidChatData, isValidChatDetailData } from '../../MogartBase/Api/Sec-2/Checkers/ChatDataChecker';
@@ -22,9 +22,9 @@ export interface ChatMessageDetail {
   MessageID: string;
   Sender: string;
   messageText: string;
-  messageVideoUrlList: string;
-  messageUrlList: string;
-  messageImageList: string;
+  messageVideoUrlList: string[];
+  messageUrlList: string[];
+  messageImageList: string[];
   messageTimeStamp: string;
 }
 
@@ -172,12 +172,11 @@ const MessagePage = () => {
           }
       });
       
-        
       if (!response.data || !Array.isArray(response.data) || response.data.some(chatdata => !isValidChatData(chatdata))) {
         console.error('API response is not an array or contains invalid data');
         return;
       }
-
+      
         setChatData(response.data);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -241,8 +240,86 @@ const MessagePage = () => {
   }, [selectedChatId, data?.UserName, userAuthToken,isLockPopupVisible,isNewChatModal]);
    
   const SendMessage = async (selectedChatId:any, messageContent:any) => {
-  };
+    const urlRegex = /https?:\/\/[^\s]+/gi;
+    let urls = messageContent.match(urlRegex) || [];
+  
+    let videoUrls: string[] = [];
+    let imageUrls: string[] = [];
+    let otherUrls: string[] = [];
+  
+    urls.forEach((url: string) => {
+      if (url.match(/\.(jpeg|jpg|gif|png)$/)) {
+        imageUrls.push(url);
+        console.log("Found Image URL: ", url);
+      } else if (url.match(/\.(mp4|avi|webm|mov)$/)) {
+        videoUrls.push(url);
+        console.log("Found Video URL: ", url);
+      } else {
+        otherUrls.push(url);
+        console.log("Found URL: ", url);
+      }
+    });
+  
+    let textContent = messageContent.replace(urlRegex, '').trim();
+  
+    const response = await PostSendMessage({
+      selectedChatId,
+      messageContent: {
+        TextContent: textContent,
+        Urls: otherUrls,
+        ImageUrls: imageUrls,
+        VideoUrls: videoUrls
+      }
+    }, userAuthToken);
+    console.log("MessageSend Response", response);
 
+    // SendMessage'dan sonra mesajları yeniden yükle
+    handleFetchMessages(selectedChatId);
+};
+
+useEffect(() => {
+  if (!selectedChatId) return;
+  handleFetchMessages(selectedChatId);
+}, [selectedChatId]);
+
+const handleFetchMessages = async (chatId: any) => {
+  try {
+    const response = await axios.get(`${API_URL}/ChatData/${data?.UserName}/Messages/${chatId}`, {
+      headers: {
+        'Authorization': `Bearer ${userAuthToken}`
+      }
+    });
+    if (!response.data || !Array.isArray(response.data)) {
+      console.error('API response is invalid or not an array');
+      return;
+    }
+    
+    const validMessages = response.data.filter(chatDetailData => !isValidChatDetailData(chatDetailData));
+    if (!validMessages.length) {
+      console.error('No valid messages received');
+      return;
+    }
+
+    const chatData = response.data[0].Messages;
+    
+    try {
+      const parsedContent = JSON.parse(chatData) as ChatMessageDetail[];
+      if (!Array.isArray(parsedContent) || parsedContent.some(chatDetailData => !isValidChatDetailData(chatDetailData))) {
+        console.error('API response is not an array or contains invalid chat detail data');
+        return;
+      }
+      setMessages(parsedContent);
+    } catch (error) {
+      console.error('Parsing chat data failed:', error);
+    }
+    
+  } catch (error) {
+    console.error('Fetching messages failed:', error);
+  }
+};
+
+
+ 
   if (isLoading) return <div className="flex justify-center items-center h-screen">
     <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
     <p className="text-lg text-purple-600 font-semibold ml-4">Loading...</p>

@@ -22,6 +22,9 @@ export interface EventInvitation {
 const EventInvitations = () => {
  const [invitations, setInvitations] = useState<EventInvitation[]>([]);
  const { isLoggedIn, isLoading, data, userAuthToken } = useData();
+ const [acceptingId, setAcceptingId] = useState<string | null>(null);
+ const [rejectingId, setRejectingId] = useState<string | null>(null);
+
 
  useEffect(() => {
   if (isLoading || !isLoggedIn)  return;
@@ -67,6 +70,13 @@ const EventInvitations = () => {
     if (!data?.UserName) return;
     try {
       const acceptresponse = await PostAcceptEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x17" },userAuthToken);
+       if (acceptresponse[0].status && acceptresponse[0].send) {
+        setAcceptingId(invitationId);
+        setTimeout(() => {
+          setInvitations(prev => prev.filter(request => request.ID !== invitationId));
+          setAcceptingId(null);
+        }, 1000); 
+      }
     } catch (error) {
       console.error('Failed to accept AcceptEventRequest:', error);
     }
@@ -76,6 +86,13 @@ const EventInvitations = () => {
     if (!data?.UserName) return;
     try {
       const rejectresponse = await PostRejectEventRequest({ UserName: data.UserName, RequestId:invitationId, type:"Event", codex:"0x19" },userAuthToken);
+      if (rejectresponse[0].status && rejectresponse[0].send) {
+        setRejectingId(invitationId);
+        setTimeout(() => {
+          setInvitations(prev => prev.filter(request => request.ID !== invitationId));
+          setRejectingId(null);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Failed to reject RejectEventRequest:', error);
     }
