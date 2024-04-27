@@ -25,7 +25,7 @@ const CreateInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, o
     const [entryFee, setEntryFee] = useState('');
     const [sendpopup, setSendPopup] = useState({ visible: false, message: '' });
     const [responsepopup, setResponsePopup] = useState({ visible: false, message: '' });
-    const { data, userAuthID} = useData();
+    const { data, userAuthID,userAuthToken} = useData();
     const [invitationsCode, setInvitationsCode] = useState('');
 
 
@@ -39,7 +39,7 @@ const CreateInvitationModal: React.FC<CreateInvitationModalProps> = ({ isOpen, o
 
 {/* The merkle&witness operation will come here along with the Contract along with o1js. */}
   const CreateEvent = async (subject:string, validUntil:string, invitationType:string, accessType:string, entryFee:string) => {
-    const response = await CreateEventInvation({ UserID:userAuthID, Subject:subject, ValidUntil:validUntil, InvitationType:invitationType, AccessType:accessType, EntryFee:entryFee, WalletAdress: data.WalletAddress, TransactionHash:"" });
+    const response = await CreateEventInvation({ UserID:userAuthID, Subject:subject, ValidUntil:validUntil, InvitationType:invitationType, AccessType:accessType, EntryFee:entryFee, WalletAdress: data.WalletAddress, TransactionHash:"" },userAuthToken);
     const responseData = JSON.parse(response);
     if (responseData.Status === "Success") {
       setInvitationsCode(responseData.InvitationsCode); 

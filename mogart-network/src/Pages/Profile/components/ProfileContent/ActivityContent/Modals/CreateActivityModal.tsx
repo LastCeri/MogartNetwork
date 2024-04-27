@@ -21,7 +21,7 @@ interface InvitationFormValues {
 
 
 const CreateActivityModal: React.FC<ProfileActivityContentProps> = ({ userData, isOpen, onClose, onSubmit }) => {
-  const { isLoggedIn,data, isLoading,userAuthID} = useData();
+  const { isLoggedIn,data, isLoading,userAuthID,userAuthToken} = useData();
     const [subject, setSubject] = useState('');
     const [ActivityDate, setActivityDate] = useState('');
     const [ActivityType, setActivityType] = useState('');
@@ -42,7 +42,7 @@ const CreateActivityModal: React.FC<ProfileActivityContentProps> = ({ userData, 
     };
 
     const handleActivitys = async (subject:string, activityDate:string, activityType:string, visibility:string, entryFee:string) => {
-      const response = await CreateActivity({ UserID:userAuthID, Subject:subject, ActivityDate:activityDate, ActivityType:activityType, Visibility:visibility, EntryFee:entryFee});
+      const response = await CreateActivity({ UserID:userAuthID, Subject:subject, ActivityDate:activityDate, ActivityType:activityType, Visibility:visibility, EntryFee:entryFee},userAuthToken);
       if (response.Status === "Success") {
         setActivitysCode(response.ActivityCode); 
         setResponsePopup({ visible: true, message: 'Activity Created Successfully!' });
