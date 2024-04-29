@@ -3,7 +3,7 @@ import {
     RTC_Func_Login
 } from "./HandlerFunc/RTCLogin";
 
-export async function Handler(data: any, ws: WebSocket, userAuthID: string, userData: any): Promise < void > {
+export async function Handler(data: any, ws: WebSocket, userAuthID: string, userData: any, authtoken:string): Promise < void > {
     console.log("HandShake =>> ", data);
 
     switch (data.type) {
@@ -41,7 +41,7 @@ export async function Handler(data: any, ws: WebSocket, userAuthID: string, user
             console.log('Handling type10 process_to Login 2 ', userAuthID);
             console.log('Handling type10 process_to Login 3 ', userData);
 
-            await RTC_Func_Login(ws, userAuthID, userData,socketid);
+            await RTC_Func_Login(ws, userAuthID, userData, socketid,authtoken);
             break;
         case 11:
             console.log('Handling type11');
