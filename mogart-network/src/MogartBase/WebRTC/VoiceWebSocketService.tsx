@@ -18,7 +18,7 @@ const useVoiceWebSocket = () => {
         }
     }, [webSocket, userAuthID, userData]);
 
-    const connectWebSocket = () => {
+    const  connectWebSocket = async () => {
         if (!webSocketRef.current || webSocketRef.current.readyState === WebSocket.CLOSED || webSocketRef.current.readyState === WebSocket.CLOSING) {
             
             if (!userData.VoiceChatStatus) return;
@@ -47,10 +47,17 @@ const useVoiceWebSocket = () => {
     };
 
     useEffect(() => {
-        if (isFirstRender.current) {
-            connectWebSocket();
-            isFirstRender.current = false;
+
+        const ConnectToSocket = async () => {
+            if (isFirstRender.current) {
+                const response = await connectWebSocket();
+                console.error("WebSocket response:", response);
+                   
+                isFirstRender.current = false;
+            }
         }
+
+        ConnectToSocket();
     }, []);
 
     const closeWebSocket = () => {

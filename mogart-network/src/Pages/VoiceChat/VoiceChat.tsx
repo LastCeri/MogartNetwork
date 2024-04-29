@@ -4,7 +4,7 @@ import CallFriendsModal from './components/CallFriendsModal/CallFriendsModal';
 import IncomingCallModal from './components/IncomingCallModal/IncomingCallModal';
 import { useData } from '../../MogartBase/Context/DataContext';
 import { useNavigate } from 'react-router-dom';
-import { useVoiceCall } from '../../MogartBase/Context/VoiceCallProvider';
+import { useVoiceCall } from '../../MogartBase/WebRTC/VoiceCallProvider';
 import { RTCStartCallPack } from '../../MogartBase/WebRTC/Packs/RTCStartCallPack';
 
 
