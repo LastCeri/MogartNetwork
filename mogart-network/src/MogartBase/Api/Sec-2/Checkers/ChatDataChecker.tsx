@@ -13,11 +13,19 @@ export const isValidChatData = (data: any): data is ChatMessage => {
 
 
 export const isValidChatDetailData = (data: any): data is ChatMessageDetail => {
-    return typeof data.MessageID === 'string' &&
-    typeof data.Sender === 'string' &&
-    typeof data.messageText === 'string' &&
-    typeof data.messageVideoUrlList === 'string' &&
-    typeof data.messageUrlList === 'string'&&
-    typeof data.messageImageList === 'string'&&
-    typeof data.messageTimeStamp === 'string';
+    if (
+        typeof data.MessageID !== 'string' && typeof data.MessageID !== 'number' ||
+        typeof data.Sender !== 'string' ||
+        typeof data.messageText !== 'string' && data.messageText !== '' ||
+        !Array.isArray(data.messageVideoUrlList) || !data.messageVideoUrlList.every((url: any) => typeof url === 'string') ||
+        !Array.isArray(data.messageUrlList) || !data.messageUrlList.every((url: any) => typeof url === 'string') ||
+        !Array.isArray(data.messageImageList) || !data.messageImageList.every((url: any) => typeof url === 'string') ||
+        typeof data.messageTimeStamp !== 'string'
+    ) {
+        return false;
+    }
+    
+    return true;
 }
+
+
