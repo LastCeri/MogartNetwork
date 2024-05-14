@@ -79,11 +79,11 @@ https://lastceri.gitbook.io/mogart-network/mogart-network-or-milestones
 
 # 2nd Quarter 2024
 
-## April 2024 milestones continue ⌛
+## April 2024 milestones continue ✅
 
-* ⌛ UI/UX Design Overhaul (Phase 9): Further refinement of the user interface using Tailwind CSS.
-* ⌛ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
-* ⌛ Customized Community Entry Cards: Introducing personalized entry cards for community engagement.
+* ✅ UI/UX Design Overhaul (Phase 9): Further refinement of the user interface using Tailwind CSS.
+* ✅ Marketing and Community Expansion: Implementing strategic marketing initiatives to expand the platform and grow the user community.
+* ✅ Customized Community Entry Cards: Introducing personalized entry cards for community engagement.
 
 ## May 2024 milestones continue ⌛
 
