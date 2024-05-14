@@ -31,3 +31,25 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+@keyframes fadeOutBounce {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  25% { transform: translateY(-20px); }
+  50% { opacity: 1; transform: translateY(10px); }
+  75% { transform: translateY(-5px); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+@keyframes fadeOutReject {
+  0% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.95); background-color: #555; }
+}
+
+.fade-out-bounce {
+  animation: fadeOutBounce 1s ease forwards;
+}
+
+.fade-out-reject {
+  animation: fadeOutReject 0.5s ease forwards;
+}
